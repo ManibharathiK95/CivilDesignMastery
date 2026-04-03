@@ -3,41 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Engineer Mastery Course</title>
+    <title>Design Engineer Mastery - Login</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{
-            --bg-main:#f0f4f8;--bg-card:#fff;--text:#1a202c;--text2:#4a5568;
-            --primary:#2563eb;--primary-dark:#1d4ed8;--border:#e2e8f0;
-            --success:#10b981;--error:#ef4444;--shadow:0 2px 10px rgba(0,0,0,0.1);
+        /* ===== CSS RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        [data-theme="dark"]{
-            --bg-main:#0f172a;--bg-card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;
-            --border:#334155;--shadow:0 2px 10px rgba(0,0,0,0.4);
+
+        :root {
+            /* Light Theme Colors */
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --success: #10b981;
+            --error: #ef4444;
         }
-        body{font-family:Segoe UI,sans-serif;background:var(--bg-main);color:var(--text);min-height:100vh;transition:0.3s}
+
+        [data-theme="dark"] {
+            /* Dark Theme Colors */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #334155;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+            --input-bg: #1e293b;
+            --input-border: #475569;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* ===== THEME TOGGLE BUTTON ===== */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ===== LOGIN CONTAINER ===== */
+        .login-container {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 420px;
+            transition: all 0.3s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* ===== MESSAGE BOX ===== */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+        }
+
+        .message.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        [data-theme="dark"] .message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        [data-theme="dark"] .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        /* ===== FORM SWITCHER ===== */
+        .form-switcher {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-switcher a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .form-switcher a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== HIDDEN CLASS ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .theme-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- THEME TOGGLE BUTTON -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+        🌙
+    </button>
+
+    <!-- LOGIN CONTAINER -->
+    <div class="login-container">
         
-        /* LOGIN PAGE */
-        .login-page{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
-        .login-box{background:var(--bg-card);padding:40px;border-radius:16px;box-shadow:var(--shadow);width:100%;max-width:400px}
-        .login-box h1{text-align:center;color:var(--primary);margin-bottom:5px;font-size:26px}
-        .login-box p{text-align:center;color:var(--text2);margin-bottom:25px;font-size:14px}
-        .form-group{margin-bottom:18px}
-        .form-group label{display:block;margin-bottom:5px;font-weight:600;font-size:13px}
-        .form-group input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text);font-size:14px}
-        .form-group input:focus{outline:none;border-color:var(--primary)}
-        .btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
-        .btn-primary{background:var(--primary);color:#fff}
-        .btn-primary:hover{background:var(--primary-dark)}
-        .msg{padding:10px;border-radius:6px;margin-bottom:15px;font-size:13px;text-align:center;display:none}
-        .msg.show{display:block}
-        .msg.err{background:#fee2e2;color:#991b1b;border:1px solid #ef4444}
-        .msg.ok{background:#d1fae5;color:#065f46;border:1px solid #10b981}
-        [data-theme="dark"] .msg.err{background:rgba(239,68,68,0.2);color:#fca5a5}
-        [data-theme="dark"] .msg.ok{background:rgba(16,185,129,0.2);color:#6ee7b7}
-        .switch{text-align:center;margin-top:18px;font-size:13px;color:var(--text2)}
-        .switch a{color:var(--primary);cursor:pointer;font-weight:600}
-        .hidden{display:none!important}
+        <!-- LOGIN FORM -->
+        <div id="loginForm">
+            <div class="login-header">
+                <h1>🎓 Design Engineer</h1>
+                <p>Mastery Course - Sign in to continue learning</p>
+            </div>
+
+            <div id="loginMessage" class="message"></div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login →</button>
+            </form>
+
+            <div class="form-switcher">
+                Don't have an account? <a onclick="showCreateForm()">Create Account</a>
+            </div>
+        </div>
+
+        <!-- CREATE ACCOUNT FORM -->
+        <div id="createForm" class="hidden">
+            <div class="login-header">
+                <h1>🚀 Get Started</h1>
+                <p>Create your free account to begin learning</p>
+            </div>
+
+            <div id="createMessage" class="message"></div>
+
+            <form onsubmit="handleCreateAccount(event)">
+                <div class="form-group">
+                    <label for="createEmail">Email Address</label>
+                    <input type="email" id="createEmail" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="createPassword">Password</label>
+                    <input type="password" id="createPassword" placeholder="Min 6 characters" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter password" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Account ✓</button>
+            </form>
+
+            <div class="form-switcher">
+                Already have an account? <a onclick="showLoginForm()">Login Here</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ============================================
+        // THEME TOGGLE FUNCTIONALITY
+        // ============================================
+        
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('themeToggle');
+            
+            // Check current theme and switch
+            if (body.getAttribute('data-theme') === 'dark') {
+                // Switch to Light
+                body.setAttribute('data-theme', 'light');
+                themeBtn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                // Switch to Dark
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme on page load
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ============================================
+        // FORM SWITCHING (Login ↔ Create)
+        // ============================================
+        
+        function showCreateForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('createForm').classList.remove('hidden');
+            hideMessages();
+        }
+
+        function showLoginForm() {
+            document.getElementById('createForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            hideMessages();
+        }
+
+        // ============================================
+        // CREATE ACCOUNT FUNCTIONALITY
+        // ============================================
+        
+        function handleCreateAccount(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+            
+            const email = document.getElementById('createEmail').value.trim().toLowerCase();
+            const password = document.getElementById('createPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('createMessage');
+
+            // Validation 1: Check if passwords match
+            if (password !== confirmPassword) {
+                showMessage(messageDiv, 'error', '❌ Passwords do not match!');
+                return;
+            }
+
+            // Validation 2: Check if email already exists
+            const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const userExists = existingUsers.find(user => user.email === email);
+
+            if (userExists) {
+                showMessage(messageDiv, 'error', '❌ This email is already registered! Please login.');
+                return;
+            }
+
+            // Create new user object
+            const newUser = {
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString(),
+                progress: {}
+            };
+
+            // Save to localStorage
+            existingUsers.push(newUser);
+            localStorage.setItem('users', JSON.stringify(existingUsers));
+
+            // Show success message
+            showMessage(messageDiv, 'success', '✅ Account created successfully! Redirecting to login...');
+
+            // Clear form fields
+            document.getElementById('createEmail').value = '';
+            document.getElementById('createPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+
+            // Switch to login form after 2 seconds
+            setTimeout(() => {
+                showLoginForm();
+                showMessage(document.getElementById('loginMessage'), 'success', '✅ Account created! You can now login.');
+            }, 2000);
+        }
+
+        // ============================================
+        // LOGIN FUNCTIONALITY
+        // ============================================
+        
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+            
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+            // Find user with matching email AND password
+            const validUser = users.find(user => 
+                user.email === email && user.password === password
+            );
+
+            if (!validUser) {
+                // Check if email exists but wrong password
+                const emailExists = users.find(user => user.email === email);
+                
+                if (emailExists) {
+                    showMessage(messageDiv, 'error', '❌ Wrong password! Please try again.');
+                } else {
+                    showMessage(messageDiv, 'error', '❌ Email not found! Please create an account first.');
+                }
+                return;
+            }
+
+            // Login successful!
+            localStorage.setItem('currentUser', JSON.stringify({
+                email: validUser.email,
+                createdAt: validUser.createdAt
+            }));
+
+            showMessage(messageDiv, 'success', '✅ Login successful! Redirecting...');
+
+            // Redirect to dashboard after 1 second
+            setTimeout(() => {
+                alert('✅ LOGIN SUCCESSFUL!\n\nWelcome, ' + email + '\n\nThis will redirect to your Dashboard.\n\n(Full dashboard will be generated next)');
+                // For now, just show success. In full version: window.location.href = '#dashboard';
+            }, 1000);
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function showMessage(element, type, text) {
+            element.className = 'message ' + type;
+            element.textContent = text;
+            element.style.display = 'block';
+        }
+
+        function hideMessages() {
+            document.getElementById('loginMessage').style.display = 'none';
+            document.getElementById('createMessage').style.display = 'none';
+        }
+
+        // ============================================
+        // INITIALIZE ON PAGE LOAD
+        // ============================================
+        
+        window.onload = function() {
+            loadTheme();
+            console.log('✅ Page loaded successfully');
+            console.log('✅ Theme loaded:', localStorage.getItem('theme') || 'light');
+            console.log('✅ Users registered:', JSON.parse(localStorage.getItem('users') || '[]').length);
+        };
         
         /* THEME BTN */
         .theme-btn{position:fixed;top:15px;right:15px;width:45px;height:45px;border-radius:50%;border:2px solid var(--border);background:var(--bg-card);font-size:22px;cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center}
