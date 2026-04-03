@@ -6,893 +6,1518 @@
     <title>Design Engineer Mastery Course</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',sans-serif;transition:all 0.3s}
+        body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#1a1a2e;transition:all 0.3s;line-height:1.6}
         
-        :root{
-            --bg:#f0f2f5;--card:#fff;--text:#1a1a2e;--text2:#555;
-            --primary:#2563eb;--primary-dark:#1d4ed8;--border:#ddd;
-            --success:#10b981;--error:#ef4444;--shadow:0 2px 10px rgba(0,0,0,0.1)
-        }
-        [data-theme="dark"]{
-            --bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;
-            --border:#334155;--shadow:0 2px 10px rgba(0,0,0,0.3)
-        }
-        body{background:var(--bg);color:var(--text);min-height:100vh}
+        /* THEME VARIABLES */
+        :root{--bg:#f0f2f5;--card:#fff;--text:#1a1a2e;--text2:#555;--pri:#2563eb;--priDark:#1d4ed8;--bor:#ddd;--ok:#10b981;--err:#ef4444;--shad:0 2px 15px rgba(0,0,0,0.08)}
+        .dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--bor:#334155;--shad:0 2px 15px rgba(0,0,0,0.3)}
+        body.dark{background:var(--bg);color:var(--text)}
         
-        .theme-btn{
-            position:fixed;top:15px;right:15px;z-index:9999;
-            background:var(--card);border:2px solid var(--border);
-            width:45px;height:45px;border-radius:50%;cursor:pointer;
-            font-size:22px;display:flex;align-items:center;justify-content:center;
-            box-shadow:var(--shadow)
-        }
+        /* THEME BUTTON */
+        .tBtn{position:fixed;top:15px;right:15px;z-index:999;width:48px;height:48px;border-radius:50%;border:none;background:var(--card);font-size:22px;cursor:pointer;box-shadow:var(--shad);display:flex;align-items:center;justify-content:center}
         
-        .container{max-width:900px;margin:60px auto;padding:20px}
-        .card{
-            background:var(--card);border-radius:16px;padding:30px;
-            box-shadow:var(--shadow);margin-bottom:20px
-        }
-        h1,h2,h3{color:var(--primary);margin-bottom:15px}
-        p{line-height:1.6;color:var(--text2);margin-bottom:10px}
+        /* CONTAINER */
+        .con{max-width:900px;margin:60px auto;padding:0 20px}
         
-        input[type=email],input[type=password]{
-            width:100%;padding:14px;border:2px solid var(--border);
-            border-radius:10px;background:var(--card);color:var(--text);
-            font-size:15px;margin-bottom:15px
-        }
-        input:focus{outline:none;border-color:var(--primary)}
+        /* CARD */
+        .card{background:var(--card);border-radius:16px;padding:30px;margin-bottom:20px;box-shadow:var(--shad)}
         
-        .btn{
-            width:100%;padding:14px;border:none;border-radius:10px;
-            background:var(--primary);color:#fff;font-size:16px;
-            cursor:pointer;font-weight:600;margin-top:10px
-        }
-        .btn:hover{background:var(--primary-dark)}
-        .btn-outline{
-            background:transparent;color:var(--primary);
-            border:2px solid var(--primary)
-        }
-        .btn-outline:hover{background:var(--primary);color:#fff}
+        /* TYPOGRAPHY */
+        h1,h2,h3{color:var(--pri);margin-bottom:12px}
+        h1{text-align:center;font-size:26px}
+        p{color:var(--text2);margin-bottom:10px;font-size:15px}
+        .ctr{text-align:center}
         
-        .msg{padding:12px;border-radius:8px;margin:10px 0;text-align:center;display:none}
+        /* INPUTS */
+        input[type=email],input[type=password]{width:100%;padding:14px;border:2px solid var(--bor);border-radius:10px;background:var(--card);color:var(--text);font-size:15px;margin-bottom:12px}
+        input:focus{outline:none;border-color:var(--pri)}
+        
+        /* BUTTONS */
+        .btn{width:100%;padding:14px;border:none;border-radius:10px;background:var(--pri);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px;transition:all 0.2s}
+        .btn:hover{background:var(--priDark);transform:translateY(-1px)}
+        .btnSm{width:auto;padding:10px 24px;display:inline-block;margin:5px}
+        .btnOut{background:transparent;color:var(--pri);border:2px solid var(--pri)}
+        .btnOut:hover{background:var(--pri);color:#fff}
+        .btnDone{background:#6b7280!important;cursor:default}
+        .btnDone:hover{transform:none}
+        
+        /* MESSAGE */
+        .msg{padding:12px;border-radius:8px;text-align:center;margin:12px 0;display:none;font-size:14px;font-weight:600}
         .msg.show{display:block}
-        .msg.success{background:#d1fae5;color:#065f46}
-        .msg.error{background:#fee2e2;color:#991b1b}
+        .msg.ok{background:#d1fae5;color:#065f46}
+        .msg.err{background:#fee2e2;color:#991b1b}
         
-        .hidden{display:none!important}
-        .text-center{text-align:center}
-        .mt-20{margin-top:20px}
-        a{color:var(--primary);cursor:pointer;font-weight:600}
+        /* HIDDEN */
+        .hid{display:none!important}
         
-        .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-        .tab{
-            padding:12px 24px;border-radius:10px;cursor:pointer;
-            background:var(--card);border:2px solid var(--border);
-            font-weight:600;color:var(--text2);transition:all 0.3s
-        }
-        .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .tab:hover:not(.active){border-color:var(--primary)}
+        /* LINK */
+        a{color:var(--pri);cursor:pointer;font-weight:600;text-decoration:none}
         
-        .progress-bar{
-            height:30px;background:var(--border);border-radius:15px;
-            overflow:hidden;margin:20px 0
-        }
-        .progress-fill{
-            height:100%;background:linear-gradient(90deg,#2563eb,#10b981);
-            transition:width 0.5s;display:flex;align-items:center;
-            justify-content:center;color:#fff;font-weight:bold;font-size:14px
-        }
+        /* TABS */
+        .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+        .tab{padding:12px 20px;border-radius:10px;cursor:pointer;background:var(--card);border:2px solid var(--bor);font-weight:600;color:var(--text2);transition:all 0.2s;font-size:14px}
+        .tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+        .tab:hover:not(.on){border-color:var(--pri)}
         
-        .lesson{border:2px solid var(--border);border-radius:12px;padding:20px;margin:15px 0}
-        .lesson.completed{border-color:var(--success);background:rgba(16,185,129,0.05)}
-        .lesson h4{color:var(--primary);margin-bottom:10px}
-        .complete-btn{
-            padding:10px 20px;background:var(--success);color:#fff;
-            border:none;border-radius:8px;cursor:pointer;font-weight:600;
-            margin-top:10px
-        }
-        .complete-btn:hover{opacity:0.9}
-        .complete-btn.done{background:#6b7280}
+        /* PROGRESS BAR */
+        .progBar{height:32px;background:var(--bor);border-radius:16px;overflow:hidden;margin:18px 0}
+        .progFill{height:100%;background:linear-gradient(90deg,#2563eb,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:13px;transition:width 0.5s}
         
-        .formula-box{
-            background:#fef3c7;border-left:4px solid #f59e0b;
-            padding:15px;margin:15px 0;border-radius:0 8px 8px 0
-        }
-        .thumb-box{
-            background:#dbeafe;border-left:4px solid #2563eb;
-            padding:15px;margin:15px 0;border-radius:0 8px 8px 0
-        }
-        .concept-box{
-            background:#dcfce7;border-left:4px solid #10b981;
-            padding:15px;margin:15px 0;border-radius:0 8px 8px 0
-        }
+        /* LESSON BOX */
+        .les{border:2px solid var(--bor);border-radius:14px;padding:24px;margin:16px 0;transition:all 0.3s}
+        .les.ok{border-color:var(--ok);background:rgba(16,185,129,0.04)}
+        .les h4{color:var(--pri);font-size:17px;margin-bottom:12px;border-bottom:1px solid var(--bor);padding-bottom:8px}
         
-        .quiz-option{
-            display:block;width:100%;padding:15px;margin:8px 0;
-            border:2px solid var(--border);border-radius:10px;
-            background:var(--card);color:var(--text);cursor:pointer;
-            text-align:left;font-size:15px;transition:all 0.3s
-        }
-        .quiz-option:hover{border-color:var(--primary)}
-        .quiz-option.correct{background:#d1fae5;border-color:#10b981;color:#065f46}
-        .quiz-option.wrong{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+        /* INFO BOXES */
+        .boxThumb{background:#eff6ff;border-left:4px solid #2563eb;padding:16px;margin:14px 0;border-radius:0 10px 10px 0}
+        .boxKey{background:#ecfdf5;border-left:4px solid #10b981;padding:16px;margin:14px 0;border-radius:0 10px 10px 0}
+        .boxForm{background:#fefce8;border-left:4px solid #eab308;padding:16px;margin:14px 0;border-radius:0 10px 10px 0}
+        .boxEx{background:#fdf4ff;border-left:4px solid #c026d3;padding:16px;margin:14px 0;border-radius:0 10px 10px 0}
+        .dark .boxThumb{background:rgba(37,99,235,0.15)}
+        .dark .boxKey{background:rgba(16,185,129,0.15)}
+        .dark .boxForm{background:rgba(234,179,8,0.15)}
+        .dark .boxEx{background:rgba(192,38,157,0.15)}
+        .boxThumb strong,.boxKey strong,.boxForm strong,.boxEx strong{display:block;margin-bottom:6px;font-size:15px}
         
-        .checklist-item{
-            display:flex;align-items:center;gap:10px;padding:10px;
-            border-bottom:1px solid var(--border)
+        /* QUIZ OPTIONS */
+        .qOpt{display:block;width:100%;padding:14px;margin:7px 0;border:2px solid var(--bor);border-radius:10px;background:var(--card);color:var(--text);cursor:pointer;text-align:left;font-size:14px;transition:all 0.2s}
+        .qOpt:hover{border-color:var(--pri)}
+        .qOpt.yes{background:#d1fae5;border-color:#10b981;color:#065f46}
+        .qOpt.no{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+        
+        /* CHECKLIST */
+        .chk{display:flex;align-items:center;gap:10px;padding:11px;border-bottom:1px solid var(--bor)}
+        .chk input{width:20px;height:20px;cursor:pointer}
+        
+        /* PHASE HEADER */
+        .phase{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;padding:20px;border-radius:12px;margin:20px 0}
+        .phase h2{color:#fff;margin:0}
+        .phase p{color:rgba(255,255,255,0.85);margin:0;font-size:14px}
+
+        @media(max-width:600px){
+            .con{margin:40px auto}
+            .card{padding:20px}
+            .tab{padding:10px 14px;font-size:13px}
         }
-        .checklist-item input{width:20px;height:20px;cursor:pointer}
     </style>
 </head>
 <body>
 
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+<!-- THEME BUTTON -->
+<button class="tBtn" onclick="togTheme()">🌙</button>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="container">
+<!-- ============ LOGIN PAGE ============ -->
+<div id="pgLogin" class="con">
     <div class="card">
-        <h1 class="text-center">🎓 Design Engineer Mastery</h1>
-        <p class="text-center">Complete Course for Draftsman to Design Engineer Transition</p>
-        
-        <div id="loginMsg" class="msg"></div>
+        <h1>🎓 Design Engineer Mastery</h1>
+        <p class="ctr">Complete Course: Draftsman → Design Engineer (Dubai/Sharjah)</p>
+        <div id="lgMsg" class="msg"></div>
         
         <!-- LOGIN FORM -->
-        <div id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Your Email Address" required>
-            <input type="password" id="loginPass" placeholder="Password (min 6 chars)" required minlength="6">
-            <button class="btn" onclick="doLogin()">Login →</button>
-            <p class="text-center mt-20">No account? <a onclick="showCreate()">Create Account</a></p>
+        <div id="frmLogin">
+            <input type="email" id="lgEm" placeholder="Email address" required>
+            <input type="password" id="lgPw" placeholder="Password (minimum 6 characters)" required minlength="6">
+            <button class="btn" onclick="doLogin()">LOGIN →</button>
+            <p class="ctr" style="margin-top:16px">New here? <a onclick="showCreate()">Create Account</a></p>
         </div>
         
         <!-- CREATE FORM -->
-        <div id="createForm" class="hidden">
-            <input type="email" id="createEmail" placeholder="Your Email Address" required>
-            <input type="password" id="createPass" placeholder="Password (min 6 chars)" required minlength="6">
-            <input type="password" id="createPass2" placeholder="Confirm Password" required>
-            <button class="btn" onclick="doCreate()">Create Account ✓</button>
-            <p class="text-center mt-20">Have account? <a onclick="showLogin()">Login Here</a></p>
+        <div id="frmCreate" class="hid">
+            <input type="email" id="crEm" placeholder="Email address" required>
+            <input type="password" id="crPw" placeholder="Password (min 6 chars)" required minlength="6">
+            <input type="password" id="crPw2" placeholder="Confirm password" required>
+            <button class="btn" onclick="doCreate()">CREATE ACCOUNT ✓</button>
+            <p class="ctr" style="margin-top:16px">Have account? <a onclick="showLogin()">Login Here</a></p>
         </div>
     </div>
 </div>
 
-<!-- DASHBOARD PAGE -->
-<div id="dashPage" class="container hidden">
-    <div class="card text-center">
-        <h1>👋 Welcome, <span id="userName">User</span>!</h1>
-        <p>Your Progress: <span id="progressPct">0%</span></p>
-        <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%">0%</div></div>
-        <button class="btn btn-outline" onclick="doLogout()" style="width:auto;padding:10px 30px">Logout</button>
+<!-- ============ DASHBOARD PAGE ============ -->
+<div id="pgDash" class="con hid">
+    
+    <!-- WELCOME & PROGRESS -->
+    <div class="card ctr">
+        <h1>👋 Welcome, <span id="usrName">User</span>!</h1>
+        <p>Your Career Transformation Starts Here</p>
+        <p><strong>Progress:</strong> <span id="pctTxt">0%</span> of Core Lessons</p>
+        <div class="progBar"><div class="progFill" id="pctBar" style="width:0%">0%</div></div>
+        <button class="btn btnOut btnSm" onclick="doLogout()">Logout</button>
     </div>
     
     <!-- TABS -->
     <div class="tabs">
-        <div class="tab active" onclick="showTab('learn')">📚 Learning</div>
-        <div class="tab" onclick="showTab('quiz')">🧪 Quizzes</div>
-        <div class="tab" onclick="showTab('exam')">🏛️ Govt Exams</div>
+        <div class="tab on" onclick="swTab('learn',this)">📚 Learning</div>
+        <div class="tab" onclick="swTab('quiz',this)">🧪 Quizzes</div>
+        <div class="tab" onclick="swTab('exam',this)">🏛️ Govt Exams</div>
     </div>
     
-    <!-- LEARNING TAB -->
-    <div id="learnTab">
-        <div class="card">
-            <h2>🔷 Phase 1: Foundation (Months 1-6)</h2>
-            
-            <div class="lesson" id="L1">
-                <h4>L1: Stress & Strain Basics</h4>
-                <p><strong>What is Stress?</strong> Stress is internal force per unit area.</p>
-                <p><strong>Formula:</strong> σ = P/A (Stress = Force / Area)</p>
-                <p><strong>Example:</strong> If you apply 100 kN force on a column of 200mm × 200mm:<br>
-                Area = 200×200 = 40,000 mm² = 0.04 m²<br>
-                Stress = 100,000 N / 0.04 m² = <strong>2,500,000 Pa = 2.5 MPa</strong></p>
-                
-                <p><strong>What is Strain?</strong> Strain is deformation per unit length.</p>
-                <p><strong>Formula:</strong> ε = δ/L (Strain = Change in length / Original length)</p>
-                <p><strong>Example:</strong> A rod of length 2m stretches by 2mm:<br>
-                Strain = 2mm / 2000mm = <strong>0.001 (or 0.1%)</strong></p>
-                
-                <p><strong>Hooke's Law:</strong> E = σ/ε (Young's Modulus)</p>
-                <p>For steel E ≈ 200 GPa, For concrete E ≈ 25-30 GPa</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Thumb Rules:</strong><br>
-                    • Concrete compressive strength f'c = 25-40 MPa typical<br>
-                    • Steel yield strength fy = 420 or 500 MPa<br>
-                    • Normal stress units: MPa (N/mm²) or kPa (kN/m²)
-                </div>
-                <div class="concept-box">
-                    <strong>💡 Key Concepts:</strong><br>
-                    • Stress causes strain (more stress = more strain)<br>
-                    • Elastic limit: material returns to original shape<br>
-                    • Yield point: permanent deformation starts<br>
-                    • Ultimate strength: maximum stress before failure
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 Formulas to Remember Always:</strong><br>
-                    • σ = P/A (Axial Stress)<br>
-                    • ε = δ/L (Strain)<br>
-                    • E = σ/ε (Hooke's Law)<br>
-                    • δ = PL/AE (Elongation)
-                </div>
-                <button class="complete-btn" onclick="markComplete('L1')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L2">
-                <h4>L2: Bending Moment & Shear Force Diagrams</h4>
-                <p><strong>Shear Force (V):</strong> Force acting perpendicular to beam axis (tries to slide one part past another).</p>
-                <p><strong>Bending Moment (M):</strong> Internal moment causing beam to bend.</p>
-                
-                <p><strong>Example - Simply Supported Beam with UDL:</strong><br>
-                Span L=6m, Load w=10 kN/m<br>
-                • Reaction at each support = wL/2 = 10×6/2 = <strong>30 kN</strong><br>
-                • Max Shear at support = <strong>30 kN</strong><br>
-                • Max Moment at midspan = wL²/8 = 10×36/8 = <strong>45 kNm</strong></p>
-                
-                <p><strong>Relationship:</strong> dV/dx = -w (load), dM/dx = V (shear)</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Thumb Rules:</strong><br>
-                    • SFD jumps at point loads (jump = load magnitude)<br>
-                    • SFD slopes under UDL (slope = -w)<br>
-                    • BMD max where V=0 (zero shear point)<br>
-                    • For cantilever: Max M at fixed end = wL²/2
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 Formulas:</strong><br>
-                    • Simply supported + UDL: M_max = wL²/8, V_max = wL/2<br>
-                    • Simply supported + Point load P at center: M_max = PL/4<br>
-                    • Cantilever + UDL: M_max = wL²/2 (at fixed end)
-                </div>
-                <button class="complete-btn" onclick="markComplete('L2')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L3">
-                <h4>L3: Bending Stress in Beams</h4>
-                <p><strong>Flexure Formula:</strong> σ = My/I</p>
-                <p>Where: M=Bending Moment, y=distance from neutral axis, I=Moment of Inertia</p>
-                
-                <p><strong>Example:</strong> Beam 300mm wide × 600mm deep, M=50 kNm, find max stress:<br>
-                I = bd³/12 = 300×(600)³/12 = 5.4×10⁹ mm⁴<br>
-                y_max = 300mm (half depth)<br>
-                σ_max = (50×10⁶ Nmm)(300mm)/(5.4×10⁹ mm⁴) = <strong>2.78 MPa</strong></p>
-                
-                <p><strong>Section Modulus Z = I/y_max</strong> (simpler formula: σ = M/Z)</p>
-                
-                <div class="formula-box">
-                    <strong>🔢 Formulas:</strong><br>
-                    • σ = My/I (Bending Stress)<br>
-                    • σ = M/Z (Using Section Modulus)<br>
-                    • I_rectangular = bh³/12<br>
-                    • Z_rectangular = bh²/6
-                </div>
-                <button class="complete-btn" onclick="markComplete('L3')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L4">
-                <h4>L4: Reinforced Concrete Beam Design (ACI 318)</h4>
-                <p><strong>Design Steps for Singly Reinforced Beam:</strong></p>
-                <p>1. Calculate factored moment: Mu = 1.2DL + 1.6LL</p>
-                <p>2. Assume beam dimensions (b, h) and effective depth d</p>
-                <p>3. Calculate required steel ratio: ρ</p>
-                <p>4. Find steel area: As = ρ × b × d</p>
-                <p>5. Select bar size and number of bars</p>
-                <p>6. Check: ρ_min ≤ ρ ≤ ρ_max</p>
-                
-                <p><strong>Example:</strong> Mu = 150 kNm, b=300mm, d=500mm, f'c=28MPa, fy=420MPa<br>
-                Rn = Mu/(φbd²) = (150×10⁶)/(0.9×300×500²) = 2.22 MPa<br>
-                ρ ≈ 0.85(f'c/fy)[1-√(1-2Rn/(0.85f'c))] = <strong>0.0055</strong><br>
-                As = 0.0055 × 300 × 500 = <strong>825 mm²</strong><br>
-                Use 3#25 bars (As=1539mm²) ✓</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Thumb Rules:</strong><br>
-                    • φ (phi) = 0.9 for flexure, 0.75 for shear<br>
-                    • ρ_min = 0.25√(f'c)/fy (but not less than 1.4/fy)<br>
-                    • ρ_max = 0.75ρb (for tension-controlled sections)<br>
-                    • Typical d = h - 65mm (cover+stirrup+half bar)
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 ACI 318 Key Formulas:</strong><br>
-                    • φMn ≥ Mu (Design requirement)<br>
-                    • ρ = As/(bd) (Reinforcement ratio)<br>
-                    • ρb = 0.85β₁(f'c/fy)[87000/(87000+fy)]<br>
-                    • ld = (fyψtψe)/(25λ√f'c) × db (Development length)
-                </div>
-                <button class="complete-btn" onclick="markComplete('L4')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L5">
-                <h4>L5: Post-Tensioning Fundamentals</h4>
-                <p><strong>What is Post-Tensioning?</strong> Applying compression to concrete AFTER it hardens using high-strength steel strands/tendons.</p>
-                <p><strong>Why use PT?</strong> • Longer spans • Thinner slabs • Less cracking • Control deflections</p>
-                
-                <p><strong>Key Components:</strong><br>
-                • Strand: 0.5" diameter (12.7mm), Grade 270 (fpu=1860 MPa)<br>
-                • Anchorage: Live end (stressing side) & Dead end (fixed side)<br>
-                • Duct/sheathing: Protects strand, allows movement during stressing<br>
-                • Grout: Cementitious fill after stressing to protect against corrosion</p>
-                
-                <p><strong>Prestress Force Example:</strong><br>
-                6 strands of 0.5", jacking stress = 0.75fpu = 1395 MPa<br>
-                Area per strand = 93 mm², Total Ap = 6×93 = 558 mm²<br>
-                Initial force Pi = 558 × 1395 = <strong>778 kN</strong></p>
-                
-                <div class="thumb-box">
-                    <strong>📌 PT Thumb Rules:</strong><br>
-                    • Typical jacking stress: 0.70-0.80 fpu<br>
-                    • Effective stress after losses: ~0.55-0.65 fpu<br>
-                    • Total losses: 20-30% of initial force<br>
-                    • Slab span/depth ratio: 35-45 for PT vs 20-25 for RC
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 PT Basic Formulas:</strong><br>
-                    • P = Aps × fpe (Effective prestress force)<br>
-                    • Eccentricity e = distance from CG of section to tendon CG<br>
-                    • Moment from PT: M_pt = P × e
-                </div>
-                <button class="complete-btn" onclick="markComplete('L5')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L6">
-                <h4>L6: Losses in Post-Tensioning (CRITICAL TOPIC)</h4>
-                <p><strong>You MUST know all 6 types of losses for interviews!</strong></p>
-                
-                <p><strong>INSTANTANEOUS LOSSES (happen immediately during stressing):</strong></p>
-                <p>1. <strong>Anchorage Seating (Wedge Draw-in):</strong> Wedge pulls back ~6mm when jack released.<br>
-                Formula: ΔP = (Ap × Ep × ΔL) / L<br>
-                Example: ΔL=6mm, Ep=195000MPa, Ap=93mm², L=10m → ΔP = 10.9 kN per strand</p>
-                
-                <p>2. <strong>Friction Loss:</strong> Two parts - Wobble (K) + Curvature (μ)<br>
-                Formula: Px = P₀ × e^(-(Kx + μα))<br>
-                K = 0.002/m (wobble), μ = 0.20 (curvature friction), α = angle change in radians</p>
-                
-                <p>3. <strong>Elastic Shortening:</strong> Concrete compresses when PT applied, causing strand shortening.<br>
-                Approximate: Δfes ≈ n × fci × (Ap/Ac) where n = Es/Ec</p>
-                
-                <p><strong>TIME-DEPENDENT LOSSES (happen over months/years):</strong></p>
-                <p>4. <strong>Creep:</strong> Concrete deforms under sustained load (~5% loss)<br>
-                5. <strong>Shrinkage:</strong> Concrete volume decreases as water leaves (~6% loss)<br>
-                6. <strong>Relaxation:</strong> Steel stress reduces under constant strain (~3-4% loss)</p>
-                
-                <p><strong>Total Loss Estimate:</strong> ~20-30% of jacking force for building slabs</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Interview Tip:</strong><br>
-                    Interviewers WILL ask "What are the losses?"<br>
-                    Memorize: <strong>A-E-C-S-R</strong> (Anchorage, Elastic, Creep, Shrinkage, Relaxation) + Friction
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 All Loss Formulas:</strong><br>
-                    • Friction: Px = P₀ × e^(-(Kx+μα))<br>
-                    • Anchorage: ΔP = (Ap×Ep×ΔL)/L<br>
-                    • Elastic Shortening: Δf = n×fci×ρ<br>
-                    • Creep: Δfc = n×fci×Ψ×ρ (Ψ≈2.0)<br>
-                    • Shrinkage: Δfsh = εsh×Es (εsh≈400-800×10⁻⁶)<br>
-                    • Relaxation: ~2-4% of initial stress
-                </div>
-                <button class="complete-btn" onclick="markComplete('L6')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L7">
-                <h4>L7: Load Balancing Method (Core PT Concept)</h4>
-                <p><strong>This is THE most important concept in PT design!</strong></p>
-                
-                <p><strong>Idea:</strong> Parabolic tendon creates UPWARD force that balances DOWNWARD gravity load.</p>
-                
-                <p><strong>Upward Force Formula:</strong> w_balanced = 8Pe/L²</p>
-                <p>Where: P=prestress force, e=drape (eccentricity), L=span</p>
-                
-                <p><strong>Example:</strong> Span L=10m, P=1000kN, e(drape)=150mm=0.15m<br>
-                w_balanced = 8 × 1000 × 0.15 / (10)² = <strong>12 kN/m</strong></p>
-                
-                <p>If your Dead Load = 10 kN/m and Live Load = 5 kN/m:<br>
-                • Balance 100% DL → Slab sees only LL (very efficient!)<br>
-                • Or balance DL + part of LL for more conservative design</p>
-                
-                <p><strong>Unbalanced Moment = Moment from (Total Load - Balanced Load)</strong></p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Design Strategy:</strong><br>
-                    • More P or more e → more balanced load → thinner slab possible<br>
-                    • But: limited by cover requirements and concrete stresses at transfer<br>
-                    • Typical balance: 65-85% of total service load
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 Must Remember:</strong><br>
-                    • w_b = 8Pe/L² (Parabolic profile upward force)<br>
-                    • Pe = effective prestress after losses<br>
-                    • e = total drape (high point to low point distance)
-                </div>
-                <button class="complete-btn" onclick="markComplete('L7')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L8">
-                <h4>L8: PT Slab Stress Checks (ACI 18.4)</h4>
-                <p><strong>At Transfer (Initial Stage):</strong></p>
-                <p>• Top fiber: ≤ 0.25√f'ci (compression allowed)<br>
-                • Bottom fiber: ≤ 0.6√f'ci (TENSION allowed! This is special for PT)</p>
-                
-                <p><strong>At Service (Long-term):</strong></p>
-                <p>• Top fiber: ≤ 0.45√f'c (compression)<br>
-                • Bottom fiber: Decompression allowed (no tension, but can be zero)</p>
-                
-                <p><strong>Example Check:</strong> f'ci=25MPa at transfer, bottom fiber stress calculated = 2.5 MPa (tension)<br>
-                Allowable = 0.6√25 = 0.6×5 = <strong>3.0 MPa</strong><br>
-                2.5 < 3.0 → ✅ PASS</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Why allow tension in PT?</strong><br>
-                    Because prestress keeps cracks closed even if theoretical tension exists!<br>
-                    But: You MUST provide minimum bonded reinforcement (rebar) in tension zones.
-                </div>
-                <div class="formula-box">
-                    <strong>🔢 ACI 18.4 Limits Summary:</strong><br>
-                    • Transfer top: 0.25√f'ci (C)<br>
-                    • Transfer bottom: 0.6√f'ci (T)<br>
-                    • Service top: 0.45√f'c (C)<br>
-                    • Service bottom: 0 (decompression) or small tension with rebar
-                </div>
-                <button class="complete-btn" onclick="markComplete('L8')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L9">
-                <h4>L9: Punching Shear Check (Flat Slabs)</h4>
-                <p><strong>Critical for flat plates!</strong> Columns can punch through slab.</p>
-                
-                <p><strong>Critical Section:</strong> At d/2 from face of column (d = effective depth)</p>
-                
-                <p><strong>Check:</strong> φVc ≥ Vu (factored shear force)</p>
-                
-                <p><strong>Vc Calculation (ACI 22.6.5):</strong><br>
-                Vc = factor × √f'c × b₀ × d<br>
-                Where b₀ = perimeter of critical section</p>
-                
-                <p><strong>Example:</strong> Column 500×500mm, slab d=190mm, Vu=400kN, f'c=35MPa<br>
-                Critical perimeter b₀ = 4×(500+d) = 4×690 = 2760mm<br>
-                Vc = 0.17×√35×2760×190 = 527,000 N = <strong>527 kN</strong><br>
-                φVc = 0.75×527 = 395 kN < Vu=400kN → ⚠️ MARGINAL (add shear reinforcement or increase thickness)</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Punching Shear Tips:</strong><br>
-                    • Openings near columns REDUCE b₀ significantly<br>
-                    • Edge/corner columns have lower capacity (less perimeter)<br>
-                    • Solutions: Drop panels, column capitals, stud rails, thicker slab
-                </div>
-                <button class="complete-btn" onclick="markComplete('L9')">✓ Mark Complete</button>
-            </div>
-            
-            <div class="lesson" id="L10">
-                <h4>L10: Column Design Basics</h4>
-                <p><strong>Short Column (Axial Only):</strong></p>
-                <p>φPn = 0.65[0.85f'c(Ag-As) + fyAs]</p>
-                
-                <p><strong>Example:</strong> Column 600×600mm, f'c=40MPa, fy=500MPa, Pu=5000kN, use 2% steel<br>
-                Ag = 360000 mm², As = 0.02×360000 = 7200 mm²<br>
-                φPn = 0.65[0.85×40×(360000-7200) + 500×7200]<br>
-                φPn = 0.65[11,953,600 + 3,600,000] = <strong>10,110 kN</strong> > 5000kN ✅</p>
-                
-                <p><strong>Ties Spacing:</strong><br>
-                • Min 16×bar diameter OR 48×tie diameter OR least column dimension<br>
-                • Max spacing: 0.75×column dimension (seismic zones stricter)</p>
-                
-                <div class="thumb-box">
-                    <strong>📌 Column Rules:</strong><br>
-                    • Min reinforcement: 1% of Ag<br>
-                    • Max reinforcement: 8% of Ag (practical max: 4%)<br>
-                    • Clear cover: 40mm (interior), 50mm (exposure)<br>
-                    • Min 4 bars for rectangular, 6 for circular
-                </div>
-                <button class="complete-btn" onclick="markComplete('L10')">✓ Mark Complete</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- QUIZ TAB -->
-    <div id="quizTab" class="hidden">
-        <div class="card">
-            <h2>🧪 Topic Quizzes</h2>
-            <p>Select difficulty level and test yourself!</p>
-            
-            <div style="margin:20px 0">
-                <button class="btn btn-outline" onclick="startQuiz('easy')" style="width:auto;margin:5px">😊 Easy Quiz</button>
-                <button class="btn btn-outline" onclick="startQuiz('medium')" style="width:auto;margin:5px">🤔 Medium Quiz</button>
-                <button class="btn btn-outline" onclick="startQuiz('hard')" style="width:auto;margin:5px">😰 Hard Quiz</button>
-            </div>
-            
-            <div id="quizArea"></div>
-            <div id="quizResult" class="msg"></div>
+    <!-- ========== LEARNING TAB ========== -->
+    <div id="tabLearn">
+        
+        <!-- PHASE 1 -->
+        <div class="phase">
+            <h2>🔷 PHASE 1: Foundation (Months 1-6)</h2>
+            <p>Goal: Learn the language of engineers - Strength of Materials & RC Basics</p>
         </div>
         
         <div class="card">
-            <h2>🔢 Quick Formula Reference</h2>
-            <div class="formula-box">
-                <strong>STRENGTH OF MATERIALS:</strong><br>
-                • σ = P/A (Stress)<br>
-                • ε = δ/L (Strain)<br>
-                • E = σ/ε (Young's Modulus)<br>
-                • δ = PL/AE (Elongation)
+            
+            <!-- LESSON 1 -->
+            <div class="les" id="L1">
+                <h4>L1: Stress, Strain & Material Properties</h4>
+                
+                <p><strong>What is STRESS?</strong><br>
+                When you apply force on an object, internal resistance develops inside it. This internal force per unit area is called <strong>Stress</strong>.</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 FORMULA: σ = P / A</strong>
+                    σ = Stress (MPa or N/mm²)<br>
+                    P = Applied Force (N or kN)<br>
+                    A = Cross-sectional Area (mm² or m²)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE 1: Calculate stress in column</strong><br>
+                    A column carries 500 kN load.<br>
+                    Column size = 300mm × 300mm<br>
+                    Area A = 300 × 300 = 90,000 mm²<br>
+                    Stress σ = 500,000 N ÷ 90,000 mm² = <strong>5.56 MPa</strong><br><br>
+                    ✅ This means every square mm of concrete carries 5.56 Newtons of force.
+                </div>
+                
+                <p><strong>What is STRAIN?</strong><br>
+                Strain measures how much a material deforms (stretches or compresses) compared to its original length.</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 FORMULA: ε = δ / L</strong>
+                    ε = Strain (dimensionless, usually very small number like 0.001)<br>
+                    δ = Deformation/change in length (mm)<br>
+                    L = Original length (mm)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE 2: Calculate strain in steel rod</strong><br>
+                    Steel rod length = 2000mm (2 meters)<br>
+                    It stretches by 2mm under load<br>
+                    Strain ε = 2mm ÷ 2000mm = <strong>0.001</strong> (or 0.1%)<br><br>
+                    ✅ Strain has NO units - it's just a ratio.
+                </div>
+                
+                <p><strong>HOOKE'S LAW (Most Important Relationship)</strong><br>
+                Within elastic limit, Stress is directly proportional to Strain.</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 FORMULA: E = σ / ε  OR  σ = E × ε</strong>
+                    E = Young's Modulus (Modulus of Elasticity) - material stiffness<br>
+                    • Steel: E ≈ 200,000 MPa (200 GPa) - Very stiff<br>
+                    • Concrete: E ≈ 25,000-30,000 MPa (25-30 GPa) - Less stiff<br>
+                    • Aluminum: E ≈ 70,000 MPa (70 GPa)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE 3: Using Hooke's Law</strong><br>
+                    Concrete in compression: strain ε = 0.002<br>
+                    Concrete E = 25,000 MPa<br>
+                    Stress σ = E × ε = 25,000 × 0.002 = <strong>50 MPa</strong><br><br>
+                    ⚠️ But typical concrete strength f'c = 25-40 MPa only!<br>
+                    So this concrete would CRUSH before reaching 50 MPa.
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 THUMB RULES TO REMEMBER:</strong><br>
+                    • Concrete compressive strength f'c = 25-40 MPa (normal buildings)<br>
+                    • Steel yield strength fy = 420 MPa (Grade 60) or 500 MPa (Grade 75)<br>
+                    • 1 MPa = 1 N/mm² = 1,000 kN/m²<br>
+                    • Typical building column stress: 8-15 MPa<br>
+                    • Typical beam bending stress: 10-20 MPa
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 KEY CONCEPTS FOR INTERVIEW:</strong><br>
+                    • <strong>Elastic Limit:</strong> If you remove load, material returns to original shape<br>
+                    • <strong>Yield Point:</strong> Permanent deformation starts (material doesn't fully recover)<br>
+                    • <strong>Ultimate Strength:</strong> Maximum stress material can take before breaking<br>
+                    • <strong>Ductile vs Brittle:</strong> Steel stretches before breaking (ductile). Concrete breaks suddenly (brittle). That's why we put steel IN concrete!
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 FORMULAS - MEMORIZE THESE 4 ALWAYS:</strong><br>
+                    ① σ = P/A (Stress formula)<br>
+                    ② ε = δ/L (Strain formula)<br>
+                    ③ E = σ/ε (Hooke's Law / Young's Modulus)<br>
+                    ④ δ = PL/AE (Elongation formula - derived from above three)
+                </div>
+                
+                <button class="btn btnDone" id="bL1" onclick="done('L1')">✓ Mark Complete & Continue</button>
             </div>
-            <div class="formula-box">
-                <strong>BENDING:</strong><br>
-                • σ = My/I (Bending Stress)<br>
-                • M_max (SS+UDL) = wL²/8<br>
-                • V_max (SS+UDL) = wL/2<br>
-                • I_rect = bh³/12
+            
+            <!-- LESSON 2 -->
+            <div class="les" id="L2">
+                <h4>L2: Bending Moment & Shear Force Diagrams</h4>
+                
+                <p><strong>Why do we need SFD and BMD?</strong><br>
+                Before designing any beam, you MUST know where the maximum moment and maximum shear occur. These diagrams show exactly that.</p>
+                
+                <p><strong>SHEAR FORCE (V):</strong><br>
+                The force that tries to slide one part of beam relative to another part. Think of scissors cutting paper - that's shear action.</p>
+                
+                <p><strong>BENDING MOMENT (M):</strong><br>
+                The internal moment that tries to bend the beam. More moment = more bending = more stress at top and bottom fibers.</p>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Simply Supported Beam with UDL</strong><br><br>
+                    Given data:<br>
+                    • Span L = 6 meters<br>
+                    • Uniformly Distributed Load w = 10 kN/m (dead + live load)<br>
+                    • Supports at both ends (simply supported)<br><br>
+                    
+                    <strong>Step 1: Find Reactions</strong><br>
+                    Total load = w × L = 10 × 6 = 60 kN<br>
+                    Each support reaction = 60/2 = <strong>30 kN ↑</strong><br><br>
+                    
+                    <strong>Step 2: Maximum Shear Force</strong><br>
+                    V_max occurs at supports = <strong>30 kN</strong><br>
+                    V at midspan = 0 (changes sign)<br><br>
+                    
+                    <strong>Step 3: Maximum Bending Moment</strong><br>
+                    M_max occurs at midspan = wL²/8 = 10×36/8 = <strong>45 kNm</strong><br><br>
+                    
+                    ✅ Design your beam for M = 45 kNm and V = 30 kN!
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 MUST-MEMORIZE FORMULAS:</strong><br><br>
+                    <strong>SIMPLY SUPPORTED BEAM + UDL (most common):</strong><br>
+                    • Reaction at each support: R = wL/2<br>
+                    • Max shear: V_max = wL/2 (at supports)<br>
+                    • Max moment: M_max = wL²/8 (at center)<br>
+                    • Moment at distance x: M = wx(L-x)/2<br><br>
+                    
+                    <strong>SIMPLY SUPPORTED + POINT LOAD P AT CENTER:</strong><br>
+                    • Reaction: R = P/2 each side<br>
+                    • Max shear: V_max = P/2<br>
+                    • Max moment: M_max = PL/4 (at center)<br><br>
+                    
+                    <strong>CANTILEVER BEAM + UDL (fixed one end, free other end):</strong><br>
+                    • Max shear: V_max = wL (at fixed end)<br>
+                    • Max moment: M_max = wL²/2 (at fixed end)<br><br>
+                    
+                    <strong>CANTILEVER + POINT LOAD P AT FREE END:</strong><br>
+                    • Max shear: V_max = P (constant throughout)<br>
+                    • Max moment: M_max = PL (at fixed end)
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 THUMB RULES:</strong><br>
+                    • SFD jumps UP at upward reaction, DOWN at point load<br>
+                    • SFD slopes downward under UDL (slope = -w)<br>
+                    • Where V = 0 (crosses zero), M is MAXIMUM or MINIMUM<br>
+                    • For cantilever: worst case always at FIXED end<br>
+                    • For simply supported: worst case usually at MIDSPAN
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 RELATIONSHIP BETWEEN SHEAR AND MOMENT:</strong><br>
+                    • dV/dx = -w (slope of shear diagram = negative of load intensity)<br>
+                    • dM/dx = V (slope of moment diagram = shear value)<br>
+                    • This means: Moment is MAXIMUM where Shear = ZERO<br><br>
+                    <strong>Why interviewers ask this?</strong><br>
+                    It shows you understand the FUNDAMENTALS, not just formulas!
+                </div>
+                
+                <button class="btn btnDone" id="bL2" onclick="done('L2')">✓ Mark Complete & Continue</button>
             </div>
-            <div class="formula-box">
-                <strong>RC DESIGN (ACI 318):</strong><br>
-                • φMn ≥ Mu<br>
-                • ρ = As/(bd)<br>
-                • ld = (fyψtψe)/(25λ√f'c) × db<br>
-                • φ_flexure = 0.9, φ_shear = 0.75
+            
+            <!-- LESSON 3 -->
+            <div class="les" id="L3">
+                <h4>L3: Bending Stress in Beams (Flexure Formula)</h4>
+                
+                <p><strong>The Big Question:</strong> We know the bending moment M. Now what stress does this create in the beam?</p>
+                
+                <p><strong>Answer: Use the Flexure Formula!</strong></p>
+                
+                <div class="boxForm">
+                    <strong>🔢 MAIN FORMULA: σ = My / I</strong><br>
+                    σ = Bending stress at distance y from neutral axis (MPa)<br>
+                    M = Bending moment (Nmm or kNm - be careful with units!)<br>
+                    y = Distance from neutral axis to where you want stress (mm)<br>
+                    I = Moment of Inertia of cross-section (mm⁴)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 COMPLETE EXAMPLE: Find max stress in rectangular beam</strong><br><br>
+                    Given:<br>
+                    • Beam width b = 300 mm<br>
+                    • Total depth h = 600 mm<br>
+                    • Bending moment M = 50 kNm = 50×10⁶ Nmm<br><br>
+                    
+                    <strong>Step 1: Calculate I (Moment of Inertia)</strong><br>
+                    For rectangle: I = bh³/12<br>
+                    I = 300 × (600)³ / 12 = 300 × 216,000,000 / 12<br>
+                    I = <strong>5.4 × 10⁹ mm⁴</strong><br><br>
+                    
+                    <strong>Step 2: Find y_max (distance to extreme fiber)</strong><br>
+                    y_max = h/2 = 600/2 = <strong>300 mm</strong><br><br>
+                    
+                    <strong>Step 3: Calculate max stress</strong><br>
+                    σ_max = My/I = (50×10⁶)(300) / (5.4×10⁹)<br>
+                    σ_max = 15×10⁹ / 5.4×10⁹ = <strong>2.78 MPa</strong><br><br>
+                    
+                    ✅ This stress occurs at TOP and BOTTOM fibers (compression at top, tension at bottom)
+                </div>
+                
+                <p><strong>SECTION MODULUS (Z) - Simplified Version:</strong><br>
+                Instead of calculating I and y separately, we use Z = I/y_max</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 SIMPLIFIED FORMULA: σ = M / Z</strong><br><br>
+                    For rectangular section: Z = bh²/6<br>
+                    For our example: Z = 300×(600)²/6 = 300×360,000/6 = <strong>18×10⁶ mm³</strong><br>
+                    Then: σ = 50×10⁶ / 18×10⁶ = <strong>2.78 MPa</strong> ✓ Same answer!
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 SECTION MODULUS VALUES (MEMORIZE):</strong><br>
+                    • Rectangle (b×h): Z = bh²/6<br>
+                    • Circle (diameter D): Z = πD³/32<br>
+                    • T-beam: Calculate I first, then Z = I/y_bottom (for tension side)
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 WHY THIS MATTERS FOR RC DESIGN:</strong><br>
+                    • Concrete is WEAK in tension (only 10% of its compressive strength)<br>
+                    • So we place STEEL REBAR at the bottom (where tension occurs)<br>
+                    • Steel takes all the tension; concrete takes all the compression<br>
+                    • This is why reinforced concrete works!
+                </div>
+                
+                <button class="btn btnDone" id="bL3" onclick="done('L3')">✓ Mark Complete & Continue</button>
             </div>
-            <div class="formula-box">
-                <strong>POST-TENSIONING:</strong><br>
-                • Px = P₀ × e^(-(Kx+μα)) (Friction)<br>
-                • w_b = 8Pe/L² (Load Balancing)<br>
-                • ΔP_anchor = (Ap×Ep×ΔL)/L<br>
-                • Total losses ≈ 20-30%
+            
+            <!-- LESSON 4 -->
+            <div class="les" id="L4">
+                <h4>L4: Singly Reinforced Concrete Beam Design (ACI 318)</h4>
+                
+                <p><strong>This is THE most important lesson for RC design interviews.</strong><br>
+                You will design beams like this 90% of the time.</p>
+                
+                <p><strong>THE DESIGN PHILOSOPHY (Limit State Method):</strong></p>
+                <ul style="margin-left:20px;margin-bottom:10px">
+                    <li>We INCREASE loads by factors (to be safe): 1.2×DL + 1.6×LL</li>
+                    <li>We DECREASE capacity by factor φ (phi): φ = 0.9 for flexure</li>
+                    <li>Requirement: φMn ≥ Mu (capacity must be greater than demand)</li>
+                </ul>
+                
+                <div class="boxEx">
+                    <strong>💡 COMPLETE BEAM DESIGN EXAMPLE:</strong><br><br>
+                    <strong>GIVEN DATA:</strong><br>
+                    • Span: 6m (simply supported)<br>
+                    • Dead Load (excluding self-weight): 15 kN/m<br>
+                    • Live Load: 20 kN/m<br>
+                    • f'c = 28 MPa (concrete strength)<br>
+                    • fy = 420 MPa (steel Grade 60)<br>
+                    • Assume beam width b = 300 mm<br><br>
+                    
+                    <strong>STEP 1: Calculate Factored Moment (Mu)</strong><br>
+                    Self-weight of beam (assume 600mm deep): 0.3×0.6×25 = 4.5 kN/m<br>
+                    Total DL = 15 + 4.5 = 19.5 kN/m<br>
+                    Wu = 1.2(19.5) + 1.6(20) = 23.4 + 32 = <strong>55.4 kN/m</strong><br>
+                    Mu = WuL²/8 = 55.4×36/8 = <strong>249.3 kNm</strong><br><br>
+                    
+                    <strong>STEP 2: Assume effective depth d</strong><br>
+                    Let total depth h = 600mm<br>
+                    Effective depth d = h - cover - stirrup - half bar<br>
+                    d = 600 - 40 - 10 - 12 = <strong>538 mm ≈ 540 mm</strong><br><br>
+                    
+                    <strong>STEP 3: Calculate required steel ratio ρ</strong><br>
+                    Rn = Mu/(φbd²) = (249.3×10⁶)/(0.9×300×540²) = <strong>3.18 MPa</strong><br>
+                    ρ = (0.85f'c/fy)[1 - √(1 - 2Rn/(0.85f'c))]<br>
+                    ρ = (0.85×28/420)[1 - √(1 - 2×3.18/(0.85×28))]<br>
+                    ρ = 0.0567[1 - √(1 - 0.267)] = 0.0567[1 - 0.856] = <strong>0.0082</strong><br><br>
+                    
+                    <strong>STEP 4: Calculate required steel area As</strong><br>
+                    As = ρ × b × d = 0.0082 × 300 × 540 = <strong>1328 mm²</strong><br><br>
+                    
+                    <strong>STEP 5: Select bars</strong><br>
+                    Try 4#25 bars (25mm diameter): As provided = 4×491 = 1964 mm² > 1328 ✅<br>
+                    Or try 3#28: As = 3×616 = 1848 mm² > 1328 ✅<br><br>
+                    
+                    <strong>STEP 6: Check limits</strong><br>
+                    ρ_min = 0.25√28/420 = 0.00315... OK (0.0082 > 0.00315) ✅<br>
+                    ρ_max = 0.75ρb = 0.021... OK (0.0082 < 0.021) ✅<br><br>
+                    
+                    ✅ <strong>FINAL ANSWER: Use 4#25mm bars at bottom of beam!</strong>
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 ACI 318 FORMULAS - INTERVIEW READY:</strong><br><br>
+                    <strong>Load Factors:</strong><br>
+                    • U = 1.2D + 1.6L (most common)<br>
+                    • U = 1.4D (dead load only)<br><br>
+                    <strong>Strength Reduction Factors (φ):</strong><br>
+                    • Flexure (tension controlled): φ = <strong>0.90</strong><br>
+                    • Shear and torsion: φ = <strong>0.75</strong><br>
+                    • Compression tied members: φ = <strong>0.65</strong><br><br>
+                    <strong>Reinforcement Limits:</strong><br>
+                    • ρ_min = max(0.25√f'c/fy, 1.4/fy)<br>
+                    • ρ_max = 0.75ρb (ensures tension-controlled, ductile failure)<br><br>
+                    <strong>Development Length:</strong><br>
+                    • ld = (fy/λ√f'c) × (ψtψeψs/25) × db<br>
+                    • For #25 bar, f'c=28, fy=420: ld ≈ 45db ≈ 1125mm
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 PRACTICAL DESIGN TIPS:</strong><br>
+                    • Typical beam width: 250-400mm (modular with wall/column sizes)<br>
+                    • Typical beam depth: span/10 to span/12 (for RC beams)<br>
+                    • Effective depth d ≈ h - 65mm (cover 40mm + stirrup 10mm + half bar ~15mm)<br>
+                    • Always check deflection control: L/depth ratio limits in ACI Table 9.3.1.1<br>
+                    • Never use less than 2 bars in beam (for stirrup holding)
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 WHAT IF MY DESIGN FAILS CHECKS?</strong><br>
+                    • If ρ > ρ_max: Increase beam depth OR add compression steel (doubly reinforced)<br>
+                    • If ρ < ρ_min: Provide minimum reinforcement anyway (for shrinkage/temperature)<br>
+                    • If bars don't fit in width: Increase beam width OR use smaller diameter more bars<br>
+                    • If deflection too much: Increase depth (deflection ∝ L²/d, so doubling d reduces deflection by 8x!)
+                </div>
+                
+                <button class="btn btnDone" id="bL4" onclick="done('L4')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 5 -->
+            <div class="les" id="L5">
+                <h4>L5: Shear Design in RC Beams</h4>
+                
+                <p><strong>Why shear matters:</strong> Many beam failures happen due to shear, not flexure! Shear failure is SUDDEN and BRITTLE (no warning).</p>
+                
+                <p><strong>How shear works in concrete beams:</strong></p>
+                <ul style="margin-left:20px;margin-bottom:10px">
+                    <li>Concrete itself resists some shear (Vc)</li>
+                    <li>If Vc is not enough, we add stirrups (Vs) to resist remaining shear</li>
+                    <li>Total capacity: φ(Vc + Vs) ≥ Vu</li>
+                </ul>
+                
+                <div class="boxForm">
+                    <strong>🔢 ACI 318 SHEAR DESIGN FORMULAS:</strong><br><br>
+                    <strong>Concrete shear capacity (simplified for members without axial force):</strong><br>
+                    Vc = 0.17√f'c × bw × d  (units: N, when f'c in MPa, dimensions in mm)<br><br>
+                    <strong>Required stirrup shear:</strong><br>
+                    Vs = Vu/φ - Vc<br><br>
+                    <strong>Stirrup spacing calculation:</strong><br>
+                    s = (Av × fy × d) / Vs<br>
+                    Where Av = area of both legs of stirrup (2-leg stirrup: Av = 2×π×φ²/4)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Design shear reinforcement</strong><br><br>
+                    Given: bw=300mm, d=540mm, f'c=28MPa, fy=420MPa, Vu=150kN<br><br>
+                    <strong>Step 1: Calculate Vc</strong><br>
+                    Vc = 0.17 × √28 × 300 × 540 = 0.17 × 5.29 × 162,000 = <strong>145,700 N = 145.7 kN</strong><br><br>
+                    <strong>Step 2: Check if stirrups needed</strong><br>
+                    φVc = 0.75 × 145.7 = 109.3 kN<br>
+                    Vu = 150 kN > 109.3 kN → <strong>YES, stirrups needed!</strong><br><br>
+                    <strong>Step 3: Calculate Vs needed</strong><br>
+                    Vs = Vu/φ - Vc = 150/0.75 - 145.7 = 200 - 145.7 = <strong>54.3 kN</strong><br><br>
+                    <strong>Step 4: Design stirrups</strong><br>
+                    Use T10mm 2-legged stirrups: Av = 2 × 78.5 = 157 mm²<br>
+                    s = (157 × 420 × 540) / (54.3 × 1000) = <strong>658 mm</strong><br><br>
+                    <strong>Step 5: Apply maximum spacing limits</strong><br>
+                    s_max = d/2 = 270mm (ACI limit)<br>
+                    Also s_max ≤ 300mm (absolute max)<br>
+                    Use s = <strong>260mm c/c</strong> (or practically: 250mm c/c)<br><br>
+                    ✅ Provide T10@250mm c/c stirrups throughout beam!
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 SHEAR DESIGN RULES OF THUMB:</strong><br>
+                    • First check: Is Vu ≤ φVc/2? If yes, MINIMUM stirrups only (code requirement)<br>
+                    • Minimum stirrups: T10@max spacing (usually d/2 or 300mm, whichever less)<br>
+                    • Critical section: At face of support (at distance d from support for simplicity)<br>
+                    • Stirrups are ALWAYS closed loops (not open) in beams<br>
+                    • Start stirrups at 50mm from face of support<br>
+                    • Common stirrup sizes: T8, T10, T12 (T10 most common)
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 WHY SHEAR FAILURE IS DANGEROUS:</strong><br>
+                    • Flexure failure: Steel yields first → cracks appear → warning before collapse<br>
+                    • Shear failure: Diagonal crack suddenly propagates → immediate collapse → NO WARNING<br>
+                    • That's why ACI uses lower φ for shear (0.75 vs 0.90 for flexure) - more conservative!<br>
+                    • NEVER ignore shear design even if "moment governs"
+                </div>
+                
+                <button class="btn btnDone" id="bL5" onclick="done('L5')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 6 -->
+            <div class="les" id="L6">
+                <h4>L6: One-Way Slab Design</h4>
+                
+                <p><strong>What is One-Way Slab?</strong><br>
+                Slab spanning mainly in ONE direction (length/width ratio ≥ 2:1). Load transfers to two parallel beams/walls.</p>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Design a one-way slab</strong><br><br>
+                    Given:<br>
+                    • Clear span = 4m (between beams)<br>
+                    • Live load LL = 3 kPa (residential)<br>
+                    • Floor finish = 1.5 kPa<br>
+                    • f'c = 28 MPa, fy = 420 MPa<br><br>
+                    
+                    <strong>Step 1: Assume slab thickness</strong><br>
+                    ACI minimum for one-way slab (simply supported): L/20 = 4000/20 = 200mm<br>
+                    Use h = <strong>200mm</strong>, d = 200 - 25 (cover) - 6 (half bar) ≈ <strong>170mm</strong><br><br>
+                    
+                    <strong>Step 2: Calculate loads per m width</strong><br>
+                    Self-weight = 0.2m × 25 kN/m³ = 5.0 kN/m²<br>
+                    Total DL = 5.0 + 1.5 = 6.5 kN/m²<br>
+                    Wu = 1.2(6.5) + 1.6(3) = 7.8 + 4.8 = <strong>12.6 kN/m</strong> (per meter width)<br><br>
+                    
+                    <strong>Step 3: Calculate moment (per 1m strip)</strong><br>
+                    Mu = WL²/8 = 12.6 × (4)² / 8 = <strong>25.2 kNm/m</strong><br><br>
+                    
+                    <strong>Step 4: Calculate main reinforcement</strong><br>
+                    Rn = Mu/(φbd²) = (25.2×10⁶)/(0.9×1000×170²) = 0.969 MPa<br>
+                    ρ = calculate using formula ≈ <strong>0.0029</strong><br>
+                    As = ρbd = 0.0029 × 1000 × 170 = <strong>493 mm²/m</strong><br>
+                    Use T12@200 c/c: As = 566 mm²/m > 493 ✅<br><br>
+                    
+                    <strong>Step 5: Temperature/shrinkage reinforcement (perpendicular direction)</strong><br>
+                    As_min = 0.0018 × b × h = 0.0018 × 1000 × 200 = <strong>360 mm²/m</strong><br>
+                    Use T10@200 c/c: As = 393 mm²/m > 360 ✅<br><br>
+                    
+                    ✅ <strong>MAIN STEEL: T12@200 c/c (bottom, short direction)</strong><br>
+                    ✅ <strong>TEMP STEEL: T10@200 c/c (top, long direction)</strong>
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 SLAB DESIGN QUICK REFERENCE:</strong><br><br>
+                    <strong>Minimum thickness (ACI Table 9.3.1.1):</strong><br>
+                    • Simply supported one-way: L/20<br>
+                    • One end continuous: L/24<br>
+                    • Both ends continuous: L/28<br>
+                    • Cantilever: L/10<br><br>
+                    <strong>Min temperature reinforcement (Grade 60):</strong><br>
+                    As = 0.0018 × Ag (Ag = b×h)<br><br>
+                    <strong>Max spacing of rebar:</strong><br>
+                    • Main rebar: min(3h, 450mm)<br>
+                    • Temp rebar: min(5h, 450mm)
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 SLAB DESIGN VS BEAM DESIGN - DIFFERENCE:</strong><br>
+                    • Slab designed as 1-meter WIDE STRIP (b = 1000mm always)<br>
+                    • Slab thickness governed by DEFLECTION (span/depth ratio), not moment<br>
+                    • Temperature steel ALWAYS required in perpendicular direction<br>
+                    • Slab cover: 20-25mm (less than beams because no stirrups)<br>
+                    • Slab main bar at bottom (positive moment), top bars over supports (negative moment)
+                </div>
+                
+                <button class="btn btnDone" id="bL6" onclick="done('L6')">✓ Mark Complete & Continue</button>
+            </div>
+            
+        </div><!-- End Phase 1 Card -->
+        
+        <!-- PHASE 2 -->
+        <div class="phase">
+            <h2>🔷 PHASE 2: Post-Tensioning Specialist (Months 7-12)</h2>
+            <p>Goal: Master PT concepts - Your specialization advantage in job market</p>
+        </div>
+        
+        <div class="card">
+            
+            <!-- LESSON 7 -->
+            <div class="les" id="L7">
+                <h4>L7: Introduction to Post-Tensioning</h4>
+                
+                <p><strong>WHAT IS POST-TENSIONING (PT)?</strong></p>
+                <p>Post-Tensioning is a technique where we apply <strong>compressive force</strong> to concrete AFTER it has hardened and gained strength. We do this using high-strength steel strands (tendons) that are stretched and anchored against the concrete.</p>
+                
+                <p><strong>WHY USE PT? (The Benefits)</strong></p>
+                <ul style="margin-left:20px;margin-bottom:10px">
+                    <li><strong>Longer spans:</strong> PT slabs can span 10-15m easily (RC slabs struggle beyond 6-8m)</li>
+                    <li><strong>Thinner sections:</strong> PT slab thickness = L/35 to L/45 (RC needs L/20 to L/28)</li>
+                    <li><strong>Less cracking:</strong> Compression keeps cracks closed under service loads</li>
+                    <li><strong>Better deflection control:</strong> Tendon profile can be shaped to counteract deflection</li>
+                    <li><strong>Material savings:</strong> Less concrete and often less total steel</li>
+                </ul>
+                
+                <div class="boxThumb">
+                    <strong>📌 COMPONENTS YOU MUST KNOW:</strong><br><br>
+                    <strong>1. STRAND (Tendon):</strong><br>
+                    • Typically 0.5 inch (12.7mm) diameter 7-wire low-relaxation strand<br>
+                    • Grade 270: Ultimate strength fpu = 1860 MPa (270 ksi)<br>
+                    • Yield strength fpy ≈ 0.9 fpu ≈ 1670 MPa<br>
+                    • Cross-sectional area Ap = 93 mm² (per strand)<br><br>
+                    
+                    <strong>2. ANCHORAGE (The "Anchor"):</strong><br>
+                    • <strong>Live End (Stressing End):</strong> Where hydraulic jack attaches. Has wedge plate, trumpet, and bursting reinforcement. After stressing, wedges grip the strand and hold force.<br>
+                    • <strong>Dead End (Fixed End):</strong> Other end of tendon. Swaged anchor prevents pull-out. No stressing happens here.<br><br>
+                    
+                    <strong>3. DUCT / SHEATHING:</strong><br>
+                    • Plastic or galvanized steel tube that houses strand before grouting<br>
+                    • Allows strand to move freely during stressing operation<br>
+                    • Diameter typically 20-25mm for single strands<br><br>
+                    
+                    <strong>4. GROUT:</strong><br>
+                    • Cementitious mixture injected into duct AFTER stressing<br>
+                    • Protects strand from corrosion<br>
+                    • Bonds strand to concrete (provides permanent lock)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Calculate initial prestressing force</strong><br><br>
+                    Problem: A PT beam has 6 strands of 0.5" diameter. Jacking stress = 0.75 fpu.<br><br>
+                    Solution:<br>
+                    fpu = 1860 MPa (given for Grade 270 strand)<br>
+                    Jacking stress fpj = 0.75 × 1860 = <strong>1395 MPa</strong><br>
+                    Area per strand = 93 mm²<br>
+                    Total area Ap = 6 × 93 = 558 mm²<br>
+                    Initial force Pi = Ap × fpj = 558 × 1395 = <strong>778,310 N = 778 kN</strong><br><br>
+                    ✅ This 778 kN force will compress the beam!
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 PRE-TENSIONING vs POST-TENSIONING:</strong><br><br>
+                    <strong>PRE-TENSIONING:</strong><br>
+                    • Strands tensioned BEFORE concrete is poured<br>
+                    • Used in PRECAST factories (hollow core slabs, bridge girders)<br>
+                    • Bond between strand and concrete transfers force (no anchors needed)<br>
+                    • Limited to factory production<br><br>
+                    <strong>POST-TENSIONING:</strong><br>
+                    • Strands tensioned AFTER concrete hardens (strength reached)<br>
+                    • Used in CAST-IN-SITU construction (buildings, parking structures, water tanks)<br>
+                    • Anchors at ends transfer force to concrete<br>
+                    • Can be done ON SITE - this is what Dubai buildings use!
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 BASIC PT FORMULAS - START HERE:</strong><br><br>
+                    ① P = Ap × fpj (Initial jacking force)<br>
+                    ② Pe = P - losses (Effective force after all losses, typically 70-80% of P)<br>
+                    ③ fpe = Pe/Ap (Effective stress in strand after losses, typically 1000-1100 MPa)<br>
+                    ④ Eccentricity e = distance from centroid of section to centroid of tendon
+                </div>
+                
+                <button class="btn btnDone" id="bL7" onclick="done('L7')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 8 -->
+            <div class="les" id="L8">
+                <h4>L8: Losses in Post-Tensioning (INTERVIEW CRITICAL!)</h4>
+                
+                <p><strong>⚠️ WARNING: Interviewers WILL ask about losses. This is #1 PT question.</strong></p>
+                
+                <p>When we apply prestress force, we don't get to keep all of it. Some force is lost due to various reasons. Understanding these losses separates PT specialists from general engineers.</p>
+                
+                <div class="boxKey">
+                    <strong>💡 TWO CATEGORIES OF LOSSES:</strong><br><br>
+                    <strong>A) INSTANTANEOUS LOSSES (happen during stressing, within minutes):</strong><br>
+                    1. Anchorage Seating (Wedge Draw-in)<br>
+                    2. Friction Loss (Elastic shortening during sequential stressing)<br>
+                    3. Elastic Shortening of Concrete<br><br>
+                    <strong>B) TIME-DEPENDENT LOSSES (happen over months/years):</strong><br>
+                    4. Creep of Concrete<br>
+                    5. Shrinkage of Concrete<br>
+                    6. Relaxation of Strand
+                </div>
+                
+                <p><strong>DETAILED EXPLANATION OF EACH LOSS:</strong></p>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 1: ANCHORAGE SEATING (WEDGE DRAW-IN)</strong><br><br>
+                    <strong>What happens:</strong> When the hydraulic jack releases, the anchorage wedges seat (settle) into the anchor casting. This pulls the strand back slightly.<br><br>
+                    <strong>Typical value:</strong> Wedge draw-in ΔL = 6mm (1/4 inch) for most systems<br><br>
+                    <strong>Formula:</strong> ΔP_anchor = (Ap × Ep × ΔL) / L<br><br>
+                    <strong>Key insight:</strong> SHORT tendons lose MORE percentage-wise than long tendons!<br>
+                    Example: 5m tendon loses much higher % than 30m tendon for same 6mm draw-in.
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 Example: Calculate anchorage loss</strong><br><br>
+                    Given: Strand Ap = 93 mm², Ep = 195,000 MPa, ΔL = 6mm, Tendon length L = 10m = 10,000mm<br><br>
+                    ΔP = (93 × 195,000 × 6) / 10,000 = 108,810 N = <strong>108.8 kN loss</strong><br><br>
+                    If initial Pi per strand = ~130kN (1395MPa × 93mm²), Loss % = 108.8/130 = 84%??<br>
+                    ⚠️ Wait - that seems too high because tendon is short (10m). For longer tendons (20m+), this becomes small percentage.
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 2: FRICTION LOSS (Most complex loss)</strong><br><br>
+                    <strong>Two components work together:</strong><br><br>
+                    <strong>a) Wobble friction (K):</strong><br>
+                    Even in a "straight" duct, the duct isn't perfectly straight. Small deviations cause friction.<br>
+                    K coefficient = 0.001 to 0.003 per meter (typical K = 0.002/m for bonded PT)<br><br>
+                    <strong>b) Curvature friction (μ):</strong><br>
+                    When tendon curves (parabolic profile), friction increases dramatically.<br>
+                    μ coefficient = 0.05 to 0.30 (typical μ = 0.20 for sheathed strand)<br><br>
+                    <strong>THE BIG FORMULA:</strong><br>
+                    Px = P₀ × e^(-(Kx + μα))<br>
+                    Where: Px = force at distance x from jacking end<br>
+                    P₀ = jacking force at start<br>
+                    x = distance along tendon (meters)<br>
+                    α = cumulative angular change (radians)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 Example: Calculate friction loss</strong><br><br>
+                    Given: P₀ = 130 kN (jacking), K = 0.002/m, μ = 0.20<br>
+                    Tendon: Span 12m, parabolic profile, total angle change α = 0.08 radians (~4.6°)<br>
+                    Check force at far end (x = 12m):<br><br>
+                    Exponent = -(Kx + μα) = -(0.002×12 + 0.20×0.08) = -(0.024 + 0.016) = -0.04<br>
+                    e^(-0.04) = 0.9608<br>
+                    Px = 130 × 0.9608 = <strong>124.9 kN</strong><br><br>
+                    Loss = 130 - 124.9 = 5.1 kN = <strong>3.9% loss</strong><br><br>
+                    ✅ For a 12m span, friction loss is about 4%. Acceptable.
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 3: ELASTIC SHORTENING</strong><br><br>
+                    <strong>What happens:</strong> When you stress tendons, they compress the concrete. This compression causes the concrete to shorten elastically. Since the strand is bonded to concrete (or will be grouted), the strand also shortens = loss of stress.<br><br>
+                    <strong>Magnitude:</strong> About 1-3% of initial stress<br>
+                    <strong>Depends on:</strong> P/A ratio, concrete modulus, number of tendons stressed sequentially
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 4: CREEP (Time-dependent)</strong><br><br>
+                    <strong>What happens:</strong> Under sustained compressive stress, concrete slowly deforms over time (like slow-motion squishing). This additional deformation causes more strand shortening = more loss.<br><br>
+                    <strong>Magnitude:</strong> About 4-6% of initial stress<br>
+                    <strong>Factors increasing creep:</strong> High sustained stress, young concrete at stressing, humid environment
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 5: SHRINKAGE (Time-dependent)</strong><br><br>
+                    <strong>What happens:</strong> As concrete dries and loses water volume, it shrinks. This shrinkage shortens the member, which shortens the embedded strand.<br><br>
+                    <strong>Magnitude:</strong> About 5-6% of initial stress<br>
+                    <strong>Formula:</strong> Δfsh = εsh × Es<br>
+                    Where εsh = shrinkage strain (typically 400-800 × 10⁻⁶ for 3+ months)
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 LOSS 6: RELAXATION (Time-dependent)</strong><br><br>
+                    <strong>What happens:</strong> If you hold a steel strand at constant strain (stretched and held), the stress in the steel slowly decreases over time. This property is called "relaxation". Low-relaxation strand (standard today) has less relaxation.<br><br>
+                    <strong>Magnitude:</strong> About 2-4% of initial stress for low-relaxation strand
+                </div>
+                
+                <div class="boxForm">
+                    <strong>🔢 SUMMARY TABLE - MEMORIZE FOR INTERVIEW:</strong><br><br>
+                    | Loss Type | Instantaneous/Time | Approx % | Key Factor |<br>
+                    |-----------|-------------------|----------|------------|<br>
+                    | Anchorage Seating | Instantaneous | 1-5% | Shorter tendons lose more % |<br>
+                    | Friction | Instantaneous | 3-10% | Longer tendons + more curvature = more loss |<br>
+                    | Elastic Shortening | Instantaneous | 1-3% | Depends on P/A ratio |<br>
+                    | Creep | Time-dependent | 4-6% | Higher stress = more creep |<br>
+                    | Shrinkage | Time-dependent | 5-6% | Depends on environment |<br>
+                    | Relaxation | Time-dependent | 2-4% | Low-relaxation strand = less |<br>
+                    | <strong>TOTAL</strong> | - | <strong>20-30%</strong> | - |
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 HOW TO REMEMBER ALL 6 LOSSES (Memory Trick):</strong><br><br>
+                    Use acronym: <strong>"A-F-E-C-S-R"</strong> pronounced "A-fecer"<br>
+                    • <strong>A</strong>nchorage Seating<br>
+                    • <strong>F</strong>riction<br>
+                    • <strong>E</strong>lastic Shortening<br>
+                    • <strong>C</strong>reep<br>
+                    • <strong>S</strong>hrinkage<br>
+                    • <strong>R</strong>elaxation<br><br>
+                    Group them: <strong>AFE</strong> (instantaneous) + <strong>CSR</strong> (time-dependent)
+                </div>
+                
+                <button class="btn btnDone" id="bL8" onclick="done('L8')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 9 -->
+            <div class="les" id="L9">
+                <h4>L9: Load Balancing Method (Core PT Concept)</h4>
+                
+                <p><strong>⭐ THIS IS THE MOST IMPORTANT CONCEPT IN PT DESIGN. UNDERSTAND THIS AND YOU UNDERSTAND PT.</strong></p>
+                
+                <p><strong>THE BASIC IDEA:</strong></p>
+                <p>When you have a parabolic-shaped tendon in a slab and you stretch it, the tendon wants to straighten out. But it's embedded in concrete, so it can't straighten. Instead, it pushes UPWARD on the concrete along its length. This upward force can BALANCE (cancel out) the downward gravity load!</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 THE LOAD BALANCING FORMULA:</strong><br><br>
+                    <strong>w_balanced = 8 × P × e / L²</strong><br><br>
+                    Where:<br>
+                    • w_balanced = Upward equivalent distributed load from tendon (kN/m or kPa)<br>
+                    • P = Effective prestress force after losses (kN)<br>
+                    • e = Drape of tendon (vertical distance from high point to low point) (m)<br>
+                    • L = Span length (m)<br><br>
+                    <strong>For a SINGLE span parabolic tendon:</strong><br>
+                    The tendon shape creates a uniformly distributed upward load = 8Pe/L²
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 COMPLETE EXAMPLE: Load balancing calculation</strong><br><br>
+                    <strong>Given:</strong><br>
+                    • Span L = 10 meters<br>
+                    • Effective prestress force P = 1200 kN (after losses)<br>
+                    • Tendon profile: Parabolic, high at supports, low at midspan<br>
+                    • Drape (eccentricity) e = 150 mm = 0.15 m<br>
+                    • Dead load DL = 8 kN/m (slab self-weight + finishes)<br>
+                    • Live load LL = 4 kN/m<br><br>
+                    
+                    <strong>Step 1: Calculate balanced load</strong><br>
+                    w_b = 8 × P × e / L²<br>
+                    w_b = 8 × 1200 × 0.15 / (10)²<br>
+                    w_b = 1440 / 100 = <strong>14.4 kN/m</strong> ← This is the UPWARD force!<br><br>
+                    
+                    <strong>Step 2: Compare with actual loads</strong><br>
+                    Total downward load = DL + LL = 8 + 4 = 12 kN/m<br>
+                    Balanced load = 14.4 kN/m (UPWARD)<br><br>
+                    We're balancing MORE than total load - slight uplift at transfer stage (acceptable if within stress limits)<br><br>
+                    ✅ <strong>Result: Net effect is slight uplift. Slab will have very low net stress under full service loads.</strong>
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 WHY LOAD BALANCING IS SO POWERFUL:</strong><br><br>
+                    1. <strong>Simplifies analysis:</strong> Instead of complex indeterminate PT analysis, you just analyze for UNBALANCED load only!<br><br>
+                    2. <strong>Intuitive understanding:</strong> You can visualize: "My tendon cancels out the dead weight, so my slab only feels live load."<br><br>
+                    3. <strong>Deflection control:</strong> If you balance 100% of DL, deflection under DL = ZERO theoretically!<br><br>
+                    4. <strong>Optimization tool:</strong> Adjust P or e to get desired balance percentage
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 PRACTICAL DESIGN APPROACH USING LOAD BALANCING:</strong><br><br>
+                    <strong>Step 1:</strong> Choose target balance ratio (typically 65-85% of total service load)<br>
+                    <strong>Step 2:</strong> Calculate required w_balanced = ratio × (DL + LL)<br>
+                    <strong>Step 3:</strong> Assume reasonable drape e (based on slab thickness and cover requirements)<br>
+                    <strong>Step 4:</strong> Calculate required P = w_b × L² / (8e)<br>
+                    <strong>Step 5:</strong> Determine number of strands: n = P / (Ap × fpe)<br>
+                    <strong>Step 6:</strong> Check stresses at transfer and service stages (next lesson!)
+                </div>
+                
+                <button class="btn btnDone" id="bL9" onclick="done('L9')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 10 -->
+            <div class="les" id="L10">
+                <h4>L10: PT Slab Stress Checks (ACI 18.4 Requirements)</h4>
+                
+                <p><strong>After designing tendon force and profile, you MUST verify concrete stresses are within allowable limits. This is non-negotiable.</strong></p>
+                
+                <p><strong>WHEN DO WE CHECK STRESSES?</strong></p>
+                <ul style="margin-left:20px;margin-bottom:10px">
+                    <li><strong>At Transfer (Initial Stage):</strong> Right after stressing, when prestress is highest but concrete strength is lowest (f'ci)</li>
+                    <li><strong>At Service (Long-term Stage):</strong> After all losses, under full service loads (DL + LL)</li>
+                </ul>
+                
+                <div class="boxForm">
+                    <strong>🔢 ACI 318 STRESS LIMITS (MEMORIZE!):</strong><br><br>
+                    <strong>STAGE 1: AT TRANSFER (when jacking happens)</strong><br>
+                    Concrete strength = f'ci (initial strength, typically 0.7-0.85 of design f'c)<br><br>
+                    • Top fiber (compression, from prestress eccentricity): ≤ 0.25√f'ci<br>
+                    • Bottom fiber (TENSION allowed here! Special for PT): ≤ 0.6√f'ci<br><br>
+                    <strong>STAGE 2: AT SERVICE (long-term, all losses occurred)</strong><br>
+                    Concrete strength = f'c (design 28-day strength)<br><br>
+                    • Top fiber (compression): ≤ 0.45√f'c<br>
+                    • Bottom fiber (decompression or slight tension with proper bonded rebar)<br><br>
+                    <strong>STAGE 3: FACTORED LOADS (ultimate strength check)</strong><br>
+                    • Treat as RC member: φMn ≥ Mu (flexural strength check)<br>
+                    • Add rebar as needed for ultimate strength
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Stress check concept</strong><br><br>
+                    Given: f'ci = 25 MPa at transfer, f'c = 35 MPa at service<br><br>
+                    <strong>Transfer Stage Limits:</strong><br>
+                    Allowable compression = 0.25√25 = 0.25×5 = <strong>1.25 MPa</strong> (top fiber)<br>
+                    Allowable tension = 0.6√25 = 0.6×5 = <strong>3.0 MPa</strong> (bottom fiber)<br><br>
+                    <strong>Service Stage Limits:</strong><br>
+                    Allowable compression = 0.45√35 = 0.45×5.92 = <strong>2.66 MPa</strong> (top fiber)<br>
+                    Allowable tension at bottom = decompression (≤ 0) or small value with bonded rebar<br><br>
+                    ✅ If your calculated stresses are within these limits → PASS. If not → adjust design.
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 PRACTICAL STRESS CHECK GUIDELINES:</strong><br><br>
+                    • If tension exceeds limit at transfer: Add bonded reinforcement in that zone<br>
+                    • If compression exceeds limit: Reduce prestress force or eccentricity<br>
+                    • Service stage usually controls design (more critical than transfer)<br>
+                    • Always check BOTH stages - don't assume one controls<br>
+                    • Use spreadsheet or software (SAFE) for accurate stress calculations
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 WHY IS TENSION ALLOWED IN PT BUT NOT IN RC?</strong><br><br>
+                    In ordinary RC, we don't allow tension because it would crack immediately.<br>
+                    In PT, even though theoretical tension exists, the PRESTRESS keeps cracks CLOSED.<br>
+                    The concrete is in overall compression - the "tension" is just reduction of compression at that fiber, not true cracking tension.<br><br>
+                    <strong>But you MUST provide minimum bonded rebar</strong> (ACI requirements) wherever calculated tension exceeds allowable limits.
+                </div>
+                
+                <button class="btn btnDone" id="bL10" onclick="done('L10')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 11 -->
+            <div class="les" id="L11">
+                <h4>L11: Punching Shear in Flat Plates (Critical Check!)</h4>
+                
+                <p><strong>WHY THIS IS CRITICAL:</strong><br>
+                In flat plate systems (no beams, just columns and slab), the #1 failure mode is punching shear - the column literally punches through the slab. This failure is SUDDEN and CATASTROPHIC.</p>
+                
+                <div class="boxForm">
+                    <strong>🔢 PUNCHING SHEAR CHECK PROCEDURE (ACI 22.6):</strong><br><br>
+                    <strong>Step 1: Define critical section</strong><br>
+                    • Located at d/2 from face of column (d = effective depth of slab)<br>
+                    • Perimeter b₀ = perimeter of this critical section<br><br>
+                    <strong>Step 2: Calculate factored shear force Vu</strong><br>
+                    • Vu = total load on tributary area minus any direct column load reduction<br><br>
+                    <strong>Step 3: Calculate concrete shear capacity φVc</strong><br>
+                    • φ = 0.75 (shear reduction factor)<br>
+                    • Vc depends on b₀, f'c, and geometry<br><br>
+                    <strong>Step 4: Compare: φVc ≥ Vu ?</strong><br>
+                    • If YES: OK, no shear reinforcement needed<br>
+                    • If NO: Need shear studs, drop panel, column capital, or thicker slab
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Punching shear check for interior column</strong><br><br>
+                    Given:<br>
+                    • Column: 550mm × 550mm square (interior)<br>
+                    • Slab: 220mm thick, effective depth d = 190mm<br>
+                    • Factored shear force Vu = 450 kN<br>
+                    • f'c = 35 MPa<br><br>
+                    <strong>Step 1: Critical perimeter b₀</strong><br>
+                    Distance from column face = d/2 = 190/2 = 95mm<br>
+                    Critical section dimension = 550 + 95 + 95 = 740mm (each side)<br>
+                    b₀ = 4 × 740 = <strong>2960 mm</strong><br><br>
+                    <strong>Step 2: Calculate Vc (simplified)</strong><br>
+                    Vc ≈ 0.17 × √f'c × b₀ × d = 0.17 × 5.92 × 2960 × 190 = <strong>566 kN</strong><br><br>
+                    <strong>Step 3: Apply φ factor</strong><br>
+                    φVc = 0.75 × 566 = <strong>424.5 kN</strong><br><br>
+                    <strong>Step 4: Check</strong><br>
+                    Vu = 450 kN > φVc = 424.5 kN ❌ <strong>FAIL by 25.5 kN (6%)</strong><br><br>
+                    ⚠️ <strong>Action required:</strong> Add shear stud rails around column (common solution)
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 PUNCHING SHEAR TIPS FROM SITE EXPERIENCE:</strong><br><br>
+                    • <strong>Openings near columns are DANGEROUS!</strong> They reduce b₀ significantly.<br>
+                    • <strong>Edge columns are weaker</strong> than interior columns (3-sided vs 4-sided perimeter).<br>
+                    • <strong>Shear stud rails</strong> are the most common solution in Dubai PT buildings.
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 COMMON SOLUTIONS WHEN PUNCHING SHEAR FAILS:</strong><br><br>
+                    1. <strong>Shear Stud Rails (most common for PT slabs)</strong> - Vertical studs welded to base rail, installed before pouring<br>
+                    2. <strong>Drop Panel</strong> - Local thickening of slab around column<br>
+                    3. <strong>Column Capital</strong> - Flared column head (architectural impact)<br>
+                    4. <strong>Increase Overall Slab Thickness</strong> - Simplest but heaviest option
+                </div>
+                
+                <button class="btn btnDone" id="bL11" onclick="done('L11')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 12 -->
+            <div class="les" id="L12">
+                <h4>L12: Column Design Fundamentals</h4>
+                
+                <p><strong>As a PT designer, you focus on slabs. BUT to get hired by general consultancies, you MUST know column design too.</strong></p>
+                
+                <div class="boxForm">
+                    <strong>🔢 SHORT COLUMN DESIGN (Axial Load Dominated):</strong><br><br>
+                    <strong>Design Formula (ACI 22.4):</strong><br>
+                    φPn = 0.65 × [0.85f'c(Ag - As) + fyAs] ≥ Pu<br><br>
+                    Where:<br>
+                    • φ = 0.65 for tied columns (0.75 for spiral columns)<br>
+                    • Ag = gross area of column (mm²)<br>
+                    • As = total longitudinal steel area (mm²)<br>
+                    • Pu = factored axial load (N)
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Design a short column</strong><br><br>
+                    Given:<br>
+                    • Pu = 5000 kN (factored axial load)<br>
+                    • Column size: 550mm × 550mm (assume preliminary)<br>
+                    • f'c = 40 MPa, fy = 500 MPa<br>
+                    • Assume 2% steel ratio<br><br>
+                    <strong>Step 1: Calculate areas</strong><br>
+                    Ag = 550 × 550 = 302,500 mm²<br>
+                    As = 0.02 × 302,500 = 6,050 mm²<br><br>
+                    <strong>Step 2: Calculate capacity</strong><br>
+                    φPn = 0.65 × [0.85×40×(302,500-6,050) + 500×6,050]<br>
+                    φPn = 0.65 × [9,973,000 + 3,025,000] = <strong>8,448,700 N = 8,449 kN</strong><br><br>
+                    8,449 kN > 5,000 kN ✅ <strong>OK - Column has good capacity margin</strong>
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 COLUMN DESIGN REQUIREMENTS (ACI 318):</strong><br><br>
+                    <strong>Reinforcement Limits:</strong><br>
+                    • Minimum ρ = 0.01 (1% of Ag)<br>
+                    • Maximum ρ = 0.08 (8% of Ag) - practical max is 4%<br>
+                    • Min bars: 4 for rectangular, 6 for circular<br><br>
+                    <strong>Tie Requirements:</strong><br>
+                    • Tie size: min #10 for bars up to #32<br>
+                    • Spacing: min of (16×long.bar dia, 48×tie dia, col dimension)<br>
+                    • Clear Cover: 40mm (interior), 50mm (exposed)
+                </div>
+                
+                <button class="btn btnDone" id="bL12" onclick="done('L12')">✓ Mark Complete & Continue</button>
+            </div>
+            
+        </div><!-- End Phase 2 Card -->
+        
+        <!-- PHASE 3 -->
+        <div class="phase">
+            <h2>🔷 PHASE 3: Complete Design Engineer (Months 13-18)</h2>
+            <p>Goal: Expand beyond PT - Foundation, Shear Walls, General Knowledge</p>
+        </div>
+        
+        <div class="card">
+            
+            <!-- LESSON 13 -->
+            <div class="les" id="L13">
+                <h4>L13: Foundation Design - Isolated Footings</h4>
+                
+                <p><strong>Foundations transfer building loads to ground. Get this wrong and the whole building settles/cracks/tilts.</strong></p>
+                
+                <div class="boxForm">
+                    <strong>🔢 FOOTING DESIGN STEPS:</strong><br><br>
+                    <strong>Step 1: Determine service loads</strong><br>
+                    Column load + footing self-weight estimate<br><br>
+                    <strong>Step 2: Size footing plan dimension</strong><br>
+                    Area = (DL + LL) / SBC (Safe Bearing Capacity)<br><br>
+                    <strong>Step 3: Calculate net upward pressure</strong><br>
+                    qnet = Pu / (L×B) (factored pressure for design)<br><br>
+                    <strong>Step 4: Check ONE-WAY SHEAR</strong><br>
+                    Critical at d from face of column<br>
+                    φVc = 0.17√f'c × B × d ≥ Vu<br><br>
+                    <strong>Step 5: Check PUNCHING SHEAR</strong><br>
+                    Similar to slab punching shear check<br><br>
+                    <strong>Step 6: Design flexural reinforcement</strong><br>
+                    Moment at face of column, design as wide beam<br><br>
+                    <strong>Step 7: Check development length</strong>
+                </div>
+                
+                <div class="boxEx">
+                    <strong>💡 EXAMPLE: Design isolated footing</strong><br><br>
+                    Given:<br>
+                    • Column: 400mm × 400mm<br>
+                    • Service load: DL = 800 kN, LL = 600 kN<br>
+                    • SBC (soil bearing capacity) = 200 kPa<br>
+                    • f'c = 30 MPa, fy = 450 MPa<br><br>
+                    <strong>Size footing:</strong><br>
+                    Total load = 1400 kN + 10% self-weight = 1540 kN<br>
+                    Area = 1540/200 = 7.7 m² → Use 2.8m × 2.8m<br><br>
+                    ✅ <strong>Footing 2.8m × 2.8m × 500mm thick with calculated bottom rebar</strong>
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 FOUNDATION DESIGN TIPS:</strong><br><br>
+                    • Always get soil report from geotechnical engineer before designing!<br>
+                    • Dubai coastal: Sandy soils, SBC 100-250 kPa typical<br>
+                    • Sharjah inland: May encounter harder layers, possible gypsum (sulfate attack risk!)<br>
+                    • Minimum footing thickness: 200-300mm<br>
+                    • Clear cover: 50-75mm (aggressive ground needs more)
+                </div>
+                
+                <button class="btn btnDone" id="bL13" onclick="done('L13')">✓ Mark Complete & Continue</button>
+            </div>
+            
+            <!-- LESSON 14 -->
+            <div class="les" id="L14">
+                <h4>L14: Shear Wall Design Basics</h4>
+                
+                <p><strong>Shear walls are vertical elements that resist lateral forces (wind, earthquake). In Dubai high-rises, shear walls are essential for stability.</strong></p>
+                
+                <div class="boxKey">
+                    <strong>💡 TYPES OF SHEAR WALLS:</strong><br><br>
+                    1. <strong>Rectangular Shear Wall:</strong> Simple planar wall, easiest to design<br>
+                    2. <strong>Flanged Wall (L-shape, T-shape, U-shape):</strong> Wall connected to perpendicular wall<br>
+                    3. <strong>Coupled Shear Walls:</strong> Two walls connected by coupling beams<br>
+                    4. <strong>Core Wall:</strong> Box-shaped walls around elevator/stair shafts
+                </div>
+                
+                <div class="boxThumb">
+                    <strong>📌 SHEAR WALL DESIGN BASICS (Wind Controlled - Dubai Case):</strong><br><br>
+                    <strong>Flexural Design:</strong><br>
+                    • Wall acts as vertical cantilever<br>
+                    • Reinforcement: Vertical bars at edges (boundary elements) + distributed bars in web<br><br>
+                    <strong>Shear Design:</strong><br>
+                    • Base shear from wind analysis<br>
+                    • Horizontal reinforcement ratio: typically 0.25-0.5%<br>
+                    • Vertical reinforcement: minimum 0.25%
+                </div>
+                
+                <div class="boxKey">
+                    <strong>💡 WHY SHEAR WALLS MATTER FOR YOUR CAREER:</strong><br><br>
+                    • PT designers focus on slabs, but employers want WELL-ROUNDED engineers<br>
+                    • Understanding lateral loads makes you better at slab design too<br>
+                    • During site visits, seeing shear wall construction helps your overall engineering judgment
+                </div>
+                
+                <button class="btn btnDone" id="bL14" onclick="done('L14')">✓ Mark Complete & Continue</button>
+            </div>
+            
+        </div><!-- End Phase 3 Card -->
+        
+    </div><!-- End Learning Tab -->
+    
+    <!-- ========== QUIZ TAB ========== -->
+    <div id="tabQuiz" class="hid">
+        <div class="card">
+            <h2>🧪 Topic Quizzes</h2>
+            <p>Test your knowledge! Pass with 60%+ to continue.</p>
+            <div style="margin:20px 0">
+                <button class="btn btnOut btnSm" onclick="startQuiz('easy')">😊 Easy Quiz</button>
+                <button class="btn btnOut btnSm" onclick="startQuiz('medium')">🤔 Medium Quiz</button>
+                <button class="btn btnOut btnSm" onclick="startQuiz('hard')">😰 Hard Quiz</button>
+            </div>
+            <div id="quizArea"></div>
+            <div id="quizMsg" class="msg"></div>
+        </div>
+        
+        <div class="card">
+            <h2>🔢 Formula Cheat Sheet (Quick Reference)</h2>
+            
+            <div class="boxForm">
+                <strong>STRENGTH OF MATERIALS</strong><br>
+                σ = P/A (Stress) | ε = δ/L (Strain) | E = σ/ε (Young's Modulus) | δ = PL/AE (Elongation)
+            </div>
+            
+            <div class="boxForm">
+                <strong>BENDING MOMENTS</strong><br>
+                SS + UDL: M = wL²/8, V = wL/2 | SS + Point P at center: M = PL/4 | Cantilever + UDL: M = wL²/2 (at fixed end)
+            </div>
+            
+            <div class="boxForm">
+                <strong>FLEXURE FORMULA</strong><br>
+                σ = My/I | σ = M/Z (using Section Modulus) | I_rect = bh³/12 | Z_rect = bh²/6
+            </div>
+            
+            <div class="boxForm">
+                <strong>RC BEAM DESIGN (ACI 318)</strong><br>
+                φMn ≥ Mu | φ_flexure = 0.90 | φ_shear = 0.75 | ρ = As/(bd) | ld = (fyψtψe)/(25λ√f'c) × db
+            </div>
+            
+            <div class="boxForm">
+                <strong>POST-TENSIONING</strong><br>
+                Friction: Px = P₀ × e^-(Kx+μα) | Load Balance: w_b = 8Pe/L² | Anchorage: ΔP = (Ap×Ep×ΔL)/L | Total Losses: 20-30%
+            </div>
+            
+            <div class="boxForm">
+                <strong>PUNCHING SHEAR</strong><br>
+                Critical section: d/2 from column face | φVc ≥ Vu | φ = 0.75 | Solutions: Stud rails, drop panels, capitals
+            </div>
+            
+            <div class="boxForm">
+                <strong>COLUMN DESIGN</strong><br>
+                φPn = 0.65[0.85f'c(Ag-As)+fyAs] | Min ρ = 1% | Max ρ = 8% (practical 4%) | Cover: 40-50mm
             </div>
         </div>
     </div>
     
-    <!-- EXAM TAB -->
-    <div id="examTab" class="hidden">
+    <!-- ========== EXAM TAB ========== -->
+    <div id="tabExam" class="hid">
         <div class="card">
-            <h2>🏛️ Government Exams - UAE</h2>
+            <h2>🏛️ Government Certifications - UAE</h2>
+            <p>These certifications prove your professional standing and are required/recommended for engineering jobs in UAE.</p>
             
-            <h3 style="margin-top:20px">1. Society of Engineers (SOE) UAE Membership</h3>
-            <p><strong>Why needed?</strong> Required for engineering jobs in UAE. Proves you are recognized engineer.</p>
-            <p><strong>Cost:</strong> ~500-800 AED/year | <strong>Website:</strong> soe.ae</p>
+            <h3 style="margin-top:25px">1️⃣ Society of Engineers (SOE) - UAE Membership</h3>
+            <p><strong>Why needed:</strong> Mandatory for most engineering positions. Proves you are recognized as engineer in UAE.</p>
+            <p><strong>Cost:</strong> ~500-800 AED/year | <strong>Website:</strong> www.soe.ae</p>
             
-            <p><strong>Documents Required:</strong></p>
-            <div class="checklist-item"><input type="checkbox"> Passport copy</div>
-            <div class="checklist-item"><input type="checkbox"> Visa copy</div>
-            <div class="checklist-item"><input type="checkbox"> Degree/Diploma certificate</div>
-            <div class="checklist-item"><input type="checkbox"> Experience letter(s)</div>
-            <div class="checklist-item"><input type="checkbox"> Passport photo</div>
-            <div class="checklist-item"><input type="checkbox"> Pay membership fee</div>
+            <p><strong>Documents Required (checklist):</strong></p>
+            <div class="chk"><input type="checkbox"> Valid passport copy</div>
+            <div class="chk"><input type="checkbox"> Valid UAE visa copy</div>
+            <div class="chk"><input type="checkbox"> Degree/Diploma certificate (attested)</div>
+            <div class="chk"><input type="checkbox"> Experience letter(s) from employers</div>
+            <div class="chk"><input type="checkbox"> Passport-sized photograph</div>
+            <div class="chk"><input type="checkbox"> Pay membership fee online</div>
             
-            <h3 style="margin-top:20px">2. Dubai Municipality - Class C Engineer</h3>
-            <p><strong>Why needed?</strong> Official engineer classification. Required to sign drawings in Dubai.</p>
-            <p><strong>Eligibility:</strong> Degree/Diploma + Minimum 1 year experience</p>
-            <p><strong>Cost:</strong> ~300-500 AED | <strong>Website:</strong> dm.gov.ae</p>
+            <h3 style="margin-top:25px">2️⃣ Dubai Municipality - Class C Engineer Classification</h3>
+            <p><strong>Why needed:</strong> Official government classification. Required to approve/sign drawings in Dubai emirate.</p>
+            <p><strong>Eligibility:</strong> Engineering degree/diploma + Minimum 1 year verified experience</p>
+            <p><strong>Cost:</strong> ~300-500 AED | <strong>Website:</strong> dm.gov.ae (Engineering Services)</p>
             
-            <p><strong>Syllabus Topics (Exam Covers):</strong></p>
-            <div class="checklist-item"><input type="checkbox"> Structural Analysis basics</div>
-            <div class="checklist-item"><input type="checkbox"> RC Design principles (ACI 318)</div>
-            <div class="checklist-item"><input type="checkbox"> Steel Design basics</div>
-            <div class="checklist-item"><input type="checkbox"> Geotechnical/Foundation basics</div>
-            <div class="checklist-item"><input type="checkbox"> UAE Building Code knowledge</div>
-            <div class="checklist-item"><input type="checkbox"> Safety & professional ethics</div>
+            <p><strong>Exam Syllabus Covers:</strong></p>
+            <div class="chk"><input type="checkbox"> Structural Analysis fundamentals</div>
+            <div class="chk"><input type="checkbox"> Reinforced Concrete Design (ACI 318 principles)</div>
+            <div class="chk"><input type="checkbox"> Steel Structure basics</div>
+            <div class="chk"><input type="checkbox"> Geotechnical Engineering / Foundations</div>
+            <div class="chk"><input type="checkbox"> UAE Building Codes & Fire Code awareness</div>
+            <div class="chk"><input type="checkbox"> Professional ethics & safety standards</div>
             
-            <p><strong>Preparation Checklist:</strong></p>
-            <div class="checklist-item"><input type="checkbox"> Register on DM portal</div>
-            <div class="checklist-item"><input type="checkbox"> Upload all documents</div>
-            <div class="checklist-item"><input type="checkbox"> Pay exam fee</div>
-            <div class="checklist-item"><input type="checkbox"> Study from this course (Lessons 1-10)</div>
-            <div class="checklist-item"><input type="checkbox"> Take practice quiz below</div>
-            <div class="checklist-item"><input type="checkbox"> Book exam date</div>
+            <p><strong>Your Preparation Checklist:</strong></p>
+            <div class="chk"><input type="checkbox"> Register account on DM portal</div>
+            <div class="chk"><input type="checkbox"> Upload all required documents</div>
+            <div class="chk"><input type="checkbox"> Pay examination fee</div>
+            <div class="chk"><input type="checkbox"> Complete Lessons 1-14 in this course</div>
+            <div class="chk"><input type="checkbox"> Take mock exam below (score 70%+)</div>
+            <div class="chk"><input type="checkbox"> Book exam date through portal</div>
             
-            <button class="btn" onclick="startExamQuiz()" style="margin-top:15px">📝 Take Mock Exam (10 Questions)</button>
-            <div id="examQuizArea" style="margin-top:15px"></div>
-            <div id="examResult" class="msg"></div>
+            <button class="btn" style="margin-top:15px" onclick="startExamQuiz()">📝 Take Mock Exam (10 Questions)</button>
+            <div id="examArea" style="margin-top:15px"></div>
+            <div id="examMsg" class="msg"></div>
             
-            <h3 style="margin-top:20px">3. Optional Certifications</h3>
-            <p><strong>AutoCAD Professional:</strong> Free online exam from Autodesk - proves CAD mastery</p>
-            <p><strong>ACI Field Technician:</strong> ~2000 AED - Concrete testing certification</p>
-            <p><strong>PTI Certification:</strong> $500+ - Post-tensioning specialist (get after gaining experience)</p>
+            <h3 style="margin-top:25px">3️⃣ Optional Certifications (Add to CV Later)</h3>
+            <p><strong>AutoCAD Certified Professional:</strong> Free/paid exams via Autodesk. Proves CAD expertise.</p>
+            <p><strong>ACI Concrete Field Technician Grade 1:</strong> ~2000 AED. Concrete testing certification.</p>
+            <p><strong>PTI (Post-Tensioning Institute) Certification:</strong> $500+. Advanced PT specialist cert. Get this AFTER gaining 2+ years PT experience.</p>
         </div>
     </div>
-</div>
+
+</div><!-- End Dashboard -->
 
 <script>
-// ========== THEME TOGGLE ==========
-function toggleTheme(){
-    const body=document.body;
-    const btn=document.querySelector('.theme-btn');
-    if(body.getAttribute('data-theme')==='dark'){
-        body.setAttribute('data-theme','light');
-        btn.textContent='🌙';
-        localStorage.setItem('theme','light');
-    }else{
-        body.setAttribute('data-theme','dark');
-        btn.textContent='☀️';
-        localStorage.setItem('theme','dark');
-    }
+// ======== THEME TOGGLE ========
+function togTheme(){
+    document.body.classList.toggle('dark');
+    var isD = document.body.classList.contains('dark');
+    document.querySelector('.tBtn').textContent = isD ? '☀️' : '🌙';
+    localStorage.setItem('demTheme', isD ? 'dark' : 'light');
+}
+if(localStorage.getItem('demTheme') === 'dark'){
+    document.body.classList.add('dark');
+    document.querySelector('.tBtn').textContent = '☀️';
 }
 
-// Load saved theme
-(function(){
-    const t=localStorage.getItem('theme')||'light';
-    document.body.setAttribute('data-theme',t);
-    document.querySelector('.theme-btn').textContent=t==='dark'?'☀️':'🌙';
-})();
-
-// ========== FORM SWITCHING ==========
+// ======== LOGIN PAGE FUNCTIONS ========
 function showCreate(){
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('createForm').classList.remove('hidden');
+    document.getElementById('frmLogin').classList.add('hid');
+    document.getElementById('frmCreate').classList.remove('hid');
     hideMsg();
 }
 function showLogin(){
-    document.getElementById('createForm').classList.add('hidden');
-    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('frmCreate').classList.add('hid');
+    document.getElementById('frmLogin').classList.remove('hid');
     hideMsg();
 }
+function msg(t,ty){var m=document.getElementById('lgMsg');m.textContent=t;m.className='msg show '+ty;}
+function hideMsg(){document.getElementById('lgMsg').className='msg';}
 
-// ========== MESSAGE HELPER ==========
-function showMsg(id,type,text){
-    const el=document.getElementById(id);
-    el.className='msg show '+type;
-    el.textContent=text;
-}
-function hideMsg(){
-    document.getElementById('loginMsg').className='msg';
-}
-
-// ========== CREATE ACCOUNT ==========
 function doCreate(){
-    const email=document.getElementById('createEmail').value.trim().toLowerCase();
-    const pass=document.getElementById('createPass').value;
-    const pass2=document.getElementById('createPass2').value;
-    
-    if(!email || !pass){showMsg('loginMsg','error','❌ Fill all fields');return;}
-    if(pass.length<6){showMsg('loginMsg','error','❌ Password min 6 characters');return;}
-    if(pass!==pass2){showMsg('loginMsg','error','❌ Passwords do not match');return;}
-    
-    let users=JSON.parse(localStorage.getItem('de_users')||'[]');
-    if(users.find(u=>u.email===email)){showMsg('loginMsg','error','❌ Email already exists');return;}
-    
-    users.push({email:email,password:pass,progress:{},createdAt:new Date().toISOString()});
-    localStorage.setItem('de_users',JSON.stringify(users));
-    
-    showMsg('loginMsg','success','✅ Account created! Login now...');
-    setTimeout(()=>{showLogin();showMsg('loginMsg','success','✅ Created! Please login');},1500);
+    var em=document.getElementById('crEm').value.trim().toLowerCase();
+    var pw=document.getElementById('crPw').value;
+    var pw2=document.getElementById('crPw2').value;
+    if(!em||!pw){msg('❌ Fill all fields','err');return;}
+    if(pw.length<6){msg('❌ Password min 6 characters','err');return;}
+    if(pw!==pw2){msg('❌ Passwords do not match','err');return;}
+    var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+    for(var i=0;i<u.length;i++){if(u[i].email===em){msg('❌ Email already registered','err');return;}}
+    u.push({email:em,password:pw,date:new Date().toISOString()});
+    localStorage.setItem('demUsers',JSON.stringify(u));
+    msg('✅ Account created! Redirecting...','ok');
+    document.getElementById('crEm').value='';document.getElementById('crPw').value='';document.getElementById('crPw2').value='';
+    setTimeout(function(){showLogin();msg('✅ Created! Please login.','ok');},1500);
 }
 
-// ========== LOGIN ==========
 function doLogin(){
-    const email=document.getElementById('loginEmail').value.trim().toLowerCase();
-    const pass=document.getElementById('loginPass').value;
-    
-    if(!email||!pass){showMsg('loginMsg','error','❌ Fill all fields');return;}
-    
-    const users=JSON.parse(localStorage.getItem('de_users')||'[]');
-    const user=users.find(u=>u.email===email&&u.password===pass);
-    
-    if(!user){
-        const emailExists=users.find(u=>u.email===email);
-        showMsg('loginMsg',emailExists?'❌ Wrong password':'❌ Email not found');
-        return;
+    var em=document.getElementById('lgEm').value.trim().toLowerCase();
+    var pw=document.getElementById('lgPw').value;
+    if(!em||!pw){msg('❌ Fill all fields','err');return;}
+    var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+    var found=false,wrong=false;
+    for(var i=0;i<u.length;i++){
+        if(u[i].email===em){
+            found=true;
+            if(u[i].password===pw){
+                localStorage.setItem('demNow',em);
+                goDash(u[i]);
+                return;
+            }else{wrong=true;}
+        }
     }
-    
-    localStorage.setItem('de_current',JSON.stringify({email:user.email}));
-    showDashboard(user);
+    msg(wrong?'❌ Wrong password':'❌ Email not found. Create account first.','err');
 }
 
-// ========== LOGOUT ==========
 function doLogout(){
-    localStorage.removeItem('de_current');
-    document.getElementById('dashPage').classList.add('hidden');
-    document.getElementById('loginPage').classList.remove('hidden');
-    document.getElementById('loginEmail').value='';
-    document.getElementById('loginPass').value='';
+    localStorage.removeItem('demNow');
+    document.getElementById('pgDash').classList.add('hid');
+    document.getElementById('pgLogin').classList.remove('hid');
+    document.getElementById('lgEm').value='';document.getElementById('lgPw').value='';
 }
 
-// ========== SHOW DASHBOARD ==========
-function showDashboard(user){
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('dashPage').classList.remove('hidden');
-    document.getElementById('userName').textContent=user.email.split('@')[0];
-    updateProgress();
-    loadCompleted();
+// ======== DASHBOARD FUNCTIONS ========
+function goDash(user){
+    document.getElementById('pgLogin').classList.add('hid');
+    document.getElementById('pgDash').classList.remove('hid');
+    document.getElementById('usrName').textContent=user.email.split('@')[0];
+    updProg();
+    loadDone();
 }
 
-// ========== TAB SWITCHING ==========
-function showTab(tab){
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('learnTab').classList.add('hidden');
-    document.getElementById('quizTab').classList.add('hidden');
-    document.getElementById('examTab').classList.add('hidden');
-    document.getElementById(tab+'Tab').classList.remove('hidden');
+function swTab(tab,el){
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+    el.classList.add('on');
+    document.getElementById('tabLearn').classList.add('hid');
+    document.getElementById('tabQuiz').classList.add('hid');
+    document.getElementById('tabExam').classList.add('hid');
+    document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hid');
 }
 
-// ========== MARK LESSON COMPLETE ==========
-function markComplete(id){
-    const btn=event.target;
-    if(btn.classList.contains('done')) return;
-    
-    btn.classList.add('done');
+// ======== LESSON COMPLETION ========
+function done(id){
+    var btn=document.getElementById('b'+id);
+    if(btn.classList.contains('btnDone')) return;
     btn.textContent='✅ Completed';
-    document.getElementById(id).classList.add('completed');
-    
-    // Save progress
-    const user=JSON.parse(localStorage.getItem('de_current'));
-    if(user){
-        let users=JSON.parse(localStorage.getItem('de_users')||'[]');
-        const u=users.find(x=>x.email===user.email);
-        if(u){
-            if(!u.progress) u.progress={};
-            u.progress[id]=true;
-            localStorage.setItem('de_users',JSON.stringify(users));
+    btn.classList.add('btnDone');
+    document.getElementById(id).classList.add('ok');
+    var em=localStorage.getItem('demNow');
+    if(em){
+        var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+        var usr=u.find(function(x){return x.email===em;});
+        if(usr){
+            if(!usr.prog) usr.prog={};
+            usr.prog[id]=true;
+            localStorage.setItem('demUsers',JSON.stringify(u));
         }
     }
-    updateProgress();
-    
-    // Auto-scroll to next lesson
-    const next=document.getElementById(id).nextElementSibling;
-    if(next && next.classList.contains('lesson')){
-        setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'center'}),500);
+    updProg();
+    var nxt=document.getElementById(id).nextElementSibling;
+    if(nxt && nxt.classList.contains('les')){
+        setTimeout(function(){nxt.scrollIntoView({behavior:'smooth',block:'center'});},600);
     }
 }
 
-// ========== UPDATE PROGRESS BAR ==========
-function updateProgress(){
-    const lessons=['L1','L2','L3','L4','L5','L6','L7','L8','L9','L10'];
-    const user=JSON.parse(localStorage.getItem('de_current'));
-    let completed=0;
-    
-    if(user){
-        const users=JSON.parse(localStorage.getItem('de_users')||'[]');
-        const u=users.find(x=>x.email===user.email);
-        if(u&&u.progress){
-            lessons.forEach(l=>{if(u.progress[l])completed++;});
-        }
+function updProg(){
+    var les=['L1','L2','L3','L4','L5','L6','L7','L8','L9','L10','L11','L12','L13','L14'];
+    var em=localStorage.getItem('demNow');var c=0;
+    if(em){
+        var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+        var usr=u.find(function(x){return x.email===em;});
+        if(usr&&usr.prog){les.forEach(function(l){if(usr.prog[l])c++;});}
     }
-    
-    const pct=Math.round((completed/lessons.length)*100);
-    document.getElementById('progressBar').style.width=pct+'%';
-    document.getElementById('progressBar').textContent=pct+'%';
-    document.getElementById('progressPct').textContent=pct+'%';
+    var pct=Math.round((c/les.length)*100);
+    document.getElementById('pctBar').style.width=pct+'%';
+    document.getElementById('pctBar').textContent=pct+'%';
+    document.getElementById('pctTxt').textContent=pct+'%';
 }
 
-// ========== LOAD COMPLETED STATE ==========
-function loadCompleted(){
-    const user=JSON.parse(localStorage.getItem('de_current'));
-    if(!user)return;
-    const users=JSON.parse(localStorage.getItem('de_users')||'[]');
-    const u=users.find(x=>x.email===user.email);
-    if(!u||!u.progress)return;
-    
-    Object.keys(u.progress).forEach(id=>{
-        if(u.progress[id]){
-            const el=document.getElementById(id);
-            const btn=el?el.querySelector('.complete-btn'):null;
-            if(el)el.classList.add('completed');
-            if(btn){btn.classList.add('done');btn.textContent='✅ Completed';}
+function loadDone(){
+    var em=localStorage.getItem('demNow');
+    if(!em)return;
+    var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+    var usr=u.find(function(x){return x.email===em;});
+    if(!usr||!usr.prog)return;
+    Object.keys(usr.prog).forEach(function(id){
+        if(usr.prog[id]){
+            var el=document.getElementById(id);
+            var bt=el?document.getElementById('b'+id):null;
+            if(el)el.classList.add('ok');
+            if(bt){bt.textContent='✅ Completed';bt.classList.add('btnDone');}
         }
     });
 }
 
-// ========== QUIZ SYSTEM ==========
-const quizzes={
+// ======== QUIZ SYSTEM ========
+var quizData={
     easy:[
-        {q:'What is the formula for stress?',options:['σ=P/A','σ=A/P','σ=P×A','σ=P+A'],ans:0},
-        {q:'What is typical f\'c value for concrete?',options:['10 MPa','28 MPa','100 MPa','1 MPa'],ans:1},
-        {q:'What does PT stand for?',options:['Post-Tensioning','Pre-Tensioning','Partial Tension','Pipe Testing'],ans:0},
-        {q:'Young\'s Modulus (E) formula?',options:['E=σ/ε','E=σ×ε','E=σ+ε','E=σ-ε'],ans:0},
-        {q:'What is strain unit?',options:['MPa','N/mm²','Dimensionless (ratio)','kN'],ans:2}
+        {q:'Formula for stress?',op:['σ=P/A','σ=A/P','σ=P×A','σ=P+A'],a:0},
+        {q:'Typical concrete f\'c value?',op:['10 MPa','28 MPa','100 MPa','500 MPa'],a:1},
+        {q:'PT stands for?',op:['Post-Tensioning','Pre-Tensioning','Partial Tension','Pipe Testing'],a:0},
+        {q:'Young\'s Modulus formula?',op:['E=σ/ε','E=σ×ε','E=σ+ε','E=σ-ε'],a:0},
+        {q:'Strain unit is?',op:['MPa','N/mm²','Dimensionless (ratio)','kN-m'],a:2}
     ],
     medium:[
-        {q:'Max moment for simply supported beam with UDL?',options:['wL²/4','wL²/8','wL²/12','wL²/2'],ans:1},
-        {q:'φ value for flexure in ACI 318?',options:['0.65','0.75','0.85','0.90'],ans:3},
-        {q:'Typical total PT losses percentage?',options ['5-10%','20-30%','50-60%','1-2%'],ans:1},
-        {q:'Load balancing formula w_b=?',options:['4Pe/L²','8Pe/L²','2Pe/L²','16Pe/L²'],ans:1},
-        {q:'Critical section for punching shear at?',options:['Face of column','d/2 from face','2d from face','3d from face'],ans:1}
+        {q:'Max moment for SS beam with UDL?',op:['wL²/4','wL²/8','wL²/12','wL²/2'],a:1},
+        {q:'φ (phi) for flexure in ACI 318?',op:['0.65','0.75','0.85','0.90'],a:3},
+        {q:'Total PT losses approximately?',op:['5-10%','20-30%','50-60%','1-2%'],a:1},
+        {q:'Load balancing formula wb=?',op:['4Pe/L²','8Pe/L²','2Pe/L²','16Pe/L²'],a:1},
+        {q:'Punching shear critical section at?',op:['Column face','d/2 from face','2d from face','3d from face'],a:1}
     ],
     hard:[
-        {q:'Friction loss formula?',options:['Px=P0×e^(Kx+μα)','Px=P0×e^-(Kx+μα)','Px=P0×(Kx+μα)','Px=P0/(Kx+μα)'],ans:1},
-        {q:'Allowable tension at transfer (bottom fiber)?',options:['0.25√f\'ci','0.6√f\'ci','0.45√f\'c','1.0√f\'ci'],ans:1},
-        {q:'Development length depends on?',options:['Only fy','fy, f\'c, db, coating factors','Only bar size','Only concrete strength'],ans:1},
-        {q:'Min reinforcement ratio approx for beams?',options:['0.0033','0.02','0.10','0.50'],ans:0},
-        {q:'Eccentricity in PT means?',options:['Distance between tendons','Distance from CG section to CG tendon','Length of tendon','Angle of tendon'],ans:1}
+        {q:'Friction loss formula?',op:['Px=P0×e^(Kx+μα)','Px=P0×e^-(Kx+μα)','Px=P0(Kx+μα)','Px=P0/(Kx+μα)'],a:1},
+        {q:'Allowable tension at transfer (bottom fiber)?',op:['0.25√f\'ci','0.6√f\'ci','0.45√f\'c','√f\'c'],a:1},
+        {q:'Development length depends on?',op:['Only fy','fy,f\'c,db,coating factors','Only bar size','Only f\'c'],a:1},
+        {q:'Min reinforcement ratio beams approx?',op:['0.0033','0.02','0.10','0.50'],a:0},
+        {q:'Eccentricity in PT means?',op:['Distance between tendons','CG section to CG tendon','Tendon length','Tendon angle'],a:1}
     ]
 };
+var curQz=[],qi=0,sc=0;
 
-let currentQuiz=[],currentQ=0,score=0;
-
-function startQuiz(level){
-    currentQuiz=[...quizzes[level]];
-    currentQ=0;score=0;
-    document.getElementById('quizResult').className='msg';
-    showQuestion();
+function startQuiz(lv){
+    curQz=[...quizData[lv]];qi=0;sc=0;
+    document.getElementById('quizMsg').className='msg';
+    showQ();
 }
 
-function showQuestion(){
-    const area=document.getElementById('quizArea');
-    if(currentQ>=currentQuiz.length){
-        const pct=Math.round((score/currentQuiz.length)*100);
-        let msg=pct>=60?'🎉 PASS!':'❌ FAIL (need 60%)';
-        document.getElementById('quizResult').className='msg show '+(pct>=60?'success':'error');
-        document.getElementById('quizResult').textContent=msg+' Score: '+score+'/'+currentQuiz.length+' ('+pct+'%)';
-        area.innerHTML='<button class="btn btn-outline" onclick="startQuiz(\''+(currentQuiz===quizzes.easy?'easy':currentQuiz===quizzes.medium?'medium':'hard')+'\')" style="width:auto">Retry Quiz</button>';
+function showQ(){
+    var ar=document.getElementById('quizArea');
+    if(qi>=curQz.length){
+        var pc=Math.round((sc/curQz.length)*100);
+        var ms=pc>=60?'🎉 PASS!':'❌ FAIL (need 60%)';
+        document.getElementById('quizMsg').className='msg show '+(pc>=60?'ok':'err');
+        document.getElementById('quizMsg').textContent=ms+' Score: '+sc+'/'+curQz.length+' ('+pc+'%)';
+        ar.innerHTML='<button class="btn btnOut btnSm" onclick="startQuiz(\''+(curQz===quizData.easy?'easy':curQz===quizData.medium?'medium':'hard')+'\')">Retry Quiz</button>';
         return;
     }
-    
-    const q=currentQuiz[currentQ];
-    let html='<div class="card" style="margin-top:15px">';
-    html+='<h4>Question '+(currentQ+1)+'/'+currentQuiz.length+'</h4>';
-    html+='<p style="font-size:16px;margin:15px 0">'+q.q+'</p>';
-    q.options.forEach((opt,i)=>{
-        html+='<button class="quiz-option" onclick="checkAnswer('+i+')">'+String.fromCharCode(65+i)+'. '+opt+'</button>';
-    });
-    html+='</div>';
-    area.innerHTML=html;
+    var q=curQz[qi];
+    var h='<div class="card" style="margin-top:12px">';
+    h+='<h4>Question '+(qi+1)+'/'+curQz.length+'</h4>';
+    h+='<p style="margin:12px 0;font-size:15px">'+q.q+'</p>';
+    q.op.forEach(function(o,i){h+='<button class="qOpt" onclick="ansQ('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>';});
+    h+='</div>';
+    ar.innerHTML=h;
 }
 
-function checkAnswer(ans){
-    const opts=document.querySelectorAll('.quiz-option');
-    opts.forEach(o=>o.style.pointerEvents='none');
-    
-    if(ans===currentQuiz[currentQ].ans){
-        opts[ans].classList.add('correct');
-        score++;
-    }else{
-        opts[ans].classList.add('wrong');
-        opts[currentQuiz[currentQ].ans].classList.add('correct');
-    }
-    
-    setTimeout(()=>{currentQ++;showQuestion();},1200);
+function ansQ(a){
+    var op=document.querySelectorAll('#quizArea .qOpt');
+    op.forEach(function(o){o.style.pointerEvents='none';});
+    if(a===curQz[qi].a){op[a].classList.add('yes');sc++;}
+    else{op[a].classList.add('no');op[curQz[qi].a].classList.add('yes');}
+    setTimeout(function(){qi++;showQ();},1100);
 }
 
-// ========== EXAM MOCK QUIZ ==========
-const examQuestions=[
-    {q:'What code is used for RC design in Dubai?',options:['BS 8110','ACI 318','Eurocode 2','IS 456'],ans:1},
-    {q:'Min clear cover for interior column?',options:['20mm','25mm','40mm','75mm'],ans:2},
-    {q:'φ for shear design?',options:['0.65','0.75','0.85','0.90'],ans:1},
-    {q:'Typical slab span/depth ratio for PT?',options:['10-15','20-25','35-45','50-60'],ans:2},
-    {q:'Wedge draw-in (anchorage seating) typically?',options:['1mm','6mm','25mm','50mm'],ans:1},
-    {q:'Min longitudinal reinforcement in column?',options:['0.5%','1.0%','2.0%','4.0%'],ans:1},
-    {q:'Creep coefficient range?',options:['0.1-0.5','1.5-2.5','5-8','10-15'],ans:1},
-    {q:'Punching shear critical section location?',options:['At column face','d/2 from face','d from face','2d from face'],ans:1},
-    {q:'Grade 270 strand means fpu=?',options:['1860 MPa','270 MPa','420 MPa','500 MPa'],ans:0},
-    {q:'Balanced condition means?',options:['Steel yields only','Concrete crushes only','Both simultaneously','Neither'],ans:2}
+// ======== EXAM MOCK QUIZ ========
+var eqData=[
+    {q:'RC design code used in Dubai primarily?',op:['BS 8110','ACI 318','Eurocode 2','IS 456'],a:1},
+    {q:'Min clear cover interior column?',op:['20mm','25mm','40mm','75mm'],a:2},
+    {q:'φ for shear design?',op:['0.65','0.75','0.85','0.90'],a:1},
+    {q:'PT slab span/depth ratio typical?',op:['10-15','20-25','35-45','50-60'],a:2},
+    {q:'Wedge draw-in value?',op:['1mm','6mm','25mm','50mm'],a:1},
+    {q:'Min longitudinal steel in column?',op:['0.5%','1.0%','2.0%','4.0%'],a:1},
+    {q:'Creep coefficient range?',op:['0.1-0.5','1.5-2.5','5-8','10-15'],a:1},
+    {q:'Punching shear critical section?',op:['At face','d/2 from face','d from face','2d from face'],a:1},
+    {q:'Grade 270 strand fpu?',op:['1860 MPa','270 MPa','420 MPa','500 MPa'],a:0},
+    {q:'Balanced condition means?',op:['Steel yields only','Concrete crushes only','Both simultaneously','Neither'],a:2}
 ];
+var ei=0,es=0;
 
-let eq=0,escore=0;
+function startExamQuiz(){ei=0;es=0;document.getElementById('examMsg').className='msg';showEQ();}
 
-function startExamQuiz(){
-    eq=0;escore=0;
-    document.getElementById('examResult').className='msg';
-    showExamQ();
-}
-
-function showExamQ(){
-    const area=document.getElementById('examQuizArea');
-    if(eq>=examQuestions.length){
-        const pct=Math.round((escore/examQuestions.length)*100);
-        document.getElementById('examResult').className='msg show '+(pct>=70?'success':'error');
-        document.getElementById('examResult').textContent=(pct>=70?'🏆 PASS':'❌ Need more study')+' Score: '+escore+'/'+examQuestions.length+' ('+pct+'%)';
-        area.innerHTML='<button class="btn btn-outline" onclick="startExamQuiz()" style="width:auto;margin-top:10px">Retry Exam</button>';
+function showEQ(){
+    var ar=document.getElementById('examArea');
+    if(ei>=eqData.length){
+        var pc=Math.round((es/eqData.length)*100);
+        document.getElementById('examMsg').className='msg show '+(pc>=70?'ok':'err');
+        document.getElementById('examMsg').textContent=(pc>=70?'🏆 PASS - Ready for real exam!':'❌ Keep studying!')+' Score: '+es+'/'+eqData.length+' ('+pc+'%)';
+        ar.innerHTML='<button class="btn btnOut btnSm" onclick="startExamQuiz()" style="margin-top:10px">Retry Mock Exam</button>';
         return;
     }
-    
-    const q=examQuestions[eq];
-    let html='<div class="card" style="margin-top:10px">';
-    html+='<h4>Exam Q'+(eq+1)+'/10</h4><p style="margin:10px 0;font-size:15px">'+q.q+'</p>';
-    q.options.forEach((o,i)=>{html+='<button class="quiz-option" onclick="examAns('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>';});
-    html+='</div>';
-    area.innerHTML=html;
+    var q=eqData[ei];
+    var h='<div class="card" style="margin-top:10px">';
+    h+='<h4>Exam Q'+(ei+1)+'/10</h4><p style="margin:10px 0;font-size:14px">'+q.q+'</p>';
+    q.op.forEach(function(o,i){h+='<button class="qOpt" onclick="examA('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>';});
+    h+='</div>';
+    ar.innerHTML=h;
 }
 
-function examAns(a){
-    const opts=document.querySelectorAll('#examQuizArea .quiz-option');
-    opts.forEach(o=>o.style.pointerEvents='none');
-    if(a===examQuestions[eq].ans){opts[a].classList.add('correct');escore++;}
-    else{opts[a].classList.add('wrong');opts[examQuestions[eq].ans].classList.add('correct');}
-    setTimeout(()=>{eq++;showExamQ();},1200);
+function examA(a){
+    var op=document.querySelectorAll('#examArea .qOpt');
+    op.forEach(function(o){o.style.pointerEvents='none';});
+    if(a===eqData[ei].a){op[a].classList.add('yes');es++;}
+    else{op[a].classList.add('no');op[eqData[ei].a].classList.add('yes');}
+    setTimeout(function(){ei++;showEQ();},1100);
 }
 
-// ========== CHECK LOGIN ON LOAD ==========
+// ======== AUTO-LOGIN IF SESSION EXISTS ========
 (function(){
-    const user=JSON.parse(localStorage.getItem('de_current'));
-    if(user){
-        const users=JSON.parse(localStorage.getItem('de_users')||'[]');
-        const valid=users.find(u=>u.email===user.email);
-        if(valid)showDashboard(valid);
-        else localStorage.removeItem('de_current');
+    var em=localStorage.getItem('demNow');
+    if(em){
+        var u=JSON.parse(localStorage.getItem('demUsers')||'[]');
+        var v=u.find(function(x){return x.email===em;});
+        if(v)goDash(v);else localStorage.removeItem('demNow');
     }
 })();
+
+console.log('%c✅ Design Engineer Mastery Platform Loaded!', 'color:green;font-size:16px;font-weight:bold');
+console.log('%c📚 14 Lessons | 🧪 3 Quiz Levels | 🏛️ Exam Prep', 'color:#2563eb');
+
 </script>
 
 </body>
