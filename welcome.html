@@ -35,6 +35,7 @@ body{
 }
 h1{text-align:center;color:var(--primary);}
 h2{color:var(--primary);margin-top:25px;}
+p{line-height:1.6;}
 ul{margin-left:20px;line-height:1.7;}
 button{
   padding:14px 25px;
@@ -43,9 +44,11 @@ button{
   border:none;
   border-radius:8px;
   cursor:pointer;
+  font-size:1em;
   display:block;
   margin:30px auto;
 }
+button:hover{opacity:0.9;}
 .theme-toggle{
   position:absolute;
   top:15px;
@@ -54,6 +57,10 @@ button{
   border:none;
   font-size:22px;
   cursor:pointer;
+}
+.highlight{
+  font-weight:bold;
+  color:var(--primary);
 }
 </style>
 </head>
@@ -64,35 +71,66 @@ button{
 
 <div class="container">
 
-<h1 id="welcomeMsg"></h1>
+<h1 id="welcomeMsg">Welcome!</h1>
 
 <p>
-Welcome to <strong>Civil Design Mastery</strong> 🚀  
-This course will take you from beginner to expert level in civil design.
+Welcome to <span class="highlight">Civil Design Mastery</span> 🚀  
+This course is carefully designed to take you from a <strong>complete beginner</strong> to a <strong>confident civil design engineer</strong>.  
+After completing all phases, you should be ready to attempt <strong>Dubai Civil Design License exams</strong>.
 </p>
 
-<h2>Phase 1: Basics</h2>
+<!-- PHASE 1 -->
+<h2>Phase 1: Entry-Level Civil Design Concepts</h2>
 <ul>
-<li>Structural concepts (beam, slab, column)</li>
-<li>Loads and safety</li>
-<li>Simple thumb rules</li>
-<li>Exercises + quizzes</li>
+<li>Understand basic structural elements like beams, slabs, columns, and foundations</li>
+<li>Learn important concepts such as load types, stress, strain, and safety factors</li>
+<li>Simple thumb rules used by experienced engineers in real projects</li>
+<li>Clear explanations in easy English so you never feel confused</li>
+<li>Practical examples based on real site and design situations</li>
+<li>Short exercises to strengthen your understanding after each lesson</li>
+<li>MCQ-based quizzes similar to government exam pattern</li>
+<li>Build a strong base so that advanced design becomes easy</li>
 </ul>
 
-<h2>Phase 2: Concrete Design</h2>
+<!-- PHASE 2 -->
+<h2>Phase 2: Concrete Design (RCC Design)</h2>
 <ul>
-<li>Beam, slab, column design</li>
-<li>Reinforcement detailing</li>
-<li>Real design approach</li>
-<li>Numerical problems</li>
+<li>Complete understanding of reinforced concrete design concepts</li>
+<li>Design of structural elements:
+  <ul>
+    <li>Beams (flexure, shear, reinforcement detailing)</li>
+    <li>Slabs (one-way, two-way, detailing rules)</li>
+    <li>Columns (axial load, interaction concepts)</li>
+    <li>Footings (isolated, combined, raft basics)</li>
+  </ul>
+</li>
+<li>Step-by-step design procedure like real design office work</li>
+<li>Important formulas and code-based checks</li>
+<li>Sample design layouts and drawings</li>
+<li>Common mistakes beginners make and how to avoid them</li>
+<li>Numerical problems similar to Dubai exam pattern</li>
 </ul>
 
-<h2>Phase 3: PT Design</h2>
+<!-- PHASE 3 -->
+<h2>Phase 3: PT (Post-Tensioned) Design</h2>
 <ul>
-<li>Post-tension basics</li>
-<li>Tendon profiles</li>
-<li>Design concepts</li>
-<li>Advanced real-world approach</li>
+<li>Introduction to PT slabs and why they are used in modern buildings</li>
+<li>Difference between RCC and PT systems</li>
+<li>Understanding tendons, stressing, and profile concepts</li>
+<li>Design of PT slabs with practical approach</li>
+<li>Load balancing concept explained in simple way</li>
+<li>Sample PT layouts and tendon profiles</li>
+<li>Real-world design considerations used in Dubai projects</li>
+<li>Advanced tips to improve design efficiency and reduce cost</li>
+</ul>
+
+<!-- FINAL -->
+<h2>Final Outcome</h2>
+<ul>
+<li>You will think like a real design engineer, not just a student</li>
+<li>You will be able to read drawings and understand design logic</li>
+<li>You will gain confidence to attend interviews and exams</li>
+<li>You will be prepared for <strong>Dubai Civil Design License</strong></li>
 </ul>
 
 <button onclick="startCourse()">Agree & Start Learning</button>
@@ -102,32 +140,22 @@ This course will take you from beginner to expert level in civil design.
 <script>
 // Theme
 if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
-
 function toggleTheme(){
   document.body.classList.toggle("dark");
   localStorage.setItem("theme",document.body.classList.contains("dark")?"dark":"light");
 }
 
-// Get user
+// User name
 const currentUser = localStorage.getItem("currentUser");
-
-if(!currentUser){
-  window.location.href = "index.html";
-}
+if(!currentUser) window.location.href="index.html";
 
 let users = JSON.parse(localStorage.getItem("users")) || {};
+const name = users[currentUser]?.name || "User";
+document.getElementById("welcomeMsg").innerText = `Welcome, ${name}!`;
 
-if(!users[currentUser]){
-  window.location.href = "index.html";
-}
-
-// Set name
-const name = users[currentUser].name;
-document.getElementById("welcomeMsg").innerText = "Welcome, " + name + "!";
-
-// Button
+// Start button
 function startCourse(){
-  window.location.href = "phase1.html";
+  window.location.href="phase1.html";
 }
 </script>
 
