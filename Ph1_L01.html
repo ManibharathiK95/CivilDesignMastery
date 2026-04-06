@@ -3,166 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ph1_L01 - Introduction to Civil Design</title>
-
+<title>Ph1_L01 - Introduction</title>
 <style>
-:root {
-  --bg: #f4f6f9;
-  --text: #222;
-  --card: #ffffff;
-  --primary: #2a7de1;
-}
-
-body.dark {
-  --bg: #121212;
-  --text: #f1f1f1;
-  --card: #1e1e1e;
-  --primary: #4da3ff;
-}
-
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 25px;
-  background: var(--card);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-header .theme-toggle {
-  cursor: pointer;
-}
-
-.container {
-  padding: 20px;
-  max-width: 900px;
-  margin: auto;
-}
-
-h1 { margin-bottom: 15px; }
-h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
-p { margin-bottom: 15px; }
-ul { margin-bottom: 15px; }
-.exercise, .quiz {
-  background: var(--card);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
-}
-button {
-  padding: 10px 15px;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-button:hover { opacity: 0.9; }
-.back {
-  margin-top: 20px;
-  cursor: pointer;
-  color: var(--primary);
-  font-weight: bold;
-}
-.diagram {
-  margin: 15px 0;
-  text-align: center;
-}
-.diagram img {
-  max-width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+:root{--bg:#f4f6f9;--text:#222;--card:#fff;--primary:#2a7de1;}
+body.dark{--bg:#121212;--text:#f1f1f1;--card:#1e1e1e;--primary:#4da3ff;}
+body{margin:0;font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);}
+header{padding:15px 20px;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;}
+.theme-toggle{background:none;border:none;font-size:20px;cursor:pointer;}
+.container{max-width:900px;margin:20px auto;padding:15px;}
+h1,h2{margin-bottom:15px;color:var(--primary);}
+p,ul{margin-bottom:15px;}
+.exercise,.quiz{background:var(--card);padding:15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);margin-bottom:20px;}
+button{padding:10px 15px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+button:hover{opacity:0.9;}
+.back{margin-top:20px;cursor:pointer;color:var(--primary);font-weight:bold;}
+.diagram{text-align:center;margin:15px 0;}
+.diagram img{max-width:100%;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
 </style>
 </head>
-
 <body>
-
 <header>
-  <div>Ph1_L01 - Introduction to Civil Design</div>
-  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+<div>Ph1_L01 - Introduction</div>
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 </header>
 
 <div class="container">
-  <h1>Introduction to Civil Design</h1>
+<h1>Introduction to Civil Design</h1>
+<p>Welcome to Civil Design Mastery! This lesson introduces you to the basics of civil engineering design, including key concepts, terminologies, and design workflow.</p>
 
-  <p>Welcome to Civil Design Mastery! This lesson introduces you to the basics of civil design, its purpose, and its importance in construction projects.</p>
+<h2>Key Concepts</h2>
+<ul>
+<li>Structural Elements: beams, columns, slabs, foundations</li>
+<li>Load Types: dead, live, wind, seismic</li>
+<li>Safety & Codes: Understanding importance of standards in design</li>
+</ul>
 
-  <h2>Definition</h2>
-  <p>Civil Design is the process of planning, analyzing, and detailing structures to ensure they are safe, durable, and functional. It covers structural elements like beams, slabs, columns, and foundations, ensuring they withstand all expected loads during their lifetime.</p>
+<div class="diagram">
+<img src="images/introduction_diagram.png" alt="Civil Design Overview">
+<p>Placeholder Diagram: Civil Design Workflow</p>
+</div>
 
-  <h2>Thumb Rules</h2>
-  <ul>
-    <li>Always visualize the <strong>load path</strong> before designing.</li>
-    <li>Apply a <strong>safety factor</strong> of 1.5–2 for general structures.</li>
-    <li>Refer to <strong>local and international codes</strong> (Dubai GVIT, IS, BS).</li>
-    <li>Sketch simple diagrams to understand tension and compression zones.</li>
-  </ul>
+<div class="exercise">
+<h2>Exercise</h2>
+<p>Write down 3 types of structural elements in your own words.</p>
+</div>
 
-  <h2>Example</h2>
-  <p>Example: Designing a simply supported beam for a residential floor:</p>
-  <ul>
-    <li>Dead Load (self-weight) = 2 kN/m²</li>
-    <li>Live Load (people, furniture) = 3 kN/m²</li>
-    <li>Total Load = 5 kN/m² → Use for bending and shear calculations</li>
-  </ul>
+<div class="quiz">
+<h2>Quiz</h2>
+<p><strong>Q1:</strong> Which of the following is a structural element?</p>
+<input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">Beam</label><br>
+<input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">Paint</label><br>
+<input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">Window</label><br>
+</div>
 
-  <div class="diagram">
-    <img src="images/load_flow_example.png" alt="Load flow diagram" />
-    <p>Figure: Simple load flow in a beam (Placeholder for actual diagram)</p>
-  </div>
-
-  <div class="exercise">
-    <h2>Exercise</h2>
-    <p>Draw a simple beam, mark tension and compression zones. Indicate where maximum bending occurs.</p>
-  </div>
-
-  <div class="quiz">
-    <h2>Quiz</h2>
-    <p><strong>Q1:</strong> What is the primary goal of civil design?</p>
-    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">To create aesthetically pleasing buildings</label><br>
-    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">To ensure structures are safe and functional</label><br>
-    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">To reduce material costs only</label><br>
-  </div>
-
-  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
-  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+<button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+<div class="back" onclick="goDashboard()">⬅ Back to Phase 1 Lessons</div>
 </div>
 
 <script>
-  // Dark/Light Theme
-  if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
-  function toggleTheme() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
-  }
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark")?"dark":"light");
+}
 
-  // Auth Check
-  const currentUser = localStorage.getItem("currentUser");
-  if (!currentUser) window.location.href="index.html";
+const currentUser = localStorage.getItem("currentUser");
+if(!currentUser) window.location.href="index.html";
 
-  function markComplete() {
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-    if (!users[currentUser].progress) users[currentUser].progress = {};
-    users[currentUser].progress["Ph1_L01"] = true;
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Lesson marked as complete! ✅ Next lesson unlocked.");
-    window.location.href = "phase1.html";
-  }
+function markComplete(){
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  if(!users[currentUser].progress) users[currentUser].progress={};
+  users[currentUser].progress["Ph1_L01"] = true;
+  localStorage.setItem("users",JSON.stringify(users));
+  alert("Lesson marked complete! ✅ Next lesson unlocked.");
+  window.location.href="phase1.html";
+}
 
-  function goPhase1() {
-    window.location.href="phase1.html";
-  }
+function goDashboard(){ window.location.href="phase1.html"; }
 </script>
-
 </body>
 </html>
