@@ -4,201 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ph1_L02 - Units, Standards & Codes</title>
-
 <style>
-:root {
-  --bg: #f4f6f9;
-  --text: #222;
-  --card: #ffffff;
-  --primary: #2a7de1;
-}
-
-body.dark {
-  --bg: #121212;
-  --text: #f1f1f1;
-  --card: #1e1e1e;
-  --primary: #4da3ff;
-}
-
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 25px;
-  background: var(--card);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-header .theme-toggle {
-  cursor: pointer;
-}
-
-.container {
-  padding: 20px;
-  max-width: 900px;
-  margin: auto;
-}
-
-h1 { margin-bottom: 15px; }
-h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
-p { margin-bottom: 15px; }
-ul, table { margin-bottom: 15px; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-table, th, td { border: 1px solid #ccc; }
-th, td { padding: 8px; text-align: center; }
-.exercise, .quiz {
-  background: var(--card);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
-}
-button {
-  padding: 10px 15px;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-button:hover { opacity: 0.9; }
-.back {
-  margin-top: 20px;
-  cursor: pointer;
-  color: var(--primary);
-  font-weight: bold;
-}
-.diagram {
-  margin: 15px 0;
-  text-align: center;
-}
-.diagram img {
-  max-width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+:root{--bg:#f4f6f9;--text:#222;--card:#fff;--primary:#2a7de1;}
+body.dark{--bg:#121212;--text:#f1f1f1;--card:#1e1e1e;--primary:#4da3ff;}
+body{margin:0;font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);}
+header{padding:15px 20px;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;}
+.theme-toggle{background:none;border:none;font-size:20px;cursor:pointer;}
+.container{max-width:900px;margin:20px auto;padding:15px;}
+h1,h2{margin-bottom:15px;color:var(--primary);}
+p,ul,table{margin-bottom:15px;}
+.exercise,.quiz{background:var(--card);padding:15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);margin-bottom:20px;}
+button{padding:10px 15px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+button:hover{opacity:0.9;}
+.back{margin-top:20px;cursor:pointer;color:var(--primary);font-weight:bold;}
+.diagram{text-align:center;margin:15px 0;}
+.diagram img{max-width:100%;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
 </style>
 </head>
-
 <body>
-
 <header>
-  <div>Ph1_L02 - Units, Standards & Codes</div>
-  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+<div>Ph1_L02 - Units, Standards & Codes</div>
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 </header>
 
 <div class="container">
-  <h1>Units, Standards & Codes</h1>
+<h1>Units, Standards & Codes</h1>
 
-  <p>In civil design, it is critical to use proper units and adhere to recognized standards and codes. Incorrect units or codes can lead to unsafe or non-compliant structures.</p>
+<p>In civil design, using correct units and standards is crucial to ensure safety and compliance.</p>
 
-  <h2>SI & Imperial Units</h2>
-  <table>
-    <tr>
-      <th>Quantity</th>
-      <th>SI Unit</th>
-      <th>Imperial Unit</th>
-    </tr>
-    <tr>
-      <td>Length</td>
-      <td>Meter (m)</td>
-      <td>Foot (ft)</td>
-    </tr>
-    <tr>
-      <td>Force</td>
-      <td>Newton (N)</td>
-      <td>Pound-force (lbf)</td>
-    </tr>
-    <tr>
-      <td>Stress</td>
-      <td>Pascal (Pa)</td>
-      <td>psi</td>
-    </tr>
-    <tr>
-      <td>Load</td>
-      <td>kN/m²</td>
-      <td>psf</td>
-    </tr>
-  </table>
+<h2>Units</h2>
+<ul>
+<li><strong>SI Units:</strong> kN, m, MPa, m²</li>
+<li><strong>Imperial Units:</strong> lb, ft, psi</li>
+</ul>
 
-  <div class="diagram">
-    <img src="images/units_flowchart.png" alt="Units conversion flowchart">
-    <p>Figure: Unit conversion flowchart (Placeholder)</p>
-  </div>
+<h2>Standards & Codes</h2>
+<ul>
+<li>Dubai GVIT Civil Design Guidelines</li>
+<li>IS Codes (India)</li>
+<li>British Standards (BS)</li>
+<li>ASTM Standards</li>
+</ul>
 
-  <h2>Standards & Codes</h2>
-  <ul>
-    <li>IS Codes (India) – e.g., IS 456: 2000 for concrete, IS 800:2007 for steel</li>
-    <li>BS (British Standards)</li>
-    <li>ASTM (American Standards)</li>
-    <li>Dubai GVIT guidelines – mandatory for Dubai civil design licensing</li>
-  </ul>
+<div class="diagram">
+<img src="images/units_codes.png" alt="Units and Codes">
+<p>Placeholder Diagram: Units & Codes</p>
+</div>
 
-  <div class="diagram">
-    <img src="images/codes_flowchart.png" alt="Code application flowchart">
-    <p>Figure: Code → Design → Verification flowchart (Placeholder)</p>
-  </div>
+<div class="exercise">
+<h2>Exercise</h2>
+<p>List the SI units used for load, stress, and length in civil design.</p>
+</div>
 
-  <h2>Example</h2>
-  <p>Example: Designing a beam for a Dubai residential building:</p>
-  <ul>
-    <li>Live load = 3 kN/m² (as per code)</li>
-    <li>Dead load = 2 kN/m²</li>
-    <li>Total design load = 5 kN/m² → Apply IS/BS/Dubai GVIT formulas</li>
-  </ul>
+<div class="quiz">
+<h2>Quiz</h2>
+<p><strong>Q1:</strong> Which unit is used for stress in SI?</p>
+<input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">kN</label><br>
+<input type="radio" name="q1b" id="q1b" value="b"> <label for="q1b">MPa</label><br>
+<input type="radio" name="q1c" id="q1c" value="c"> <label for="q1c">m²</label><br>
+</div>
 
-  <div class="exercise">
-    <h2>Exercise</h2>
-    <p>Convert a load of 50 psf (imperial) to kN/m² (SI). Refer to the conversion table.</p>
-  </div>
-
-  <div class="quiz">
-    <h2>Quiz</h2>
-    <p><strong>Q1:</strong> Which code is mandatory for Dubai civil design licensing?</p>
-    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">IS Codes</label><br>
-    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">Dubai GVIT Guidelines</label><br>
-    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">ASTM only</label><br>
-  </div>
-
-  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
-  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+<button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+<div class="back" onclick="goDashboard()">⬅ Back to Phase 1 Lessons</div>
 </div>
 
 <script>
-  // Dark/Light Theme
-  if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
-  function toggleTheme() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
-  }
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark")?"dark":"light");
+}
 
-  const currentUser = localStorage.getItem("currentUser");
-  if (!currentUser) window.location.href="index.html";
+const currentUser = localStorage.getItem("currentUser");
+if(!currentUser) window.location.href="index.html";
 
-  function markComplete() {
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-    if (!users[currentUser].progress) users[currentUser].progress = {};
-    users[currentUser].progress["Ph1_L02"] = true;
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Lesson marked as complete! ✅ Next lesson unlocked.");
-    window.location.href = "phase1.html";
-  }
+function markComplete(){
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  if(!users[currentUser].progress) users[currentUser].progress={};
+  users[currentUser].progress["Ph1_L02"] = true;
+  localStorage.setItem("users",JSON.stringify(users));
+  alert("Lesson marked complete! ✅ Next lesson unlocked.");
+  window.location.href="phase1.html";
+}
 
-  function goPhase1() {
-    window.location.href="phase1.html";
-  }
+function goDashboard(){ window.location.href="phase1.html"; }
 </script>
-
 </body>
 </html>
