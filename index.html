@@ -4,108 +4,119 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Civil Design Mastery - Login</title>
-
 <style>
+:root{
+  --bg:#f4f6f9;
+  --text:#222;
+  --card:#fff;
+  --primary:#2a7de1;
+  --input-bg:#fff;
+  --input-border:#ccc;
+  --input-text:#222;
+}
+body.dark{
+  --bg:#1f1f1f;
+  --text:#f1f1f1;
+  --card:#2a2a2a;
+  --primary:#4da3ff;
+  --input-bg:#333;
+  --input-border:#555;
+  --input-text:#f1f1f1;
+}
 body{
   margin:0;
-  font-family:Arial;
-  background:#f4f6f9;
+  font-family:"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 .container{
-  max-width:420px;
+  max-width:450px;
   margin:100px auto;
-  padding:25px;
-  background:#fff;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  padding:30px;
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
 }
-h2{text-align:center;}
+h1{text-align:center;margin-bottom:25px;}
+label{font-size:0.95em;margin-top:10px;display:block;}
 input{
+  padding:12px;
+  margin-top:5px;
+  margin-bottom:15px;
+  border-radius:8px;
+  border:1px solid var(--input-border);
+  background:var(--input-bg);
+  font-size:1em;
+  color:var(--input-text);
   width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:6px;
-  border:1px solid #ccc;
   box-sizing:border-box;
 }
-.row{
-  display:flex;
-  gap:10px;
-}
+.line-flex{display:flex;justify-content:space-between;}
+.line-flex input.code{width:25%; margin-right:5%;}
+.line-flex input.mobile{width:70%;}
 button{
   width:100%;
   padding:12px;
-  background:#2a7de1;
+  margin-top:10px;
+  background:var(--primary);
   color:white;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
+  font-size:1em;
 }
+button:hover{opacity:0.9;}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-<h2>Login</h2>
+<h1>Civil Design Mastery</h1>
 
-<input id="name" placeholder="Name" autocomplete="name">
+<label for="name">Name</label>
+<input type="text" id="name" placeholder="Your Name">
 
-<div class="row">
-  <input id="country" placeholder="+XX" autocomplete="tel-country-code">
-  <input id="mobile" placeholder="MOBILE NUMBER" autocomplete="tel-national">
+<label>Mobile Number</label>
+<div class="line-flex">
+  <input type="text" id="country" class="code" placeholder="Country Code">
+  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number">
 </div>
 
-<input id="pin" placeholder="6-digit PIN" inputmode="numeric" maxlength="6" type="password" autocomplete="current-password">
+<label for="pin">PIN</label>
+<input type="password" id="pin" placeholder="6-digit PIN">
 
-<button onclick="login()">Login</button>
+<button onclick="login()">Login / Create Account</button>
 </div>
 
 <script>
-function getUsers() {
-  try {
-    return JSON.parse(localStorage.getItem("users")) || {};
-  } catch {
-    return {};
-  }
-}
+// Dark theme toggle for later pages (login page fixed without toggle)
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
 
-function setUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
-}
-
+// Login logic
 function login(){
   const name = document.getElementById("name").value.trim();
   const country = document.getElementById("country").value.trim();
   const mobile = document.getElementById("mobile").value.trim();
   const pin = document.getElementById("pin").value.trim();
 
-  if(name.length < 2){ alert("Enter name"); return; }
-  if(!country.startsWith("+")){ alert("Country code must start with +"); return; }
-  if(!/^\d{6,15}$/.test(mobile)){ alert("Mobile must be 6-15 digits"); return; }
-  if(!/^\d{6}$/.test(pin)){ alert("PIN must be exactly 6 digits"); return; }
+  if(name.length<2){alert("Enter valid name."); return;}
+  const countryRegex=/^\+\d{1,4}$/;
+  const mobileRegex=/^\d{6,12}$/;
+  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
+  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
+  const pinRegex=/^\d{6}$/;
+  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
 
-  const key = `${country} ${mobile}`;
-  const users = getUsers();
+  const fullMobile = country + " " + mobile;
+  let users = JSON.parse(localStorage.getItem("users"))||{};
+  if(!users[fullMobile]){
+    users[fullMobile]={name:name,pin:pin,progress:{}};
+  } else if(users[fullMobile].pin!==pin){alert("Incorrect PIN!"); return;}
+  localStorage.setItem("users",JSON.stringify(users));
+  localStorage.setItem("currentUser",fullMobile);
 
-  if(!users[key]){
-    users[key] = { name, pin, progress:{} };
-  } else {
-    if(users[key].pin !== pin){
-      alert("Wrong PIN");
-      return;
-    }
-
-    // Keep name in sync if user updates their display name.
-    users[key].name = name;
-  }
-
-  setUsers(users);
-  localStorage.setItem("currentUser", key);
-
-  window.location.href = "welcome.html";
+  // Go to welcome page
+  window.location.href="welcome.html";
 }
 </script>
-
 </body>
 </html>
