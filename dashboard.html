@@ -1,118 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Civil Design Mastery</title>
-<style>
-:root{--bg:#f4f6f9;--sidebar:#1e293b;--primary:#2a7de1;--card:#fff;}
-body{margin:0;font-family:"Segoe UI",sans-serif;display:flex;background:var(--bg);}
-.sidebar{width:260px;background:var(--sidebar);color:white;height:100vh;padding:20px;box-sizing:border-box;}
-.sidebar h2{margin-bottom:20px;}
-.menu-item{margin-bottom:10px;cursor:pointer;font-weight:600;}
-.submenu{margin-left:10px;display:block;}
-.submenu div{
-  padding:8px;margin:5px 0;background:#334155;border-radius:6px;cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.submenu div:hover{background:var(--primary);}
-.submenu div.locked{background:#1f2937;cursor:not-allowed;opacity:0.6;}
-.main{flex:1;padding:30px;}
-.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-h1{margin-top:0;}
-button.logout{
-  margin-top:15px;padding:8px 15px;background:#ef4444;color:white;border:none;border-radius:8px;cursor:pointer;
-}
-button.logout:hover{opacity:0.9;}
-.progress{font-size:0.85em;color:#a5b4fc;}
-.completed::after{content:"✓";color:#34d399;margin-left:8px;font-weight:bold;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Civil Design Mastery</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --text: #222;
+      --card: #fff;
+      --primary: #2a7de1;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f1f1f1;
+      --card: #1e1e1e;
+      --primary: #4da3ff;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 25px;
+      background: var(--card);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .theme-toggle { cursor: pointer; }
+    .container { padding: 20px; }
+    .welcome { font-size: 20px; margin-bottom: 15px; }
+
+    .progress-bar {
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .progress {
+      height: 15px;
+      width: 0;
+      background: var(--primary);
+      transition: width 0.25s ease;
+    }
+
+    .phases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover { transform: translateY(-4px); }
+    .card h3 { margin-top: 0; }
+    .logout { margin-top: 20px; color: red; cursor: pointer; }
+  </style>
 </head>
 <body>
+  <header>
+    <div><strong>Civil Design Mastery</strong></div>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  </header>
 
-<div class="sidebar">
-  <h2>📘 Civil Mastery</h2>
-  <button class="logout" onclick="logout()">Logout</button>
+  <div class="container">
+    <div id="welcomeText" class="welcome"></div>
 
-  <!-- PHASE 1 -->
-  <div class="menu-item">Phase 1</div>
-  <div id="phase1" class="submenu">
-    <div id="lesson1" onclick="completeLesson('lesson1','Intro to Engineering')">Intro to Engineering<span class="progress"></span></div>
-    <div id="lesson2" onclick="completeLesson('lesson2','Basic Math')">Basic Math<span class="progress"></span></div>
-    <div id="lesson3" onclick="completeLesson('lesson3','Drawing Basics')">Drawing Basics<span class="progress"></span></div>
+    <div class="progress-bar">
+      <div id="progressBar" class="progress"></div>
+    </div>
+
+    <div class="phases">
+      <div class="card" onclick="goToPhase(1)">
+        <h3>Phase 1</h3>
+        <p>Fundamentals of Civil Design</p>
+      </div>
+
+      <div class="card" onclick="goToPhase(2)">
+        <h3>Phase 2</h3>
+        <p>Concrete Design Mastery</p>
+      </div>
+
+      <div class="card" onclick="goToPhase(3)">
+        <h3>Phase 3</h3>
+        <p>PT (Post-Tension) Design</p>
+      </div>
+
+      <div class="card" onclick="openMockTest()">
+        <h3>Final Mock Test</h3>
+        <p>Dubai GVIT Exam Simulation</p>
+      </div>
+
+      <div class="card" onclick="openMistakes()">
+        <h3>Common Mistakes</h3>
+        <p>Beginner errors & fixes</p>
+      </div>
+    </div>
+
+    <div class="logout" onclick="logout()">Logout</div>
   </div>
 
-  <!-- PHASE 2 -->
-  <div class="menu-item">Phase 2</div>
-  <div id="phase2" class="submenu">
-    <div id="lesson4" class="locked" onclick="completeLesson('lesson4','Structural Design')">Structural Design<span class="progress"></span></div>
-    <div id="lesson5" class="locked" onclick="completeLesson('lesson5','Concrete Technology')">Concrete Technology<span class="progress"></span></div>
-    <div id="lesson6" class="locked" onclick="completeLesson('lesson6','Site Planning')">Site Planning<span class="progress"></span></div>
-  </div>
-</div>
-
-<div class="main">
-  <div class="card" id="content">
-    <h1 id="welcomeText">Welcome 👋</h1>
-    <p>Select a lesson from the sidebar to begin.</p>
-  </div>
-</div>
-
-<script>
-// Protect dashboard if not logged in
-const currentUser = localStorage.getItem("currentUser");
-let users = JSON.parse(localStorage.getItem("users")) || {};
-if(!currentUser || !users[currentUser]){window.location.href="index.html";}
-
-// Show welcome with name
-document.getElementById("welcomeText").innerText = "Welcome, " + users[currentUser].name + " 👋";
-
-// Initialize progress
-if(!users[currentUser].progress) users[currentUser].progress = {};
-updateLessons();
-
-// Complete lesson and update progress
-function completeLesson(id,title){
-  // Lock check
-  if(document.getElementById(id).classList.contains('locked')) return;
-
-  // Show content
-  document.getElementById("content").innerHTML = `
-    <h1>${title}</h1>
-    <p>This is your lesson content for <strong>${title}</strong>.</p>
-  `;
-  // Mark completed
-  users[currentUser].progress[id] = true;
-  localStorage.setItem("users", JSON.stringify(users));
-  updateLessons();
-}
-
-// Update lessons completion and Phase2 unlock
-function updateLessons(){
-  // Phase 1 lessons
-  ['lesson1','lesson2','lesson3'].forEach(id=>{
-    const lesson = document.getElementById(id);
-    if(users[currentUser].progress[id]){
-      lesson.classList.add('completed');
+  <script>
+    function getUsers() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("users"));
+        return raw && typeof raw === "object" ? raw : {};
+      } catch {
+        return {};
+      }
     }
-  });
-  // Unlock Phase2 if all Phase1 done
-  const phase1Done = ['lesson1','lesson2','lesson3'].every(id=>users[currentUser].progress[id]);
-  ['lesson4','lesson5','lesson6'].forEach(id=>{
-    const lesson = document.getElementById(id);
-    if(phase1Done){
-      lesson.classList.remove('locked');
-    }else{
-      lesson.classList.add('locked');
-    }
-  });
-}
 
-// Logout
-function logout(){
-  localStorage.removeItem("currentUser");
-  window.location.href="index.html";
-}
-</script>
+    function setUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function applyTheme() {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    }
+
+    function getSession() {
+      const currentUser = localStorage.getItem("currentUser");
+      const users = getUsers();
+      const user = currentUser ? users[currentUser] : null;
+
+      if (!currentUser || !user) {
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+        return null;
+      }
+
+      user.progress = user.progress || {};
+      users[currentUser] = user;
+      setUsers(users);
+
+      return { currentUser, user };
+    }
+
+    function updateProgress(progressMap) {
+      const totalLessons = 15;
+      const completed = Object.keys(progressMap).length;
+      const percent = Math.min((completed / totalLessons) * 100, 100);
+      document.getElementById("progressBar").style.width = `${percent}%`;
+    }
+
+    function goToPhase(phase) {
+      if (phase === 1) {
+        window.location.href = "phase1.html";
+        return;
+      }
+      alert(`Phase ${phase} is not available yet.`);
+    }
+
+    function openMockTest() {
+      alert("Mock test page is not available yet.");
+    }
+
+    function openMistakes() {
+      alert("Mistakes page is not available yet.");
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "index.html";
+    }
+
+    function boot() {
+      applyTheme();
+
+      const session = getSession();
+      if (!session) return;
+
+      document.getElementById("welcomeText").innerText = `Welcome, ${session.user.name} 👋`;
+      updateProgress(session.user.progress);
+    }
+
+    boot();
+  </script>
 </body>
 </html>
