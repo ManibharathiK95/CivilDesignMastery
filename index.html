@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Civil Design Mastery - Login</title>
 <style>
-:root {
+:root{
   --bg:#f4f6f9;
   --text:#222;
   --card:#fff;
@@ -13,127 +13,80 @@
   --input-bg:#fff;
   --input-border:#ccc;
 }
-body.dark {
-  --bg:#e0e0e0;       /* light-dark instead of full black */
-  --text:#111;
-  --card:#d6d6d6;
+body.dark{
+  --bg:#1f1f1f;
+  --text:#f1f1f1;
+  --card:#2a2a2a;
   --primary:#4da3ff;
-  --input-bg:#f0f0f0;
-  --input-border:#999;
+  --input-bg:#333;
+  --input-border:#555;
 }
-body {
-  margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
+body{margin:0;font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);}
+.container{
+  max-width:450px;margin:100px auto;padding:30px;background:var(--card);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.1);
 }
-.container {
-  max-width:400px;
-  margin:100px auto;
-  padding:30px;
-  background:var(--card);
-  border-radius:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.1);
-}
-h1 {
-  text-align:center;
-  margin-bottom:25px;
-}
-input {
-  width:100%;
-  padding:12px;
-  margin:12px 0;
-  border-radius:8px;
-  border:1px solid var(--input-border);
-  background:var(--input-bg);
-  font-size:1em;
-}
-label { font-size:0.9em; }
-button {
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  background:var(--primary);
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:1em;
-}
-button:hover { opacity:0.9; }
-.theme-toggle {
-  position:absolute;
-  top:15px;
-  right:15px;
-  background:none;
-  border:none;
-  font-size:22px;
-  cursor:pointer;
-}
-p.instructions {
-  font-size:0.9em;
-  color:#555;
-  margin-top:-8px;
-  margin-bottom:12px;
-}
+h1{text-align:center;margin-bottom:25px;}
+label{font-size:0.95em;margin-top:10px;display:block;}
+input{width:100%;padding:12px;margin-top:5px;margin-bottom:15px;border-radius:8px;border:1px solid var(--input-border);background:var(--input-bg);font-size:1em;}
+input.code{width:25%;display:inline-block;margin-right:5%;}
+input.mobile{width:70%;display:inline-block;}
+button{width:100%;padding:12px;margin-top:10px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:1em;}
+button:hover{opacity:0.9;}
+.theme-toggle{position:absolute;top:15px;right:15px;background:none;border:none;font-size:22px;cursor:pointer;}
+p.instructions{font-size:0.9em;color:#555;margin-top:-10px;margin-bottom:15px;}
 </style>
 </head>
 <body>
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
 <label for="name">Name</label>
 <input type="text" id="name" placeholder="Your Name">
 
-<label for="mobile">Country Code + Mobile Number</label>
-<input type="text" id="mobile" placeholder="+91 9876543210">
+<label>Mobile Number</label>
+<input type="text" id="country" class="code" placeholder="+91">
+<input type="text" id="mobile" class="mobile" placeholder="9876543210">
 <p class="instructions">Give 6-digit PIN below.</p>
 
-<label for="pin">6-digit PIN</label>
+<label for="pin">PIN</label>
 <input type="password" id="pin" placeholder="6-digit PIN">
 
 <button onclick="login()">Login / Create Account</button>
 </div>
 
 <script>
-// Theme toggle
 if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
 function toggleTheme(){
   document.body.classList.toggle("dark");
   localStorage.setItem("theme", document.body.classList.contains("dark")?"dark":"light");
 }
 
-// Login logic
 function login(){
   const name = document.getElementById("name").value.trim();
+  const country = document.getElementById("country").value.trim();
   const mobile = document.getElementById("mobile").value.trim();
   const pin = document.getElementById("pin").value.trim();
 
-  // Name validation
-  if(name.length < 2){ alert("Enter a valid name."); return; }
+  if(name.length<2){alert("Enter valid name."); return;}
+  const countryRegex=/^\+\d{1,4}$/;
+  const mobileRegex=/^\d{6,12}$/;
+  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
+  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
+  const pinRegex=/^\d{6}$/;
+  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
 
-  // Country code + mobile validation
-  const mobileRegex = /^\+\d{1,4}\s\d{6,12}$/; // +XX 12345678...
-  if(!mobileRegex.test(mobile)){ alert("Enter valid country code + mobile number!"); return; }
+  const fullMobile = country + " " + mobile;
 
-  // PIN validation
-  const pinRegex = /^\d{6}$/;
-  if(!pinRegex.test(pin)){ alert("PIN must be 6 digits!"); return; }
-
-  // Save to localStorage
   let users = JSON.parse(localStorage.getItem("users"))||{};
-  if(!users[mobile]){
-    users[mobile] = {name:name, pin:pin, progress:{}};
-  } else {
-    // Existing user, check PIN
-    if(users[mobile].pin !== pin){ alert("Incorrect PIN!"); return; }
-  }
-  localStorage.setItem("users", JSON.stringify(users));
-  localStorage.setItem("currentUser", mobile);
+  if(!users[fullMobile]){
+    users[fullMobile]={name:name,pin:pin,progress:{}};
+  } else if(users[fullMobile].pin!==pin){alert("Incorrect PIN!"); return;}
+  localStorage.setItem("users",JSON.stringify(users));
+  localStorage.setItem("currentUser",fullMobile);
 
-  window.location.href="phase1.html";
+  // Go to welcome page
+  window.location.href="welcome.html";
 }
 </script>
 </body>
