@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Civil Design Mastery - Login</title>
-
 <style>
 :root{
   --bg:#f4f6f9;
@@ -14,15 +13,6 @@
   --input-bg:#fff;
   --input-border:#ccc;
   --input-text:#222;
-}
-body.dark{
-  --bg:#1f1f1f;
-  --text:#f1f1f1;
-  --card:#2a2a2a;
-  --primary:#4da3ff;
-  --input-bg:#333;
-  --input-border:#555;
-  --input-text:#f1f1f1;
 }
 body{
   margin:0;
@@ -67,36 +57,29 @@ button{
   font-size:1em;
 }
 button:hover{opacity:0.9;}
-
-.hidden{
-  display:none;
-}
 .info{
   font-size:0.85em;
   color:gray;
+  margin-bottom:10px;
 }
+.hidden{display:none;}
 </style>
 </head>
-
 <body>
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
-<p class="info">
-<strong>New user? Enter your name, mobile number, and PIN.<strong><br>
-<strong>Returning user? Enter mobile number and PIN only.<strong>
-</p>
-
-<label id="nameLabel">Full Name</label>
+<label id="nameLabel">Name</label>
 <input type="text" id="name" placeholder="Your Name">
 
 <label>Mobile Number</label>
 <div class="line-flex">
-  <input type="text" id="country" class="code" placeholder="Code">
+  <input type="text" id="country" class="code" placeholder="+971">
   <input type="text" id="mobile" class="mobile" placeholder="Mobile Number" onblur="checkUser()">
 </div>
-  
-<p class="info" id="userStatus"></p>
+
+<p class="info" id="userStatus">New user? Enter your name, mobile number, and PIN.<br>
+Returning user? Enter mobile number and PIN only.</p>
 
 <label for="pin">PIN</label>
 <input type="password" id="pin" placeholder="6-digit PIN">
@@ -105,16 +88,10 @@ button:hover{opacity:0.9;}
 </div>
 
 <script>
-// Apply saved theme
-if(localStorage.getItem("theme")==="dark") {
-  document.body.classList.add("dark");
-}
-
 // Check if user exists when mobile is entered
 function checkUser(){
   const country = document.getElementById("country").value.trim();
   const mobile = document.getElementById("mobile").value.trim();
-
   if(!country || !mobile) return;
 
   const fullMobile = country + " " + mobile;
@@ -125,15 +102,13 @@ function checkUser(){
   const status = document.getElementById("userStatus");
 
   if(users[fullMobile]){
-    // Existing user
     nameField.classList.add("hidden");
     nameLabel.classList.add("hidden");
-    status.textContent = "Welcome back! Please enter your PIN.";
+    status.textContent = "Welcome back! Enter your PIN.";
   } else {
-    // New user
     nameField.classList.remove("hidden");
     nameLabel.classList.remove("hidden");
-    status.textContent = "New user? Please enter your name to create account.";
+    status.textContent = "New user? Enter your name, mobile number, and PIN.";
   }
 }
 
@@ -148,53 +123,27 @@ function login(){
   const mobileRegex=/^\d{6,12}$/;
   const pinRegex=/^\d{6}$/;
 
-  if(!countryRegex.test(country)){
-    alert("Invalid country code!");
-    return;
-  }
-
-  if(!mobileRegex.test(mobile)){
-    alert("Invalid mobile number!");
-    return;
-  }
-
-  if(!pinRegex.test(pin)){
-    alert("PIN must be 6 digits!");
-    return;
-  }
+  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
+  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
+  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
 
   const fullMobile = country + " " + mobile;
   let users = JSON.parse(localStorage.getItem("users")) || {};
 
-  // NEW USER
   if(!users[fullMobile]){
-    if(name.length < 2){
-      alert("Enter your name to create account.");
-      return;
-    }
-
-    users[fullMobile] = {
-      name: name,
-      pin: pin,
-      progress: {}
-    };
-
-    alert("Account created successfully!");
-  } 
-  // EXISTING USER
-  else {
-    if(users[fullMobile].pin !== pin){
-      alert("Incorrect PIN!");
-      return;
-    }
+    // NEW USER → save & go to welcome page
+    if(name.length < 2){alert("Enter your name to create account."); return;}
+    users[fullMobile] = {name:name, pin:pin, progress:{}};
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", fullMobile);
+    window.location.href="welcome.html";
+  } else {
+    // RETURNING USER → validate PIN & go to dashboard
+    if(users[fullMobile].pin !== pin){alert("Incorrect PIN!"); return;}
+    localStorage.setItem("currentUser", fullMobile);
+    window.location.href="dashboard.html";
   }
-
-  localStorage.setItem("users", JSON.stringify(users));
-  localStorage.setItem("currentUser", fullMobile);
-
-  window.location.href = "welcome.html";
 }
 </script>
-
 </body>
 </html>
