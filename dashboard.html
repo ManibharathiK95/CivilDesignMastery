@@ -1,197 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - Civil Design Mastery</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Civil Design Mastery</title>
 
-  <style>
-    :root {
-      --bg: #f4f6f9;
-      --text: #222;
-      --card: #ffffff;
-      --primary: #2a7de1;
-    }
+<style>
+:root{
+  --bg:#f4f6f9;
+  --sidebar:#1e293b;
+  --sidebar-text:#cbd5e1;
+  --primary:#2a7de1;
+  --card:#fff;
+}
 
-    body.dark {
-      --bg: #121212;
-      --text: #f1f1f1;
-      --card: #1e1e1e;
-      --primary: #4da3ff;
-    }
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  display:flex;
+  background:var(--bg);
+}
 
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:var(--sidebar);
+  color:white;
+  height:100vh;
+  padding:20px;
+  box-sizing:border-box;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 25px;
-      background: var(--card);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+.sidebar h2{
+  margin-bottom:20px;
+}
 
-    .theme-toggle {
-      cursor: pointer;
-    }
+.menu-item{
+  margin-bottom:10px;
+  cursor:pointer;
+  font-weight:600;
+}
 
-    .container {
-      padding: 20px;
-    }
+.submenu{
+  margin-left:10px;
+  display:none;
+}
 
-    .welcome {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
+.submenu div{
+  padding:8px;
+  margin:5px 0;
+  background:#334155;
+  border-radius:6px;
+  cursor:pointer;
+}
 
-    .progress-bar {
-      background: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 25px;
-    }
+.submenu div:hover{
+  background:var(--primary);
+}
 
-    .progress {
-      height: 15px;
-      background: var(--primary);
-      width: 0%;
-    }
+/* MAIN */
+.main{
+  flex:1;
+  padding:30px;
+}
 
-    .phases {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .card {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h3 {
-      margin-top: 0;
-    }
-
-    .logout {
-      margin-top: 20px;
-      color: red;
-      cursor: pointer;
-    }
-  </style>
+h1{
+  margin-top:0;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <div><strong>Civil Design Mastery</strong></div>
-  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
-</header>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>📘 Civil Mastery</h2>
 
-<div class="container">
-
-  <div class="welcome" id="welcomeText"></div>
-
-  <div class="progress-bar">
-    <div class="progress" id="progressBar"></div>
+  <!-- PHASE 1 -->
+  <div class="menu-item" onclick="toggleMenu('phase1')">
+    Phase 1 ▼
+  </div>
+  <div id="phase1" class="submenu">
+    <div onclick="loadLesson('Intro to Engineering')">Intro to Engineering</div>
+    <div onclick="loadLesson('Basic Math')">Basic Math</div>
+    <div onclick="loadLesson('Drawing Basics')">Drawing Basics</div>
   </div>
 
-  <div class="phases">
-    <div class="card" onclick="goPhase(1)">
-      <h3>Phase 1</h3>
-      <p>Fundamentals of Civil Design</p>
-    </div>
-
-    <div class="card" onclick="goPhase(2)">
-      <h3>Phase 2</h3>
-      <p>Concrete Design Mastery</p>
-    </div>
-
-    <div class="card" onclick="goPhase(3)">
-      <h3>Phase 3</h3>
-      <p>PT (Post-Tension) Design</p>
-    </div>
-
-    <div class="card" onclick="goMockTest()">
-      <h3>Final Mock Test</h3>
-      <p>Dubai GVIT Exam Simulation</p>
-    </div>
-
-    <div class="card" onclick="goMistakes()">
-      <h3>Common Mistakes</h3>
-      <p>Beginner errors & fixes</p>
-    </div>
+  <!-- PHASE 2 -->
+  <div class="menu-item" onclick="toggleMenu('phase2')">
+    Phase 2 ▼
   </div>
-
-  <div class="logout" onclick="logout()">Logout</div>
+  <div id="phase2" class="submenu">
+    <div onclick="loadLesson('Structural Design')">Structural Design</div>
+    <div onclick="loadLesson('Concrete Technology')">Concrete Technology</div>
+    <div onclick="loadLesson('Site Planning')">Site Planning</div>
+  </div>
 
 </div>
 
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="card" id="content">
+    <h1>Welcome 👋</h1>
+    <p>Select a lesson from the sidebar to begin.</p>
+  </div>
+</div>
+
 <script>
-  // Theme Load
-  if(localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-  }
+// Toggle submenu
+function toggleMenu(id){
+  const menu = document.getElementById(id);
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
 
-  function toggleTheme() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-  }
+// Load lesson dynamically
+function loadLesson(title){
+  document.getElementById("content").innerHTML = `
+    <h1>${title}</h1>
+    <p>This is your lesson content for <strong>${title}</strong>.</p>
+    <p>Here you can add videos, PDFs, notes, etc.</p>
+  `;
+}
 
-  // Auth Check
-  const currentUser = localStorage.getItem("currentUser");
-  if (!currentUser) {
-    window.location.href = "index.html";
-  }
-
-  const users = JSON.parse(localStorage.getItem("users")) || {};
-  const userData = users[currentUser];
-
-  document.getElementById("welcomeText").innerText =
-    "Welcome, " + userData.name + " 👋";
-
-  // Progress Calculation
-  function calculateProgress() {
-    let progress = userData.progress || {};
-    let totalLessons = 15; // will adjust as you add lessons
-    let completed = Object.keys(progress).length;
-
-    let percent = Math.min((completed / totalLessons) * 100, 100);
-
-    document.getElementById("progressBar").style.width = percent + "%";
-  }
-
-  calculateProgress();
-
-  // Navigation
-  function goPhase(p) {
-    window.location.href = "phase" + p + ".html";
-  }
-
-  function goMockTest() {
-    window.location.href = "mocktest.html";
-  }
-
-  function goMistakes() {
-    window.location.href = "mistakes.html";
-  }
-
-  function logout() {
-    localStorage.removeItem("currentUser");
-    window.location.href = "index.html";
-  }
+// Optional: Show logged-in user
+const currentUser = localStorage.getItem("currentUser");
+if(currentUser){
+  console.log("Logged in as:", currentUser);
+}
 </script>
 
 </body>
-</html>
+</html>v
