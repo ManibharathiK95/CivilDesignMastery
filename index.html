@@ -1,135 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Civil Design Mastery</title>
-<style>
-:root{--bg:#f4f6f9;--sidebar:#1e293b;--primary:#2a7de1;--card:#fff;}
-body{margin:0;font-family:"Segoe UI",sans-serif;display:flex;background:var(--bg);}
-.sidebar{width:260px;background:var(--sidebar);color:white;height:100vh;padding:20px;box-sizing:border-box;}
-.sidebar h2{margin-bottom:20px;}
-.menu-item{margin-bottom:10px;cursor:pointer;font-weight:600;}
-.submenu{margin-left:10px;display:block;}
-.submenu div{
-  padding:8px;margin:5px 0;background:#334155;border-radius:6px;cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.submenu div:hover{background:var(--primary);}
-.submenu div.locked{background:#1f2937;cursor:not-allowed;opacity:0.6;}
-.main{flex:1;padding:30px;}
-.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-h1{margin-top:0;}
-button.logout{
-  margin-top:15px;padding:8px 15px;background:#ef4444;color:white;border:none;border-radius:8px;cursor:pointer;
-}
-button.logout:hover{opacity:0.9;}
-button.complete-btn{
-  margin-top:15px;padding:8px 12px;background:#34d399;color:white;border:none;border-radius:8px;cursor:pointer;
-}
-button.complete-btn:hover{opacity:0.9;}
-.completed::after{content:"✓";color:#34d399;margin-left:8px;font-weight:bold;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civil Design Mastery - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 80px auto;
+      padding: 24px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      background: #2a7de1;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Login</h2>
 
-<div class="sidebar">
-  <h2>📘 Civil Mastery</h2>
-  <button class="logout" onclick="logout()">Logout</button>
+    <input id="name" placeholder="Name" autocomplete="name" />
 
-  <!-- PHASE 1 -->
-  <div class="menu-item">Phase 1</div>
-  <div id="phase1" class="submenu">
-    <div id="lesson1" onclick="loadLesson('lesson1')">Intro to Engineering</div>
-    <div id="lesson2" onclick="loadLesson('lesson2')">Basic Math</div>
-    <div id="lesson3" onclick="loadLesson('lesson3')">Drawing Basics</div>
+    <div class="row">
+      <input id="country" placeholder="+91" autocomplete="tel-country-code" />
+      <input id="mobile" placeholder="9876543210" autocomplete="tel-national" />
+    </div>
+
+    <input
+      id="pin"
+      placeholder="6-digit PIN"
+      type="password"
+      inputmode="numeric"
+      maxlength="6"
+      autocomplete="current-password"
+    />
+
+    <button onclick="login()">Login</button>
   </div>
 
-  <!-- PHASE 2 -->
-  <div class="menu-item">Phase 2</div>
-  <div id="phase2" class="submenu">
-    <div id="lesson4" class="locked" onclick="loadLesson('lesson4')">Structural Design</div>
-    <div id="lesson5" class="locked" onclick="loadLesson('lesson5')">Concrete Technology</div>
-    <div id="lesson6" class="locked" onclick="loadLesson('lesson6')">Site Planning</div>
-  </div>
-</div>
-
-<div class="main">
-  <div class="card" id="content">
-    <h1 id="welcomeText">Welcome 👋</h1>
-    <p>Select a lesson from the sidebar to begin.</p>
-  </div>
-</div>
-
-<script>
-// Protect dashboard if not logged in
-const currentUser = localStorage.getItem("currentUser");
-let users = JSON.parse(localStorage.getItem("users")) || {};
-if(!currentUser || !users[currentUser]){window.location.href="index.html";}
-
-// Show welcome with name
-document.getElementById("welcomeText").innerText = "Welcome, " + users[currentUser].name + " 👋";
-
-// Initialize progress
-if(!users[currentUser].progress) users[currentUser].progress = {};
-updateLessons();
-
-// Load lesson content
-function loadLesson(id){
-  // Lock check
-  const lesson = document.getElementById(id);
-  if(lesson.classList.contains('locked')) return;
-
-  // First lesson fully implemented
-  if(id === "lesson1"){
-    document.getElementById("content").innerHTML = `
-      <h1>Intro to Engineering</h1>
-      <p>Welcome to Civil Design Mastery! This lesson covers the basics of engineering principles, drawing, and measurement.</p>
-      <ul>
-        <li>Understanding engineering design</li>
-        <li>Basic drawing techniques</li>
-        <li>Measuring tools and units</li>
-      </ul>
-      <button class="complete-btn" onclick="markCompleted('lesson1')">Mark as Completed</button>
-    `;
-  } else {
-    document.getElementById("content").innerHTML = `
-      <h1>${lesson.innerText}</h1>
-      <p>This is your lesson content for <strong>${lesson.innerText}</strong>.</p>
-      <button class="complete-btn" onclick="markCompleted('${id}')">Mark as Completed</button>
-    `;
-  }
-}
-
-// Mark lesson as completed manually
-function markCompleted(id){
-  users[currentUser].progress[id] = true;
-  localStorage.setItem("users", JSON.stringify(users));
-  updateLessons();
-}
-
-// Update lessons completion and Phase2 unlock
-function updateLessons(){
-  // Phase 1 lessons
-  ['lesson1','lesson2','lesson3'].forEach(id=>{
-    const lesson = document.getElementById(id);
-    if(users[currentUser].progress[id]){
-      lesson.classList.add('completed');
+  <script>
+    function getUsers() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("users"));
+        return raw && typeof raw === "object" ? raw : {};
+      } catch {
+        return {};
+      }
     }
-  });
-  // Unlock Phase2 if all Phase1 done
-  const phase1Done = ['lesson1','lesson2','lesson3'].every(id=>users[currentUser].progress[id]);
-  ['lesson4','lesson5','lesson6'].forEach(id=>{
-    const lesson = document.getElementById(id);
-    if(phase1Done){
-      lesson.classList.remove('locked');
-    } else {
-      lesson.classList.add('locked');
-      lesson.classList.remove('completed');
+
+    function setUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
     }
-  });
-}
-}
-</script>
+
+    function validateForm(name, country, mobile, pin) {
+      if (name.length < 2) return "Enter a valid name";
+      if (!/^\+\d{1,4}$/.test(country)) return "Country code must be like +91";
+      if (!/^\d{6,15}$/.test(mobile)) return "Mobile must be 6-15 digits";
+      if (!/^\d{6}$/.test(pin)) return "PIN must be exactly 6 digits";
+      return "";
+    }
+
+    function login() {
+      const name = document.getElementById("name").value.trim();
+      const country = document.getElementById("country").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const pin = document.getElementById("pin").value.trim();
+
+      const error = validateForm(name, country, mobile, pin);
+      if (error) {
+        alert(error);
+        return;
+      }
+
+      const key = `${country} ${mobile}`;
+      const users = getUsers();
+      const existing = users[key];
+
+      if (!existing) {
+        users[key] = { name, pin, progress: {} };
+      } else {
+        if (existing.pin !== pin) {
+          localStorage.removeItem("currentUser");
+          alert("Wrong PIN");
+          return;
+        }
+        existing.name = name;
+        existing.progress = existing.progress || {};
+      }
+
+      setUsers(users);
+      localStorage.setItem("currentUser", key);
+      window.location.href = "welcome.html";
+    }
+  </script>
 </body>
 </html>
