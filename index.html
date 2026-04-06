@@ -6,25 +6,76 @@
 <title>Civil Design Mastery - Login</title>
 <style>
 :root {
-  --bg: #f4f6f9;
-  --text: #222;
-  --card: #fff;
-  --primary: #2a7de1;
+  --bg:#f4f6f9;
+  --text:#222;
+  --card:#fff;
+  --primary:#2a7de1;
+  --input-bg:#fff;
+  --input-border:#ccc;
 }
 body.dark {
-  --bg: #121212;
-  --text: #f1f1f1;
-  --card: #1e1e1e;
-  --primary: #4da3ff;
+  --bg:#e0e0e0;       /* light-dark instead of full black */
+  --text:#111;
+  --card:#d6d6d6;
+  --primary:#4da3ff;
+  --input-bg:#f0f0f0;
+  --input-border:#999;
 }
-body { margin:0; font-family:"Segoe UI",sans-serif; background:var(--bg); color:var(--text);}
-.container { max-width:400px; margin:80px auto; padding:20px; background:var(--card); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-h1 { text-align:center; margin-bottom:20px;}
-input { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc;}
-button { width:100%; padding:10px; margin:10px 0; background:var(--primary); color:white; border:none; border-radius:6px; cursor:pointer;}
-button:hover{opacity:0.9;}
-.theme-toggle{position:absolute; top:20px; right:20px; background:none; border:none; font-size:20px; cursor:pointer;}
-p.instructions{font-size:0.9em; color:#555;}
+body {
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.container {
+  max-width:400px;
+  margin:100px auto;
+  padding:30px;
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align:center;
+  margin-bottom:25px;
+}
+input {
+  width:100%;
+  padding:12px;
+  margin:12px 0;
+  border-radius:8px;
+  border:1px solid var(--input-border);
+  background:var(--input-bg);
+  font-size:1em;
+}
+label { font-size:0.9em; }
+button {
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1em;
+}
+button:hover { opacity:0.9; }
+.theme-toggle {
+  position:absolute;
+  top:15px;
+  right:15px;
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+}
+p.instructions {
+  font-size:0.9em;
+  color:#555;
+  margin-top:-8px;
+  margin-bottom:12px;
+}
 </style>
 </head>
 <body>
@@ -33,34 +84,55 @@ p.instructions{font-size:0.9em; color:#555;}
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
-<p class="instructions">Enter mobile number with country code (e.g., +91 9876543210, +971 445564215) and a 6-digit PIN.</p>
+<label for="name">Name</label>
+<input type="text" id="name" placeholder="Your Name">
 
-<input type="text" id="mobile" placeholder="Mobile Number + Country Code">
+<label for="mobile">Country Code + Mobile Number</label>
+<input type="text" id="mobile" placeholder="+91 9876543210">
+<p class="instructions">Give 6-digit PIN below.</p>
+
+<label for="pin">6-digit PIN</label>
 <input type="password" id="pin" placeholder="6-digit PIN">
 
 <button onclick="login()">Login / Create Account</button>
 </div>
 
 <script>
+// Theme toggle
 if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
 function toggleTheme(){
   document.body.classList.toggle("dark");
   localStorage.setItem("theme", document.body.classList.contains("dark")?"dark":"light");
 }
 
+// Login logic
 function login(){
-  const mobile=document.getElementById("mobile").value.trim();
-  const pin=document.getElementById("pin").value.trim();
-  const pinRegex=/^\d{6}$/;
-  const mobileRegex=/^\+\d{1,4}\s\d{6,12}$/; // simple validation
+  const name = document.getElementById("name").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const pin = document.getElementById("pin").value.trim();
 
-  if(!mobileRegex.test(mobile)){ alert("Enter valid mobile with country code!"); return;}
-  if(!pinRegex.test(pin)){ alert("PIN must be 6 digits!"); return;}
+  // Name validation
+  if(name.length < 2){ alert("Enter a valid name."); return; }
 
-  let users=JSON.parse(localStorage.getItem("users"))||{};
-  if(!users[mobile]){ users[mobile]={pin:pin, progress:{}}; }
-  localStorage.setItem("users",JSON.stringify(users));
-  localStorage.setItem("currentUser",mobile);
+  // Country code + mobile validation
+  const mobileRegex = /^\+\d{1,4}\s\d{6,12}$/; // +XX 12345678...
+  if(!mobileRegex.test(mobile)){ alert("Enter valid country code + mobile number!"); return; }
+
+  // PIN validation
+  const pinRegex = /^\d{6}$/;
+  if(!pinRegex.test(pin)){ alert("PIN must be 6 digits!"); return; }
+
+  // Save to localStorage
+  let users = JSON.parse(localStorage.getItem("users"))||{};
+  if(!users[mobile]){
+    users[mobile] = {name:name, pin:pin, progress:{}};
+  } else {
+    // Existing user, check PIN
+    if(users[mobile].pin !== pin){ alert("Incorrect PIN!"); return; }
+  }
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", mobile);
+
   window.location.href="phase1.html";
 }
 </script>
