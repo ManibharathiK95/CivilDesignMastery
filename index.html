@@ -26,6 +26,7 @@ input{
   margin:10px 0;
   border-radius:6px;
   border:1px solid #ccc;
+  box-sizing:border-box;
 }
 .row{
   display:flex;
@@ -48,59 +49,61 @@ button{
 <div class="container">
 <h2>Login</h2>
 
-<input id="name" placeholder="Name">
+<input id="name" placeholder="Name" autocomplete="name">
 
 <div class="row">
-  <input id="country" placeholder="+91">
-  <input id="mobile" placeholder="9876543210">
+  <input id="country" placeholder="+XX" autocomplete="tel-country-code">
+  <input id="mobile" placeholder="" autocomplete="tel-national">
 </div>
 
-<input id="pin" placeholder="6-digit PIN">
+<input id="pin" placeholder="6-digit PIN" inputmode="numeric" maxlength="6" type="password" autocomplete="current-password">
 
 <button onclick="login()">Login</button>
 </div>
 
 <script>
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("users")) || {};
+  } catch {
+    return {};
+  }
+}
+
+function setUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
 function login(){
-  try{
-    const name = document.getElementById("name").value.trim();
-    const country = document.getElementById("country").value.trim();
-    const mobile = document.getElementById("mobile").value.trim();
-    const pin = document.getElementById("pin").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const country = document.getElementById("country").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const pin = document.getElementById("pin").value.trim();
 
-    console.log("Inputs:", name, country, mobile, pin);
+  if(name.length < 2){ alert("Enter name"); return; }
+  if(!country.startsWith("+")){ alert("Country code must start with +"); return; }
+  if(!/^\d{6,15}$/.test(mobile)){ alert("Mobile must be 6-15 digits"); return; }
+  if(!/^\d{6}$/.test(pin)){ alert("PIN must be exactly 6 digits"); return; }
 
-    // Validation
-    if(name.length < 2){ alert("Enter name"); return; }
-    if(!country.startsWith("+")){ alert("Country code must start with +"); return; }
-    if(mobile.length < 6){ alert("Invalid mobile"); return; }
-    if(pin.length !== 6){ alert("PIN must be 6 digits"); return; }
+  const key = `${country} ${mobile}`;
+  const users = getUsers();
 
-    const key = country + " " + mobile;
-
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-
-    if(!users[key]){
-      users[key] = { name:name, pin:pin, progress:{} };
-    } else {
-      if(users[key].pin !== pin){
-        alert("Wrong PIN");
-        return;
-      }
+  if(!users[key]){
+    users[key] = { name, pin, progress:{} };
+  } else {
+    if(users[key].pin !== pin){
+      alert("Wrong PIN");
+      return;
     }
 
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("currentUser", key);
-
-    console.log("Saved. Redirecting...");
-
-    // 🔥 HARD redirect
-    window.location.href = "welcome.html";
-
-  } catch(err){
-    alert("Error: " + err.message);
-    console.error(err);
+    // Keep name in sync if user updates their display name.
+    users[key].name = name;
   }
+
+  setUsers(users);
+  localStorage.setItem("currentUser", key);
+
+  window.location.href = "welcome.html";
 }
 </script>
 
