@@ -3,146 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Civil Design Mastery - Login</title>
+<title>Dashboard - Civil Design Mastery</title>
 <style>
-:root{
-  --bg:#f4f6f9;
-  --text:#222;
-  --card:#fff;
-  --primary:#2a7de1;
-  --input-bg:#fff;
-  --input-border:#ccc;
-  --input-text:#222;
+:root{--bg:#f4f6f9;--sidebar:#1e293b;--primary:#2a7de1;--card:#fff;}
+body{margin:0;font-family:"Segoe UI",sans-serif;display:flex;background:var(--bg);}
+.sidebar{width:260px;background:var(--sidebar);color:white;height:100vh;padding:20px;box-sizing:border-box;}
+.sidebar h2{margin-bottom:20px;}
+.menu-item{margin-bottom:10px;cursor:pointer;font-weight:600;}
+.submenu{margin-left:10px;display:block;}
+.submenu div{
+  padding:8px;margin:5px 0;background:#334155;border-radius:6px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
 }
-body{
-  margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
+.submenu div:hover{background:var(--primary);}
+.submenu div.locked{background:#1f2937;cursor:not-allowed;opacity:0.6;}
+.main{flex:1;padding:30px;}
+.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+h1{margin-top:0;}
+button.logout{
+  margin-top:15px;padding:8px 15px;background:#ef4444;color:white;border:none;border-radius:8px;cursor:pointer;
 }
-.container{
-  max-width:450px;
-  margin:100px auto;
-  padding:30px;
-  background:var(--card);
-  border-radius:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+button.logout:hover{opacity:0.9;}
+button.complete-btn{
+  margin-top:15px;padding:8px 12px;background:#34d399;color:white;border:none;border-radius:8px;cursor:pointer;
 }
-h1{text-align:center;margin-bottom:25px;}
-label{font-size:0.95em;margin-top:10px;display:block;}
-input{
-  padding:12px;
-  margin-top:5px;
-  margin-bottom:15px;
-  border-radius:8px;
-  border:1px solid var(--input-border);
-  background:var(--input-bg);
-  font-size:1em;
-  color:var(--input-text);
-  width:100%;
-  box-sizing:border-box;
-}
-.line-flex{display:flex;justify-content:space-between;}
-.line-flex input.code{width:25%; margin-right:5%;}
-.line-flex input.mobile{width:70%;}
-button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  background:var(--primary);
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:1em;
-}
-button:hover{opacity:0.9;}
-.info{
-  font-size:0.85em;
-  color:gray;
-  margin-bottom:10px;
-}
-.hidden{display:none;}
+button.complete-btn:hover{opacity:0.9;}
+.completed::after{content:"✓";color:#34d399;margin-left:8px;font-weight:bold;}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>Civil Design Mastery</h1>
 
-<label id="nameLabel">Name</label>
-<input type="text" id="name" placeholder="Your Name">
+<div class="sidebar">
+  <h2>📘 Civil Mastery</h2>
+  <button class="logout" onclick="logout()">Logout</button>
 
-<label>Mobile Number</label>
-<div class="line-flex">
-  <input type="text" id="country" class="code" placeholder="Country Code">
-  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number" onblur="checkUser()">
+  <!-- PHASE 1 -->
+  <div class="menu-item">Phase 1</div>
+  <div id="phase1" class="submenu">
+    <div id="lesson1" onclick="loadLesson('lesson1')">Intro to Engineering</div>
+    <div id="lesson2" onclick="loadLesson('lesson2')">Basic Math</div>
+    <div id="lesson3" onclick="loadLesson('lesson3')">Drawing Basics</div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="menu-item">Phase 2</div>
+  <div id="phase2" class="submenu">
+    <div id="lesson4" class="locked" onclick="loadLesson('lesson4')">Structural Design</div>
+    <div id="lesson5" class="locked" onclick="loadLesson('lesson5')">Concrete Technology</div>
+    <div id="lesson6" class="locked" onclick="loadLesson('lesson6')">Site Planning</div>
+  </div>
 </div>
 
-<p class="info" id="userStatus">New user? Enter your name, mobile number, and PIN.<br>
-Returning user? Enter mobile number and PIN only.</p>
-
-<label for="pin">PIN</label>
-<input type="password" id="pin" placeholder="6-digit PIN">
-
-<button onclick="login()">Login / Create Account</button>
+<div class="main">
+  <div class="card" id="content">
+    <h1 id="welcomeText">Welcome 👋</h1>
+    <p>Select a lesson from the sidebar to begin.</p>
+  </div>
 </div>
 
 <script>
-// Check if user exists when mobile is entered
-function checkUser(){
-  const country = document.getElementById("country").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  if(!country || !mobile) return;
+// Protect dashboard if not logged in
+const currentUser = localStorage.getItem("currentUser");
+let users = JSON.parse(localStorage.getItem("users")) || {};
+if(!currentUser || !users[currentUser]){window.location.href="index.html";}
 
-  const fullMobile = country + " " + mobile;
-  let users = JSON.parse(localStorage.getItem("users")) || {};
+// Show welcome with name
+document.getElementById("welcomeText").innerText = "Welcome, " + users[currentUser].name + " 👋";
 
-  const nameField = document.getElementById("name");
-  const nameLabel = document.getElementById("nameLabel");
-  const status = document.getElementById("userStatus");
+// Initialize progress
+if(!users[currentUser].progress) users[currentUser].progress = {};
+updateLessons();
 
-  if(users[fullMobile]){
-    nameField.classList.add("hidden");
-    nameLabel.classList.add("hidden");
-    status.textContent = "Welcome back! Enter your PIN.";
+// Load lesson content
+function loadLesson(id){
+  // Lock check
+  const lesson = document.getElementById(id);
+  if(lesson.classList.contains('locked')) return;
+
+  // First lesson fully implemented
+  if(id === "lesson1"){
+    document.getElementById("content").innerHTML = `
+      <h1>Intro to Engineering</h1>
+      <p>Welcome to Civil Design Mastery! This lesson covers the basics of engineering principles, drawing, and measurement.</p>
+      <ul>
+        <li>Understanding engineering design</li>
+        <li>Basic drawing techniques</li>
+        <li>Measuring tools and units</li>
+      </ul>
+      <button class="complete-btn" onclick="markCompleted('lesson1')">Mark as Completed</button>
+    `;
   } else {
-    nameField.classList.remove("hidden");
-    nameLabel.classList.remove("hidden");
-    status.textContent = "New user? Enter your name, mobile number, and PIN.";
+    document.getElementById("content").innerHTML = `
+      <h1>${lesson.innerText}</h1>
+      <p>This is your lesson content for <strong>${lesson.innerText}</strong>.</p>
+      <button class="complete-btn" onclick="markCompleted('${id}')">Mark as Completed</button>
+    `;
   }
 }
 
-// Login logic
-function login(){
-  const name = document.getElementById("name").value.trim();
-  const country = document.getElementById("country").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  const pin = document.getElementById("pin").value.trim();
+// Mark lesson as completed manually
+function markCompleted(id){
+  users[currentUser].progress[id] = true;
+  localStorage.setItem("users", JSON.stringify(users));
+  updateLessons();
+}
 
-  const countryRegex=/^\+\d{1,4}$/;
-  const mobileRegex=/^\d{6,12}$/;
-  const pinRegex=/^\d{6}$/;
+// Update lessons completion and Phase2 unlock
+function updateLessons(){
+  // Phase 1 lessons
+  ['lesson1','lesson2','lesson3'].forEach(id=>{
+    const lesson = document.getElementById(id);
+    if(users[currentUser].progress[id]){
+      lesson.classList.add('completed');
+    }
+  });
+  // Unlock Phase2 if all Phase1 done
+  const phase1Done = ['lesson1','lesson2','lesson3'].every(id=>users[currentUser].progress[id]);
+  ['lesson4','lesson5','lesson6'].forEach(id=>{
+    const lesson = document.getElementById(id);
+    if(phase1Done){
+      lesson.classList.remove('locked');
+    } else {
+      lesson.classList.add('locked');
+      lesson.classList.remove('completed');
+    }
+  });
+}
 
-  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
-  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
-  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
-
-  const fullMobile = country + " " + mobile;
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-
-  if(!users[fullMobile]){
-    // NEW USER → save & go to welcome page
-    if(name.length < 2){alert("Enter your name to create account."); return;}
-    users[fullMobile] = {name:name, pin:pin, progress:{}};
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("currentUser", fullMobile);
-    window.location.href="welcome.html";
-  } else {
-    // RETURNING USER → validate PIN & go to dashboard
-    if(users[fullMobile].pin !== pin){alert("Incorrect PIN!"); return;}
-    localStorage.setItem("currentUser", fullMobile);
-    window.location.href="dashboard.html";
-  }
+// Logout
+function logout(){
+  localStorage.removeItem("currentUser");
+  window.location.href="index.html";
 }
 </script>
 </body>
