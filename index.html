@@ -108,7 +108,7 @@
   <button onclick="login()">Login / Register</button>
 
   <div class="note">
-    New user? Just enter mobile + PIN to create account
+    New user? Enter full name, mobile + PIN to create account
   </div>
 </div>
 
@@ -123,53 +123,53 @@
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
   }
 
-function login() {
-  const name = document.getElementById("name").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  const pin = document.getElementById("pin").value.trim();
-  const errorDiv = document.getElementById("error");
+  function login() {
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const pin = document.getElementById("pin").value.trim();
+    const errorDiv = document.getElementById("error");
 
-  errorDiv.innerText = "";
+    errorDiv.innerText = "";
 
-  if (!mobile || mobile.length < 8) {
-    errorDiv.innerText = "Enter valid mobile number";
-    return;
-  }
-
-  if (!/^\d{6}$/.test(pin)) {
-    errorDiv.innerText = "PIN must be exactly 6 digits";
-    return;
-  }
-
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-
-  if (users[mobile]) {
-    // Existing user login
-    if (users[mobile].pin === pin) {
-      localStorage.setItem("currentUser", mobile);
-      window.location.href = "dashboard.html";
-    } else {
-      errorDiv.innerText = "Incorrect PIN";
-    }
-  } else {
-    // New user - require name
-    if (!name || name.length < 3) {
-      errorDiv.innerText = "Enter your full name";
+    if (!mobile || mobile.length < 8) {
+      errorDiv.innerText = "Enter valid mobile number";
       return;
     }
 
-    users[mobile] = {
-      name: name,
-      pin: pin,
-      progress: {}
-    };
+    if (!/^\d{6}$/.test(pin)) {
+      errorDiv.innerText = "PIN must be exactly 6 digits";
+      return;
+    }
 
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("currentUser", mobile);
+    let users = JSON.parse(localStorage.getItem("users")) || {};
 
-    window.location.href = "dashboard.html";
+    if (users[mobile]) {
+      // Existing user login
+      if (users[mobile].pin === pin) {
+        localStorage.setItem("currentUser", mobile);
+        window.location.href = "dashboard.html";
+      } else {
+        errorDiv.innerText = "Incorrect PIN";
+      }
+    } else {
+      // New user - require name
+      if (!name || name.length < 3) {
+        errorDiv.innerText = "Enter your full name";
+        return;
+      }
+
+      users[mobile] = {
+        name: name,
+        pin: pin,
+        progress: {}
+      };
+
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", mobile);
+
+      window.location.href = "dashboard.html";
+    }
   }
-}
 </script>
 
 </body>
