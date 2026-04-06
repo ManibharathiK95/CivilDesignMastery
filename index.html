@@ -82,19 +82,19 @@ button:hover{opacity:0.9;}
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
-<label id="nameLabel">Name</label>
-<input type="text" id="name" placeholder="Your Name">
-
-<label>Mobile Number</label>
-<div class="line-flex">
-  <input type="text" id="country" class="code" placeholder="+971">
-  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number" onblur="checkUser()">
-</div>
-
 <p class="info">
 New user? Enter your name, mobile number, and PIN.<br>
 Returning user? Enter mobile number and PIN only.
 </p>
+
+<label id="nameLabel">Full Name</label>
+<input type="text" id="name" placeholder="Your Name">
+
+<label>Mobile Number</label>
+<div class="line-flex">
+  <input type="text" id="country" class="code" placeholder="Code">
+  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number" onblur="checkUser()">
+</div>
   
 <p class="info" id="userStatus"></p>
 
@@ -128,12 +128,12 @@ function checkUser(){
     // Existing user
     nameField.classList.add("hidden");
     nameLabel.classList.add("hidden");
-    status.textContent = "Welcome back! Enter your PIN.";
+    status.textContent = "Welcome back! Please enter your PIN.";
   } else {
     // New user
     nameField.classList.remove("hidden");
     nameLabel.classList.remove("hidden");
-    status.textContent = "New user? Enter your name to create account.";
+    status.textContent = "New user? Please enter your name to create account.";
   }
 }
 
@@ -187,8 +187,6 @@ function login(){
       alert("Incorrect PIN!");
       return;
     }
-
-    alert("Login successful!");
   }
 
   localStorage.setItem("users", JSON.stringify(users));
