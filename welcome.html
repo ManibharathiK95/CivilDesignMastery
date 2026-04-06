@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome - Civil Design Mastery</title>
+<style>
+:root{
+  --bg:#f4f6f9;
+  --text:#222;
+  --card:#fff;
+  --primary:#2a7de1;
+}
+body.dark{
+  --bg:#1f1f1f;
+  --text:#f1f1f1;
+  --card:#2a2a2a;
+  --primary:#4da3ff;
+}
+body{margin:0;font-family:"Segoe UI",sans-serif;background:var(--bg);color:var(--text);}
+.container{
+  max-width:800px;margin:80px auto;padding:30px;background:var(--card);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.1);position:relative;
+}
+h1{text-align:center;color:var(--primary);}
+h2{color:var(--primary);margin-top:20px;}
+p{margin-bottom:15px;line-height:1.6;}
+button{padding:12px 20px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:1em;display:block;margin:30px auto;}
+button:hover{opacity:0.9;}
+.theme-toggle{position:absolute;top:15px;right:15px;background:none;border:none;font-size:22px;cursor:pointer;}
+ul{margin-left:20px;}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+<div class="container">
+<h1 id="welcomeMsg">Welcome!</h1>
+
+<p>Welcome to <strong>Civil Design Mastery</strong>! This course is designed to take you from a beginner to an expert civil designer. It consists of three comprehensive phases:</p>
+
+<h2>Phase 1: Entry-Level Civil Design Concepts</h2>
+<p>Learn the fundamental concepts of civil design, including structural elements, loads, safety codes, and basic exercises with quizzes. Each lesson is designed to be engaging and clear.</p>
+
+<h2>Phase 2: Concrete Design</h2>
+<p>In-depth coverage of concrete design for various structural elements. Learn rules, formulas, sample layouts, and detailed design of beams, slabs, columns, and foundations.</p>
+
+<h2>Phase 3: PT (Post-Tensioned) Design</h2>
+<p>Advanced PT design concepts with detailed element design, sample calculations, and practical exercises. Prepare for real-world PT design scenarios confidently.</p>
+
+<button onclick="startCourse()">Agree & OK</button>
+</div>
+
+<script>
+// Theme toggle
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme",document.body.classList.contains("dark")?"dark":"light");
+}
+
+// Show user name
+const currentUser = localStorage.getItem("currentUser");
+if(!currentUser) window.location.href="index.html";
+let users = JSON.parse(localStorage.getItem("users")) || {};
+const name = users[currentUser]?.name || "User";
+document.getElementById("welcomeMsg").innerText = `Welcome, ${name}!`;
+
+// Start course button
+function startCourse(){
+  window.location.href="phase1.html";
+}
+</script>
+</body>
+</html>
