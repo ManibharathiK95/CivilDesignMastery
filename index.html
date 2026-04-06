@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Civil Design Mastery - Login</title>
+
 <style>
 :root{
   --bg:#f4f6f9;
@@ -66,20 +67,31 @@ button{
   font-size:1em;
 }
 button:hover{opacity:0.9;}
+
+.hidden{
+  display:none;
+}
+.info{
+  font-size:0.85em;
+  color:gray;
+}
 </style>
 </head>
+
 <body>
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
-<label for="name">Name</label>
+<label id="nameLabel">Name</label>
 <input type="text" id="name" placeholder="Your Name">
 
 <label>Mobile Number</label>
 <div class="line-flex">
-  <input type="text" id="country" class="code" placeholder="Country Code">
-  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number">
+  <input type="text" id="country" class="code" placeholder="+971">
+  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number" onblur="checkUser()">
 </div>
+
+<p class="info" id="userStatus"></p>
 
 <label for="pin">PIN</label>
 <input type="password" id="pin" placeholder="6-digit PIN">
@@ -88,8 +100,37 @@ button:hover{opacity:0.9;}
 </div>
 
 <script>
-// Dark theme toggle for later pages (login page fixed without toggle)
-if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+// Apply saved theme
+if(localStorage.getItem("theme")==="dark") {
+  document.body.classList.add("dark");
+}
+
+// Check if user exists when mobile is entered
+function checkUser(){
+  const country = document.getElementById("country").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+
+  if(!country || !mobile) return;
+
+  const fullMobile = country + " " + mobile;
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+
+  const nameField = document.getElementById("name");
+  const nameLabel = document.getElementById("nameLabel");
+  const status = document.getElementById("userStatus");
+
+  if(users[fullMobile]){
+    // Existing user
+    nameField.classList.add("hidden");
+    nameLabel.classList.add("hidden");
+    status.textContent = "Welcome back! Enter your PIN.";
+  } else {
+    // New user
+    nameField.classList.remove("hidden");
+    nameLabel.classList.remove("hidden");
+    status.textContent = "New user? Enter your name to create account.";
+  }
+}
 
 // Login logic
 function login(){
@@ -98,25 +139,59 @@ function login(){
   const mobile = document.getElementById("mobile").value.trim();
   const pin = document.getElementById("pin").value.trim();
 
-  if(name.length<2){alert("Enter valid name."); return;}
   const countryRegex=/^\+\d{1,4}$/;
   const mobileRegex=/^\d{6,12}$/;
-  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
-  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
   const pinRegex=/^\d{6}$/;
-  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
+
+  if(!countryRegex.test(country)){
+    alert("Invalid country code!");
+    return;
+  }
+
+  if(!mobileRegex.test(mobile)){
+    alert("Invalid mobile number!");
+    return;
+  }
+
+  if(!pinRegex.test(pin)){
+    alert("PIN must be 6 digits!");
+    return;
+  }
 
   const fullMobile = country + " " + mobile;
-  let users = JSON.parse(localStorage.getItem("users"))||{};
-  if(!users[fullMobile]){
-    users[fullMobile]={name:name,pin:pin,progress:{}};
-  } else if(users[fullMobile].pin!==pin){alert("Incorrect PIN!"); return;}
-  localStorage.setItem("users",JSON.stringify(users));
-  localStorage.setItem("currentUser",fullMobile);
+  let users = JSON.parse(localStorage.getItem("users")) || {};
 
-  // Go to welcome page
-  window.location.href="welcome.html";
+  // NEW USER
+  if(!users[fullMobile]){
+    if(name.length < 2){
+      alert("Enter your name to create account.");
+      return;
+    }
+
+    users[fullMobile] = {
+      name: name,
+      pin: pin,
+      progress: {}
+    };
+
+    alert("Account created successfully!");
+  } 
+  // EXISTING USER
+  else {
+    if(users[fullMobile].pin !== pin){
+      alert("Incorrect PIN!");
+      return;
+    }
+
+    alert("Login successful!");
+  }
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", fullMobile);
+
+  window.location.href = "welcome.html";
 }
 </script>
+
 </body>
 </html>
