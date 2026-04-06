@@ -1,163 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Design Engineer Course - Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Civil Design Mastery - Login</title>
+
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --bg: #f4f6f9;
+      --text: #222;
+      --card: #ffffff;
+      --primary: #2a7de1;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f1f1f1;
+      --card: #1e1e1e;
+      --primary: #4da3ff;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      color: #111827;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    .card {
-      width: min(420px, 92vw);
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 8px 28px rgba(0,0,0,.12);
-      padding: 28px;
+
+    .container {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
-    h1 { margin: 0 0 8px; color: #2563eb; font-size: 1.7rem; text-align: center; }
-    p { margin: 0 0 18px; color: #4b5563; text-align: center; }
-    .field { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; margin: 8px 0; font-size: 1rem; }
-    .field:focus { border-color: #2563eb; outline: 2px solid #dbeafe; }
-    .btn {
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
       width: 100%;
-      margin-top: 10px;
       padding: 12px;
-      border: 0;
+      margin-bottom: 15px;
       border-radius: 8px;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 700;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
     }
-    .btn:hover { background: #1d4ed8; }
-    .switch { margin-top: 14px; text-align: center; }
-    .switch a { color: #2563eb; font-weight: 700; cursor: pointer; text-decoration: none; }
-    .msg { display: none; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-size: .95rem; }
-    .msg.ok { display: block; background: #dcfce7; color: #166534; }
-    .msg.err { display: block; background: #fee2e2; color: #991b1b; }
-    .hidden { display: none; }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .toggle-theme {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
   </style>
 </head>
+
 <body>
-  <main class="card">
-    <h1>🎓 Design Engineer</h1>
-    <p>Course Login</p>
 
-    <div id="msg" class="msg"></div>
+<div class="toggle-theme" onclick="toggleTheme()">🌙 Toggle</div>
 
-    <section id="loginView">
-      <input id="loginEmail" class="field" type="email" placeholder="Email" autocomplete="email">
-      <input id="loginPass" class="field" type="password" placeholder="Password" autocomplete="current-password">
-      <button class="btn" id="loginBtn">Login</button>
-      <div class="switch">New user? <a id="showCreate">Create account</a></div>
-    </section>
+<div class="container">
+  <h2>Civil Design Mastery</h2>
 
-    <section id="createView" class="hidden">
-      <input id="createEmail" class="field" type="email" placeholder="Email" autocomplete="email">
-      <input id="createPass" class="field" type="password" placeholder="Password (min 6)" autocomplete="new-password">
-      <input id="createPass2" class="field" type="password" placeholder="Confirm password" autocomplete="new-password">
-      <button class="btn" id="createBtn">Create Account</button>
-      <div class="switch">Already have an account? <a id="showLogin">Login</a></div>
-    </section>
-  </main>
+  <div id="error" class="error"></div>
 
-  <script>
-    function getUsers() {
-      return JSON.parse(localStorage.getItem('demUsers') || '[]');
+  <input type="text" id="mobile" placeholder="Enter Mobile Number" />
+  <input type="password" id="pin" placeholder="Enter 6-digit PIN" maxlength="6"/>
+
+  <button onclick="login()">Login / Register</button>
+
+  <div class="note">
+    New user? Just enter mobile + PIN to create account
+  </div>
+</div>
+
+<script>
+  // Load saved theme
+  if(localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+  }
+
+  function login() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const pin = document.getElementById("pin").value.trim();
+    const errorDiv = document.getElementById("error");
+
+    errorDiv.innerText = "";
+
+    if (!mobile || mobile.length < 8) {
+      errorDiv.innerText = "Enter valid mobile number";
+      return;
     }
 
-    function saveUsers(users) {
-      localStorage.setItem('demUsers', JSON.stringify(users));
+    if (!/^\d{6}$/.test(pin)) {
+      errorDiv.innerText = "PIN must be exactly 6 digits";
+      return;
     }
 
-    function showMsg(text, type) {
-      const box = document.getElementById('msg');
-      box.textContent = text;
-      box.className = 'msg ' + type;
-    }
+    let users = JSON.parse(localStorage.getItem("users")) || {};
 
-    function hideMsg() {
-      document.getElementById('msg').className = 'msg';
-    }
-
-    function showCreate() {
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('createView').classList.remove('hidden');
-      hideMsg();
-    }
-
-    function showLogin() {
-      document.getElementById('createView').classList.add('hidden');
-      document.getElementById('loginView').classList.remove('hidden');
-      hideMsg();
-    }
-
-    function createAccount() {
-      const email = document.getElementById('createEmail').value.trim().toLowerCase();
-      const pass = document.getElementById('createPass').value;
-      const pass2 = document.getElementById('createPass2').value;
-
-      if (!email || !pass || !pass2) {
-        showMsg('Please fill all fields.', 'err');
-        return;
+    if (users[mobile]) {
+      // Existing user
+      if (users[mobile].pin === pin) {
+        localStorage.setItem("currentUser", mobile);
+        window.location.href = "dashboard.html";
+      } else {
+        errorDiv.innerText = "Incorrect PIN";
       }
-      if (pass.length < 6) {
-        showMsg('Password must be at least 6 characters.', 'err');
-        return;
-      }
-      if (pass !== pass2) {
-        showMsg('Passwords do not match.', 'err');
-        return;
-      }
+    } else {
+      // New user
+      users[mobile] = {
+        pin: pin,
+        progress: {}
+      };
 
-      const users = getUsers();
-      if (users.some(u => u.email === email)) {
-        showMsg('Email is already registered.', 'err');
-        return;
-      }
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", mobile);
 
-      users.push({ email, password: pass, progress: {}, createdAt: new Date().toISOString() });
-      saveUsers(users);
-      showMsg('Account created successfully. Please login.', 'ok');
-      showLogin();
+      window.location.href = "dashboard.html";
     }
+  }
+</script>
 
-    function login() {
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-      const pass = document.getElementById('loginPass').value;
-
-      if (!email || !pass) {
-        showMsg('Please enter email and password.', 'err');
-        return;
-      }
-
-      const user = getUsers().find(u => u.email === email);
-      if (!user) {
-        showMsg('Email not found. Create an account first.', 'err');
-        return;
-      }
-      if (user.password !== pass) {
-        showMsg('Incorrect password.', 'err');
-        return;
-      }
-
-      localStorage.setItem('myUserNow', email);
-      showMsg('Login successful. Redirecting...', 'ok');
-      setTimeout(() => { window.location.href = 'phase1.html'; }, 600);
-    }
-
-    document.getElementById('showCreate').addEventListener('click', showCreate);
-    document.getElementById('showLogin').addEventListener('click', showLogin);
-    document.getElementById('createBtn').addEventListener('click', createAccount);
-    document.getElementById('loginBtn').addEventListener('click', login);
-  </script>
 </body>
 </html>
