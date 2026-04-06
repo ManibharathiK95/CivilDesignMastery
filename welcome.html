@@ -1,30 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome - Civil Design Mastery</title>
-<style>
-body{margin:0;font-family:"Segoe UI",sans-serif;background:#f4f6f9;display:flex;justify-content:center;align-items:center;height:100vh;}
-.card{background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);text-align:center;}
-button{padding:12px 25px;margin-top:20px;background:#2a7de1;color:white;border:none;border-radius:8px;cursor:pointer;}
-button:hover{opacity:0.9;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome - Civil Design Mastery</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+
+    .card {
+      width: min(92vw, 460px);
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    p {
+      margin: 8px 0;
+      color: #444;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .primary {
+      flex: 1;
+      background: #2a7de1;
+      color: #fff;
+    }
+
+    .ghost {
+      background: #eceff4;
+      color: #222;
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-<h1>Welcome 👋</h1>
-<p>Thank you for joining Civil Design Mastery!</p>
-<p>Click below to start learning.</p>
-<button onclick="goDashboard()">Go to Dashboard</button>
-</div>
+  <div class="card">
+    <h1 id="title">Welcome 👋</h1>
+    <p id="contact"></p>
+    <p id="progress"></p>
 
-<script>
-// Redirect only if user exists
-const currentUser = localStorage.getItem("currentUser");
-if(!currentUser){window.location.href="index.html";}
+    <div class="actions">
+      <button class="primary" onclick="continueToDashboard()">Continue</button>
+      <button class="ghost" onclick="logout()">Logout</button>
+    </div>
+  </div>
 
-function goDashboard(){window.location.href="dashboard.html";}
-</script>
+  <script>
+    function getUsers() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("users"));
+        return raw && typeof raw === "object" ? raw : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function setUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function getSession() {
+      const currentUser = localStorage.getItem("currentUser");
+      const users = getUsers();
+      const user = currentUser ? users[currentUser] : null;
+
+      if (!currentUser || !user) {
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+        return null;
+      }
+
+      user.progress = user.progress || {};
+      users[currentUser] = user;
+      setUsers(users);
+
+      return { currentUser, user };
+    }
+
+    function render() {
+      const session = getSession();
+      if (!session) return;
+
+      const completed = Object.keys(session.user.progress).length;
+      document.getElementById("title").innerText = `Welcome, ${session.user.name} ✅`;
+      document.getElementById("contact").innerText = `Signed in as: ${session.currentUser}`;
+      document.getElementById("progress").innerText = `Progress synced: ${completed} lesson(s)`;
+    }
+
+    function continueToDashboard() {
+      window.location.href = "dashboard.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "index.html";
+    }
+
+    render();
+  </script>
 </body>
 </html>
