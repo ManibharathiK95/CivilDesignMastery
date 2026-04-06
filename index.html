@@ -6,130 +6,101 @@
 <title>Civil Design Mastery - Login</title>
 
 <style>
-:root{
-  --bg:#f4f6f9;
-  --text:#222;
-  --card:#fff;
-  --primary:#2a7de1;
-}
 body{
   margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
+  font-family:Arial;
+  background:#f4f6f9;
 }
 .container{
   max-width:420px;
   margin:100px auto;
-  padding:30px;
-  background:var(--card);
-  border-radius:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+  padding:25px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
-h1{text-align:center;margin-bottom:25px;}
-label{display:block;margin-top:10px;font-size:0.95em;}
+h2{text-align:center;}
 input{
   width:100%;
-  padding:12px;
-  margin-top:5px;
-  margin-bottom:15px;
-  border-radius:8px;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
   border:1px solid #ccc;
-  font-size:1em;
-  box-sizing:border-box;
 }
 .row{
   display:flex;
   gap:10px;
 }
-.row input{
-  flex:1;
-}
 button{
   width:100%;
   padding:12px;
-  background:var(--primary);
+  background:#2a7de1;
   color:white;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   cursor:pointer;
-  font-size:1em;
 }
-button:hover{opacity:0.9;}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>Civil Design Mastery</h1>
+<h2>Login</h2>
 
-<label>Name</label>
-<input type="text" id="name" placeholder="Your Name">
+<input id="name" placeholder="Name">
 
-<label>Mobile Number</label>
 <div class="row">
-  <input type="text" id="country" placeholder="Country Code">
-  <input type="text" id="mobile" placeholder="Mobile Number">
+  <input id="country" placeholder="+91">
+  <input id="mobile" placeholder="9876543210">
 </div>
 
-<label>PIN</label>
-<input type="password" id="pin" placeholder="6-digit PIN">
+<input id="pin" placeholder="6-digit PIN">
 
-<button onclick="login()">Login / Create Account</button>
+<button onclick="login()">Login</button>
 </div>
 
 <script>
 function login(){
-  const name = document.getElementById("name").value.trim();
-  const country = document.getElementById("country").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  const pin = document.getElementById("pin").value.trim();
+  try{
+    const name = document.getElementById("name").value.trim();
+    const country = document.getElementById("country").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const pin = document.getElementById("pin").value.trim();
 
-  // Validation
-  if(name.length < 2){
-    alert("Enter valid name");
-    return;
-  }
+    console.log("Inputs:", name, country, mobile, pin);
 
-  if(!/^\+\d{1,4}$/.test(country)){
-    alert("Enter country code like +91");
-    return;
-  }
+    // Validation
+    if(name.length < 2){ alert("Enter name"); return; }
+    if(!country.startsWith("+")){ alert("Country code must start with +"); return; }
+    if(mobile.length < 6){ alert("Invalid mobile"); return; }
+    if(pin.length !== 6){ alert("PIN must be 6 digits"); return; }
 
-  if(!/^\d{6,12}$/.test(mobile)){
-    alert("Enter valid mobile number");
-    return;
-  }
+    const key = country + " " + mobile;
 
-  if(!/^\d{6}$/.test(pin)){
-    alert("PIN must be 6 digits");
-    return;
-  }
+    let users = JSON.parse(localStorage.getItem("users")) || {};
 
-  const fullMobile = country + " " + mobile;
-
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-
-  // Create or validate user
-  if(!users[fullMobile]){
-    users[fullMobile] = {
-      name: name,
-      pin: pin,
-      progress: {}
-    };
-  } else {
-    if(users[fullMobile].pin !== pin){
-      alert("Incorrect PIN");
-      return;
+    if(!users[key]){
+      users[key] = { name:name, pin:pin, progress:{} };
+    } else {
+      if(users[key].pin !== pin){
+        alert("Wrong PIN");
+        return;
+      }
     }
+
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", key);
+
+    console.log("Saved. Redirecting...");
+
+    // 🔥 HARD redirect
+    window.location.href = "welcome.html";
+
+  } catch(err){
+    alert("Error: " + err.message);
+    console.error(err);
   }
-
-  localStorage.setItem("users", JSON.stringify(users));
-  localStorage.setItem("currentUser", fullMobile);
-
-  // Redirect
-  window.location.href = "welcome.html";
 }
 </script>
 
