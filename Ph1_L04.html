@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ph1_L04 - Load Calculations</title>
+
+<style>
+:root {
+  --bg: #f4f6f9;
+  --text: #222;
+  --card: #ffffff;
+  --primary: #2a7de1;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --card: #1e1e1e;
+  --primary: #4da3ff;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+header .theme-toggle { cursor: pointer; }
+
+.container { padding: 20px; max-width: 900px; margin: auto; }
+
+h1 { margin-bottom: 15px; }
+h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
+p, ul, table { margin-bottom: 15px; }
+table { width: 100%; border-collapse: collapse; }
+table, th, td { border: 1px solid #ccc; }
+th, td { padding: 8px; text-align: center; }
+
+.exercise, .quiz {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:hover { opacity: 0.9; }
+
+.back { margin-top: 20px; cursor: pointer; color: var(--primary); font-weight: bold; }
+
+.diagram { margin: 15px 0; text-align: center; }
+.diagram img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Ph1_L04 - Load Calculations</div>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+</header>
+
+<div class="container">
+  <h1>Load Calculations</h1>
+
+  <p>Load calculation is essential to ensure a structure can safely support all expected loads. These include dead, live, wind, seismic, and snow loads.</p>
+
+  <h2>Types of Loads</h2>
+  <ul>
+    <li><strong>Dead Load:</strong> Weight of structural elements themselves (beams, slabs, walls).</li>
+    <li><strong>Live Load:</strong> Occupancy, furniture, vehicles, people.</li>
+    <li><strong>Wind Load:</strong> Horizontal forces acting on building surfaces.</li>
+    <li><strong>Seismic Load:</strong> Earthquake forces based on site location.</li>
+    <li><strong>Snow Load:</strong> Weight of accumulated snow on roof (if applicable).</li>
+  </ul>
+
+  <div class="diagram">
+    <img src="images/load_types_diagram.png" alt="Load types diagram">
+    <p>Figure: Types of loads on a building (Placeholder)</p>
+  </div>
+
+  <h2>Load Combinations</h2>
+  <p>According to Dubai GVIT guidelines:</p>
+  <table>
+    <tr><th>Combination</th><th>Formula</th></tr>
+    <tr><td>1</td><td>1.2DL + 1.5LL</td></tr>
+    <tr><td>2</td><td>1.2DL + 1.5LL + 1.5WL</td></tr>
+    <tr><td>3</td><td>1.2DL + 1.5LL + 1.5EL</td></tr>
+  </table>
+
+  <div class="diagram">
+    <img src="images/load_combination.png" alt="Load combination diagram">
+    <p>Figure: Load combinations for design (Placeholder)</p>
+  </div>
+
+  <h2>Example</h2>
+  <p>Example: A floor has dead load = 2 kN/m², live load = 3 kN/m². Total load for design = 1.2*2 + 1.5*3 = 6.9 kN/m²</p>
+
+  <div class="exercise">
+    <h2>Exercise</h2>
+    <p>Calculate total design load for a beam with DL = 5 kN/m², LL = 4 kN/m², Wind load = 1.2 kN/m² using 1.2DL + 1.5LL + 1.5WL combination.</p>
+  </div>
+
+  <div class="quiz">
+    <h2>Quiz</h2>
+    <p><strong>Q1:</strong> Which load is due to people and furniture?</p>
+    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">Dead Load</label><br>
+    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">Live Load</label><br>
+    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">Wind Load</label><br>
+  </div>
+
+  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+</div>
+
+<script>
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
+}
+
+const currentUser = localStorage.getItem("currentUser");
+if (!currentUser) window.location.href="index.html";
+
+function markComplete() {
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  if (!users[currentUser].progress) users[currentUser].progress = {};
+  users[currentUser].progress["Ph1_L04"] = true;
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Lesson marked as complete! ✅ Next lesson unlocked.");
+  window.location.href = "phase1.html";
+}
+
+function goPhase1() { window.location.href="phase1.html"; }
+</script>
+
+</body>
+</html>
