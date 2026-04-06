@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ph1_L01 - Introduction to Civil Design</title>
+
+<style>
+:root {
+  --bg: #f4f6f9;
+  --text: #222;
+  --card: #ffffff;
+  --primary: #2a7de1;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --card: #1e1e1e;
+  --primary: #4da3ff;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+header .theme-toggle {
+  cursor: pointer;
+}
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+h2 {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+.exercise, .quiz {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.back {
+  margin-top: 20px;
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Ph1_L01 - Introduction to Civil Design</div>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+</header>
+
+<div class="container">
+  <h1>Introduction to Civil Design</h1>
+
+  <p>Welcome to your first lesson in Civil Design Mastery! In this lesson, we will explore the **basics of civil design**, understand its scope, and why it is crucial in every engineering project. Civil design is the foundation for creating safe, durable, and functional structures like buildings, bridges, and highways.</p>
+
+  <h2>Definition</h2>
+  <p>Civil Design refers to the process of planning, analyzing, and detailing the structural, geotechnical, and environmental aspects of construction projects. It ensures that the structure can safely withstand all loads and stresses during its lifespan.</p>
+
+  <h2>Thumb Rules</h2>
+  <ul>
+    <li>Always consider **load paths** before designing any structural element.</li>
+    <li>Safety factor for buildings usually ranges from 1.5 to 2.0 depending on codes.</li>
+    <li>Follow **local building codes** (for Dubai, refer to Dubai GVIT guidelines).</li>
+    <li>Use **simplified diagrams** to visualize forces and stresses.</li>
+  </ul>
+
+  <h2>Example</h2>
+  <p>Example: If you are designing a simply supported beam in a residential building:</p>
+  <ul>
+    <li>Determine expected live load (people, furniture) → e.g., 3 kN/m²</li>
+    <li>Determine dead load (self-weight of structure) → e.g., 2 kN/m²</li>
+    <li>Total load = 5 kN/m² → use this in bending/stress calculations</li>
+  </ul>
+
+  <div class="exercise">
+    <h2>Exercise</h2>
+    <p>Draw a simple beam and indicate the points where maximum bending occurs. Identify which sections are under tension and compression.</p>
+  </div>
+
+  <div class="quiz">
+    <h2>Quiz</h2>
+    <p><strong>Q1:</strong> What is the main goal of civil design?</p>
+    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">To create beautiful buildings only</label><br>
+    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">To ensure structures are safe and functional</label><br>
+    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">To reduce material cost at all times</label><br>
+  </div>
+
+  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+
+  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+</div>
+
+<script>
+  // Theme
+  if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
+  }
+
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) window.location.href="index.html";
+
+  function markComplete() {
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    if (!users[currentUser].progress) users[currentUser].progress = {};
+    users[currentUser].progress["Ph1_L01"] = true; // mark as completed
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Lesson marked as complete! ✅ Next lesson unlocked.");
+    window.location.href = "phase1.html";
+  }
+
+  function goPhase1() {
+    window.location.href="phase1.html";
+  }
+</script>
+
+</body>
+</html>
