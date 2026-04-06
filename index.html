@@ -4,24 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Civil Design Mastery - Login</title>
+
 <style>
 :root{
   --bg:#f4f6f9;
   --text:#222;
   --card:#fff;
   --primary:#2a7de1;
-  --input-bg:#fff;
-  --input-border:#ccc;
-  --input-text:#222;
-}
-body.dark{
-  --bg:#f1f1f1;
-  --text:#1f1f1f;
-  --card:#2a2a2a;
-  --primary:#4da3ff;
-  --input-bg:#333;
-  --input-border:#555;
-  --input-text:#f1f1f1;
 }
 body{
   margin:0;
@@ -30,7 +19,7 @@ body{
   color:var(--text);
 }
 .container{
-  max-width:450px;
+  max-width:420px;
   margin:100px auto;
   padding:30px;
   background:var(--card);
@@ -38,26 +27,27 @@ body{
   box-shadow:0 6px 18px rgba(0,0,0,0.1);
 }
 h1{text-align:center;margin-bottom:25px;}
-label{font-size:0.95em;margin-top:10px;display:block;}
+label{display:block;margin-top:10px;font-size:0.95em;}
 input{
+  width:100%;
   padding:12px;
   margin-top:5px;
   margin-bottom:15px;
   border-radius:8px;
-  border:1px solid var(--input-border);
-  background:var(--input-bg);
+  border:1px solid #ccc;
   font-size:1em;
-  color:var(--input-text);
-  width:100%;
   box-sizing:border-box;
 }
-.line-flex{display:flex;justify-content:space-between;}
-.line-flex input.code{width:25%; margin-right:5%;}
-.line-flex input.mobile{width:70%;}
+.row{
+  display:flex;
+  gap:10px;
+}
+.row input{
+  flex:1;
+}
 button{
   width:100%;
   padding:12px;
-  margin-top:10px;
   background:var(--primary);
   color:white;
   border:none;
@@ -68,30 +58,28 @@ button{
 button:hover{opacity:0.9;}
 </style>
 </head>
+
 <body>
+
 <div class="container">
 <h1>Civil Design Mastery</h1>
 
-<label for="name">Name</label>
+<label>Name</label>
 <input type="text" id="name" placeholder="Your Name">
 
 <label>Mobile Number</label>
-<div class="line-flex">
-  <input type="text" id="country" class="code" placeholder="Country Code">
-  <input type="text" id="mobile" class="mobile" placeholder="Mobile Number">
+<div class="row">
+  <input type="text" id="country" placeholder="Country Code">
+  <input type="text" id="mobile" placeholder="Mobile Number">
 </div>
 
-<label for="pin">PIN</label>
+<label>PIN</label>
 <input type="password" id="pin" placeholder="6-digit PIN">
 
 <button onclick="login()">Login / Create Account</button>
 </div>
 
 <script>
-// Dark theme toggle for later pages (login page fixed without toggle)
-if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
-
-// Login logic
 function login(){
   const name = document.getElementById("name").value.trim();
   const country = document.getElementById("country").value.trim();
@@ -105,7 +93,7 @@ function login(){
   }
 
   if(!/^\+\d{1,4}$/.test(country)){
-    alert("Enter valid country code like +91");
+    alert("Enter country code like +91");
     return;
   }
 
@@ -123,6 +111,7 @@ function login(){
 
   let users = JSON.parse(localStorage.getItem("users")) || {};
 
+  // Create or validate user
   if(!users[fullMobile]){
     users[fullMobile] = {
       name: name,
@@ -139,13 +128,10 @@ function login(){
   localStorage.setItem("users", JSON.stringify(users));
   localStorage.setItem("currentUser", fullMobile);
 
-  console.log("Login success, redirecting..."); // DEBUG
-
-  // 🔥 Force redirect
-  setTimeout(() => {
-    window.location.href = "welcome.html";
-  }, 300);
+  // Redirect
+  window.location.href = "welcome.html";
 }
 </script>
+
 </body>
 </html>
