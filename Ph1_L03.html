@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ph1_L03 - Basic Structural Concepts</title>
+
+<style>
+:root {
+  --bg: #f4f6f9;
+  --text: #222;
+  --card: #ffffff;
+  --primary: #2a7de1;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --card: #1e1e1e;
+  --primary: #4da3ff;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+header .theme-toggle { cursor: pointer; }
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+h1 { margin-bottom: 15px; }
+h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
+p, ul { margin-bottom: 15px; }
+
+.exercise, .quiz {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:hover { opacity: 0.9; }
+
+.back {
+  margin-top: 20px;
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.diagram {
+  margin: 15px 0;
+  text-align: center;
+}
+.diagram img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Simple CSS animation for bending beam */
+.beam-container {
+  position: relative;
+  height: 50px;
+  margin: 20px 0;
+}
+.beam {
+  width: 200px;
+  height: 20px;
+  background: var(--primary);
+  margin: auto;
+  border-radius: 5px;
+  animation: bend 2s infinite alternate;
+}
+@keyframes bend {
+  0% { transform: rotate(0deg) scaleX(1); }
+  50% { transform: rotate(2deg) scaleX(1.05); }
+  100% { transform: rotate(-2deg) scaleX(1.05); }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Ph1_L03 - Basic Structural Concepts</div>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+</header>
+
+<div class="container">
+  <h1>Basic Structural Concepts</h1>
+
+  <p>In this lesson, we explore fundamental structural concepts: stress, strain, bending, shear, torsion, and load paths. Understanding these is essential before designing any structural element.</p>
+
+  <h2>Stress & Strain</h2>
+  <p>Stress is the internal resistance of a material to deformation under load. Strain is the measure of deformation.</p>
+  <ul>
+    <li>Axial Stress = Force / Area</li>
+    <li>Shear Stress = Force / Area (parallel)</li>
+    <li>Strain = ΔLength / Original Length</li>
+  </ul>
+
+  <div class="diagram">
+    <img src="images/stress_strain_curve.png" alt="Stress-Strain Curve">
+    <p>Figure: Stress-Strain Curve (Placeholder)</p>
+  </div>
+
+  <h2>Bending, Shear & Torsion</h2>
+  <p>Beams and columns experience bending, shear, and torsion depending on load and support conditions.</p>
+
+  <div class="beam-container">
+    <div class="beam"></div>
+    <p>Animated beam bending under load (CSS animation)</p>
+  </div>
+
+  <h2>Elastic vs Plastic Behavior</h2>
+  <ul>
+    <li>Elastic: Material returns to original shape after load removal.</li>
+    <li>Plastic: Material permanently deforms after yield stress.</li>
+  </ul>
+
+  <h2>Modulus of Elasticity & Poisson’s Ratio</h2>
+  <p>Elastic modulus (E) = Stress / Strain. Poisson's ratio (ν) = Lateral strain / Axial strain.</p>
+
+  <h2>Load Path</h2>
+  <div class="diagram">
+    <img src="images/load_path_diagram.png" alt="Load Path Diagram">
+    <p>Figure: Load Path from roof to foundation (Placeholder)</p>
+  </div>
+
+  <div class="exercise">
+    <h2>Exercise</h2>
+    <p>Sketch a simply supported beam under uniform load. Mark tension and compression zones, and indicate the shear force direction.</p>
+  </div>
+
+  <div class="quiz">
+    <h2>Quiz</h2>
+    <p><strong>Q1:</strong> What is the axial stress formula?</p>
+    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">Force × Area</label><br>
+    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">Force / Area</label><br>
+    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">Force + Area</label><br>
+  </div>
+
+  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+</div>
+
+<script>
+  // Theme
+  if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
+  }
+
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) window.location.href="index.html";
+
+  function markComplete() {
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    if (!users[currentUser].progress) users[currentUser].progress = {};
+    users[currentUser].progress["Ph1_L03"] = true;
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Lesson marked as complete! ✅ Next lesson unlocked.");
+    window.location.href = "phase1.html";
+  }
+
+  function goPhase1() {
+    window.location.href="phase1.html";
+  }
+</script>
+
+</body>
+</html>
