@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L6 - One-way Slab Design</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, sans-serif; background:#f3f4f6; color:#111827; }
+    .wrap { max-width: 860px; margin: 24px auto; padding:0 16px 40px; }
+    .card { background:#fff; border-radius:12px; padding:18px; box-shadow:0 3px 14px rgba(0,0,0,.08); margin-bottom:14px; }
+    h1 { margin:0 0 8px; color:#1d4ed8; }
+    p { margin: 0 0 10px; line-height:1.6; }
+    .btn { border:0; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; background:#2563eb; color:#fff; text-decoration:none; display:inline-block; }
+    .btn.out { background:#fff; color:#2563eb; border:2px solid #2563eb; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>L6: One-way Slab Design</h1>
+      <p>Design slab thickness and reinforcement for 1m strip.</p>
+      <div class="row">
+        <a class="btn out" href="phase1.html">← Back to Phase 1</a>
+        <button class="btn" onclick="completeAndNext()">Mark complete & go next →</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Quick notes</h2>
+      <p>This lesson page is ready for your full content and examples. The completion logic is already connected with Phase 1 progress.</p>
+      <p>When you click <strong>Mark complete & go next</strong>, this lesson is saved as completed for the logged-in user.</p>
+    </div>
+  </div>
+
+  <script>
+    function getUsers() { return JSON.parse(localStorage.getItem('demUsers') || '[]'); }
+    function saveUsers(users) { localStorage.setItem('demUsers', JSON.stringify(users)); }
+    function getEmail() { return localStorage.getItem('myUserNow'); }
+
+    function requireLogin() {
+      if (!getEmail()) window.location.href = 'index.html';
+    }
+
+    function completeAndNext() {
+      const email = getEmail();
+      const users = getUsers();
+      const idx = users.findIndex(u => u.email === email);
+      if (idx < 0) return;
+      if (!users[idx].progress) users[idx].progress = {};
+      users[idx].progress.L6 = true;
+      saveUsers(users);
+      window.location.href = 'phase1.html';
+    }
+
+    requireLogin();
+  </script>
+</body>
+</html>
