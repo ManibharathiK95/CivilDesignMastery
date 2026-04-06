@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ph1_L05 - Foundation Types</title>
+
+<style>
+:root {
+  --bg: #f4f6f9;
+  --text: #222;
+  --card: #ffffff;
+  --primary: #2a7de1;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --card: #1e1e1e;
+  --primary: #4da3ff;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+header .theme-toggle { cursor: pointer; }
+
+.container { padding: 20px; max-width: 900px; margin: auto; }
+
+h1 { margin-bottom: 15px; }
+h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
+p, ul, table { margin-bottom: 15px; }
+
+.exercise, .quiz {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:hover { opacity: 0.9; }
+
+.back { margin-top: 20px; cursor: pointer; color: var(--primary); font-weight: bold; }
+
+.diagram { margin: 15px 0; text-align: center; }
+.diagram img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+/* Simple animation: soil pressure distribution */
+.soil-container {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: #c2b280;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+.soil-pressure {
+  position: absolute;
+  bottom: 0;
+  width: 50px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 5px;
+  animation: pressureWave 2s infinite alternate;
+}
+@keyframes pressureWave {
+  0% { height: 20px; }
+  50% { height: 60px; }
+  100% { height: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Ph1_L05 - Foundation Types</div>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+</header>
+
+<div class="container">
+  <h1>Foundation Types</h1>
+
+  <p>Foundations transfer building loads to the soil safely. Choosing the right type depends on soil conditions, building loads, and structural design.</p>
+
+  <h2>Shallow Foundations</h2>
+  <p>Shallow foundations are used where soil has adequate bearing capacity near the surface.</p>
+  <ul>
+    <li>Isolated footing – for single columns</li>
+    <li>Strip footing – for walls</li>
+    <li>Raft foundation – entire floor slab acts as foundation</li>
+  </ul>
+
+  <h2>Deep Foundations</h2>
+  <p>Deep foundations are used when surface soil is weak. Loads are transferred to deeper, stronger strata.</p>
+  <ul>
+    <li>Pile foundation – concrete/steel piles driven into soil</li>
+    <li>Drilled shafts / caissons</li>
+  </ul>
+
+  <h2>Bearing Capacity & Settlement</h2>
+  <p>Every foundation must support loads without excessive settlement. Bearing capacity is the maximum soil pressure it can safely support.</p>
+
+  <div class="diagram soil-container">
+    <div class="soil-pressure"></div>
+    <div class="soil-pressure" style="left:60px;"></div>
+    <div class="soil-pressure" style="left:120px;"></div>
+    <div class="soil-pressure" style="left:180px;"></div>
+    <p>Animated soil pressure distribution under foundation</p>
+  </div>
+
+  <h2>Example</h2>
+  <p>A column with 200 kN load is supported on isolated footing. Soil bearing capacity = 150 kN/m². Required footing area = 200 / 150 ≈ 1.33 m²</p>
+
+  <div class="exercise">
+    <h2>Exercise</h2>
+    <p>Determine the type of foundation for a 3-story building on soft clay with low surface bearing capacity. Explain your choice.</p>
+  </div>
+
+  <div class="quiz">
+    <h2>Quiz</h2>
+    <p><strong>Q1:</strong> Which foundation is suitable for weak surface soil?</p>
+    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">Shallow footing</label><br>
+    <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">Deep foundation (pile)</label><br>
+    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">Raft footing</label><br>
+  </div>
+
+  <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
+  <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
+</div>
+
+<script>
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
+}
+
+const currentUser = localStorage.getItem("currentUser");
+if (!currentUser) window.location.href="index.html";
+
+function markComplete() {
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  if (!users[currentUser].progress) users[currentUser].progress = {};
+  users[currentUser].progress["Ph1_L05"] = true;
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Lesson marked as complete! ✅ Phase 1 completed.");
+  window.location.href = "phase1.html";
+}
+
+function goPhase1() { window.location.href="phase1.html"; }
+</script>
+
+</body>
+</html>
