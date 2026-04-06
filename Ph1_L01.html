@@ -46,20 +46,10 @@ header .theme-toggle {
   margin: auto;
 }
 
-h1 {
-  margin-bottom: 15px;
-}
-
-h2 {
-  margin-top: 25px;
-  margin-bottom: 10px;
-  color: var(--primary);
-}
-
-p {
-  margin-bottom: 15px;
-}
-
+h1 { margin-bottom: 15px; }
+h2 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); }
+p { margin-bottom: 15px; }
+ul { margin-bottom: 15px; }
 .exercise, .quiz {
   background: var(--card);
   padding: 15px;
@@ -67,7 +57,6 @@ p {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   margin-bottom: 20px;
 }
-
 button {
   padding: 10px 15px;
   background: var(--primary);
@@ -77,16 +66,21 @@ button {
   cursor: pointer;
   margin-top: 10px;
 }
-
-button:hover {
-  opacity: 0.9;
-}
-
+button:hover { opacity: 0.9; }
 .back {
   margin-top: 20px;
   cursor: pointer;
   color: var(--primary);
   font-weight: bold;
+}
+.diagram {
+  margin: 15px 0;
+  text-align: center;
+}
+.diagram img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 </style>
 </head>
@@ -101,60 +95,65 @@ button:hover {
 <div class="container">
   <h1>Introduction to Civil Design</h1>
 
-  <p>Welcome to your first lesson in Civil Design Mastery! In this lesson, we will explore the **basics of civil design**, understand its scope, and why it is crucial in every engineering project. Civil design is the foundation for creating safe, durable, and functional structures like buildings, bridges, and highways.</p>
+  <p>Welcome to Civil Design Mastery! This lesson introduces you to the basics of civil design, its purpose, and its importance in construction projects.</p>
 
   <h2>Definition</h2>
-  <p>Civil Design refers to the process of planning, analyzing, and detailing the structural, geotechnical, and environmental aspects of construction projects. It ensures that the structure can safely withstand all loads and stresses during its lifespan.</p>
+  <p>Civil Design is the process of planning, analyzing, and detailing structures to ensure they are safe, durable, and functional. It covers structural elements like beams, slabs, columns, and foundations, ensuring they withstand all expected loads during their lifetime.</p>
 
   <h2>Thumb Rules</h2>
   <ul>
-    <li>Always consider **load paths** before designing any structural element.</li>
-    <li>Safety factor for buildings usually ranges from 1.5 to 2.0 depending on codes.</li>
-    <li>Follow **local building codes** (for Dubai, refer to Dubai GVIT guidelines).</li>
-    <li>Use **simplified diagrams** to visualize forces and stresses.</li>
+    <li>Always visualize the <strong>load path</strong> before designing.</li>
+    <li>Apply a <strong>safety factor</strong> of 1.5–2 for general structures.</li>
+    <li>Refer to <strong>local and international codes</strong> (Dubai GVIT, IS, BS).</li>
+    <li>Sketch simple diagrams to understand tension and compression zones.</li>
   </ul>
 
   <h2>Example</h2>
-  <p>Example: If you are designing a simply supported beam in a residential building:</p>
+  <p>Example: Designing a simply supported beam for a residential floor:</p>
   <ul>
-    <li>Determine expected live load (people, furniture) → e.g., 3 kN/m²</li>
-    <li>Determine dead load (self-weight of structure) → e.g., 2 kN/m²</li>
-    <li>Total load = 5 kN/m² → use this in bending/stress calculations</li>
+    <li>Dead Load (self-weight) = 2 kN/m²</li>
+    <li>Live Load (people, furniture) = 3 kN/m²</li>
+    <li>Total Load = 5 kN/m² → Use for bending and shear calculations</li>
   </ul>
+
+  <div class="diagram">
+    <img src="images/load_flow_example.png" alt="Load flow diagram" />
+    <p>Figure: Simple load flow in a beam (Placeholder for actual diagram)</p>
+  </div>
 
   <div class="exercise">
     <h2>Exercise</h2>
-    <p>Draw a simple beam and indicate the points where maximum bending occurs. Identify which sections are under tension and compression.</p>
+    <p>Draw a simple beam, mark tension and compression zones. Indicate where maximum bending occurs.</p>
   </div>
 
   <div class="quiz">
     <h2>Quiz</h2>
-    <p><strong>Q1:</strong> What is the main goal of civil design?</p>
-    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">To create beautiful buildings only</label><br>
+    <p><strong>Q1:</strong> What is the primary goal of civil design?</p>
+    <input type="radio" name="q1" id="q1a" value="a"> <label for="q1a">To create aesthetically pleasing buildings</label><br>
     <input type="radio" name="q1" id="q1b" value="b"> <label for="q1b">To ensure structures are safe and functional</label><br>
-    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">To reduce material cost at all times</label><br>
+    <input type="radio" name="q1" id="q1c" value="c"> <label for="q1c">To reduce material costs only</label><br>
   </div>
 
   <button onclick="markComplete()">Mark Lesson as Complete ✅</button>
-
   <div class="back" onclick="goPhase1()">⬅ Back to Phase 1 Lessons</div>
 </div>
 
 <script>
-  // Theme
+  // Dark/Light Theme
   if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
   function toggleTheme() {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark":"light");
   }
 
+  // Auth Check
   const currentUser = localStorage.getItem("currentUser");
   if (!currentUser) window.location.href="index.html";
 
   function markComplete() {
     let users = JSON.parse(localStorage.getItem("users")) || {};
     if (!users[currentUser].progress) users[currentUser].progress = {};
-    users[currentUser].progress["Ph1_L01"] = true; // mark as completed
+    users[currentUser].progress["Ph1_L01"] = true;
     localStorage.setItem("users", JSON.stringify(users));
     alert("Lesson marked as complete! ✅ Next lesson unlocked.");
     window.location.href = "phase1.html";
