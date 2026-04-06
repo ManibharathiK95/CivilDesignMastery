@@ -5,36 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - Civil Design Mastery</title>
 <style>
-:root{--bg:#f4f6f9;--sidebar:#1e293b;--sidebar-text:#cbd5e1;--primary:#2a7de1;--card:#fff;}
+:root{--bg:#f4f6f9;--sidebar:#1e293b;--primary:#2a7de1;--card:#fff;}
 body{margin:0;font-family:"Segoe UI",sans-serif;display:flex;background:var(--bg);}
 .sidebar{width:260px;background:var(--sidebar);color:white;height:100vh;padding:20px;box-sizing:border-box;}
 .sidebar h2{margin-bottom:20px;}
 .menu-item{margin-bottom:10px;cursor:pointer;font-weight:600;}
-.submenu{margin-left:10px;display:none;}
-.submenu div{padding:8px;margin:5px 0;background:#334155;border-radius:6px;cursor:pointer;}
+.submenu{margin-left:10px;display:block;}
+.submenu div{
+  padding:8px;margin:5px 0;background:#334155;border-radius:6px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+}
 .submenu div:hover{background:var(--primary);}
+.submenu div.locked{background:#1f2937;cursor:not-allowed;opacity:0.6;}
 .main{flex:1;padding:30px;}
 .card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
 h1{margin-top:0;}
+button.logout{
+  margin-top:15px;padding:8px 15px;background:#ef4444;color:white;border:none;border-radius:8px;cursor:pointer;
+}
+button.logout:hover{opacity:0.9;}
+.progress{font-size:0.85em;color:#a5b4fc;}
+.completed::after{content:"✓";color:#34d399;margin-left:8px;font-weight:bold;}
 </style>
 </head>
 <body>
 
 <div class="sidebar">
   <h2>📘 Civil Mastery</h2>
+  <button class="logout" onclick="logout()">Logout</button>
 
-  <div class="menu-item" onclick="toggleMenu('phase1')">Phase 1 ▼</div>
+  <!-- PHASE 1 -->
+  <div class="menu-item">Phase 1</div>
   <div id="phase1" class="submenu">
-    <div onclick="loadLesson('Intro to Engineering')">Intro to Engineering</div>
-    <div onclick="loadLesson('Basic Math')">Basic Math</div>
-    <div onclick="loadLesson('Drawing Basics')">Drawing Basics</div>
+    <div id="lesson1" onclick="completeLesson('lesson1','Intro to Engineering')">Intro to Engineering<span class="progress"></span></div>
+    <div id="lesson2" onclick="completeLesson('lesson2','Basic Math')">Basic Math<span class="progress"></span></div>
+    <div id="lesson3" onclick="completeLesson('lesson3','Drawing Basics')">Drawing Basics<span class="progress"></span></div>
   </div>
 
-  <div class="menu-item" onclick="toggleMenu('phase2')">Phase 2 ▼</div>
+  <!-- PHASE 2 -->
+  <div class="menu-item">Phase 2</div>
   <div id="phase2" class="submenu">
-    <div onclick="loadLesson('Structural Design')">Structural Design</div>
-    <div onclick="loadLesson('Concrete Technology')">Concrete Technology</div>
-    <div onclick="loadLesson('Site Planning')">Site Planning</div>
+    <div id="lesson4" class="locked" onclick="completeLesson('lesson4','Structural Design')">Structural Design<span class="progress"></span></div>
+    <div id="lesson5" class="locked" onclick="completeLesson('lesson5','Concrete Technology')">Concrete Technology<span class="progress"></span></div>
+    <div id="lesson6" class="locked" onclick="completeLesson('lesson6','Site Planning')">Site Planning<span class="progress"></span></div>
   </div>
 </div>
 
@@ -54,18 +67,51 @@ if(!currentUser || !users[currentUser]){window.location.href="index.html";}
 // Show welcome with name
 document.getElementById("welcomeText").innerText = "Welcome, " + users[currentUser].name + " 👋";
 
-// Sidebar toggle
-function toggleMenu(id){
-  const menu = document.getElementById(id);
-  menu.style.display = menu.style.display==="block"?"none":"block";
-}
+// Initialize progress
+if(!users[currentUser].progress) users[currentUser].progress = {};
+updateLessons();
 
-// Load lesson
-function loadLesson(title){
+// Complete lesson and update progress
+function completeLesson(id,title){
+  // Lock check
+  if(document.getElementById(id).classList.contains('locked')) return;
+
+  // Show content
   document.getElementById("content").innerHTML = `
     <h1>${title}</h1>
     <p>This is your lesson content for <strong>${title}</strong>.</p>
   `;
+  // Mark completed
+  users[currentUser].progress[id] = true;
+  localStorage.setItem("users", JSON.stringify(users));
+  updateLessons();
+}
+
+// Update lessons completion and Phase2 unlock
+function updateLessons(){
+  // Phase 1 lessons
+  ['lesson1','lesson2','lesson3'].forEach(id=>{
+    const lesson = document.getElementById(id);
+    if(users[currentUser].progress[id]){
+      lesson.classList.add('completed');
+    }
+  });
+  // Unlock Phase2 if all Phase1 done
+  const phase1Done = ['lesson1','lesson2','lesson3'].every(id=>users[currentUser].progress[id]);
+  ['lesson4','lesson5','lesson6'].forEach(id=>{
+    const lesson = document.getElementById(id);
+    if(phase1Done){
+      lesson.classList.remove('locked');
+    }else{
+      lesson.classList.add('locked');
+    }
+  });
+}
+
+// Logout
+function logout(){
+  localStorage.removeItem("currentUser");
+  window.location.href="index.html";
 }
 </script>
 </body>
