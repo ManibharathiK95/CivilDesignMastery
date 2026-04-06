@@ -98,24 +98,53 @@ function login(){
   const mobile = document.getElementById("mobile").value.trim();
   const pin = document.getElementById("pin").value.trim();
 
-  if(name.length<2){alert("Enter valid name."); return;}
-  const countryRegex=/^\+\d{1,4}$/;
-  const mobileRegex=/^\d{6,12}$/;
-  if(!countryRegex.test(country)){alert("Invalid country code!"); return;}
-  if(!mobileRegex.test(mobile)){alert("Invalid mobile number!"); return;}
-  const pinRegex=/^\d{6}$/;
-  if(!pinRegex.test(pin)){alert("PIN must be 6 digits!"); return;}
+  // Validation
+  if(name.length < 2){
+    alert("Enter valid name");
+    return;
+  }
+
+  if(!/^\+\d{1,4}$/.test(country)){
+    alert("Enter valid country code like +91");
+    return;
+  }
+
+  if(!/^\d{6,12}$/.test(mobile)){
+    alert("Enter valid mobile number");
+    return;
+  }
+
+  if(!/^\d{6}$/.test(pin)){
+    alert("PIN must be 6 digits");
+    return;
+  }
 
   const fullMobile = country + " " + mobile;
-  let users = JSON.parse(localStorage.getItem("users"))||{};
-  if(!users[fullMobile]){
-    users[fullMobile]={name:name,pin:pin,progress:{}};
-  } else if(users[fullMobile].pin!==pin){alert("Incorrect PIN!"); return;}
-  localStorage.setItem("users",JSON.stringify(users));
-  localStorage.setItem("currentUser",fullMobile);
 
-  // Go to welcome page
-  window.location.href="welcome.html";
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+
+  if(!users[fullMobile]){
+    users[fullMobile] = {
+      name: name,
+      pin: pin,
+      progress: {}
+    };
+  } else {
+    if(users[fullMobile].pin !== pin){
+      alert("Incorrect PIN");
+      return;
+    }
+  }
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", fullMobile);
+
+  console.log("Login success, redirecting..."); // DEBUG
+
+  // 🔥 Force redirect
+  setTimeout(() => {
+    window.location.href = "welcome.html";
+  }, 300);
 }
 </script>
 </body>
